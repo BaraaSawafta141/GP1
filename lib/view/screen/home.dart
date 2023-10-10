@@ -22,7 +22,7 @@ void _onMapCreated(GoogleMapController controller){
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Page'),
+        title: const Text('title'),
       ),
       body: GoogleMap(
         mapType: MapType.hybrid,
