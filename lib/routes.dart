@@ -17,10 +17,10 @@ import 'package:ecommercebig/view/screen/onboarding.dart';
 import 'package:get/get.dart';
 
 List<GetPage<dynamic>>? routes = [
-  GetPage(name: "/", page: () => const Language() , middlewares: [
-   MyMiddleWare()
-  ]),
-  //GetPage(name: "/", page: () => const home()),
+  //GetPage(name: "/", page: () => const Language() , middlewares: [
+   //MyMiddleWare()
+  //]),
+  GetPage(name: "/", page: () => const home()),
   //Auth
   GetPage(name: AppRoute.login, page: () => const Login()),
   GetPage(name: AppRoute.signUp, page: () => const SignUp()),

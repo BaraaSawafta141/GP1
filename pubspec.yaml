@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.1.0-300.0.dev <4.0.0'
+  sdk: '>=2.17.0 <3.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -34,7 +34,7 @@ dependencies:
   # DateTime
   jiffy: ^6.2.1
   intl: ^0.18.1
-  http: ^1.1.0
+  http: ^1.0.0
   # Images
   cached_network_image: ^3.2.0 
   image_picker: ^1.0.4
@@ -80,6 +80,10 @@ dependencies:
   flutter_otp_text_field: ^1.1.1
   connectivity_plus: ^4.0.2
   lottie: ^2.6.0
+  google_fonts: ^6.1.0
+  google_places_flutter: ^2.0.6
+  uuid: ^3.0.7
+  
 
 dev_dependencies:
   flutter_test:
@@ -107,6 +111,7 @@ flutter:
   assets:
     - assets/images/
     - assets/lottie/
+    - assets/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
