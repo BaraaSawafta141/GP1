@@ -95,6 +95,7 @@ class _nameState extends State<test> {
             ),
             Expanded(
                 child: ListView.builder(
+                    //shrinkWrap: true,
                     itemCount: _placesList.length,
                     itemBuilder: (context, index) {
                       return ListTile(

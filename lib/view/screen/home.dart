@@ -111,7 +111,7 @@ class MapSampleState extends State<home> {
             ),
           ),
           buildProfileTile(),
-          buildTextField(_controller),
+          buildTextField1(_controller, _placesList),
           buildCurrentLocationIcon(),
           buildNotificationIcon(),
         ],
@@ -170,36 +170,91 @@ Widget buildProfileTile() {
       ));
 }
 
-Widget buildTextField(TextEditingController controller) {
-  return Positioned(
-    top: 120,
-    left: 20,
-    right: 20,
-    child: Container(
-      width: Get.width,
-      height: 50,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                spreadRadius: 4,
-                blurRadius: 10)
-          ],
-          borderRadius: BorderRadius.circular(8)),
-      child: TextFormField(
-        controller: controller,
-        //readOnly: true,
-        onTap: () {
-          print("=============");
-        },
-        style: GoogleFonts.poppins(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Color(0xffA7A7A7)),
-        decoration: const InputDecoration(
-            contentPadding: EdgeInsets.only(top: 10, left: 20),
+Widget buildTextField1(TextEditingController controller, List _placesList) {
+   int itemCount = _placesList.length;
+  double itemHeight = 50.0; // Height of each item
+  return SizedBox(
+    //height: _placesList.length < 1 ? 350 : 350,
+    child: Column(
+      children: [
+        SizedBox(
+          height: 110,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            width: Get.width,
+            height: 50,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      spreadRadius: 4,
+                      blurRadius: 10)
+                ],
+                borderRadius: BorderRadius.circular(8)),
+            child: TextFormField(
+              controller: controller,
+              //readOnly: true,
+              /* onTap: () async{
+                
+              },*/
+              style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xffA7A7A7)),
+              decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.only(top: 10, left: 20),
+                  hintText: 'Search for a destination',
+                  hintStyle: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  suffixIcon: Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Icon(
+                      Icons.search,
+                    ),
+                  ),
+                  border: InputBorder.none),
+            ),
+          ),
+        ),
+        SizedBox(
+            height: itemCount * itemHeight,
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _placesList.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () async {
+                      List<Location> locations = await locationFromAddress(
+                          _placesList[index]['description']);
+                      print(locations.last.longitude);
+                      print(locations.last.latitude);
+                    },
+                    title: Text(_placesList[index]['description']),
+                  );
+                }))
+      ],
+    ),
+  );
+}
+
+Widget buildTextField(TextEditingController controller, List _placesList) {
+  return SizedBox(
+    height: 300,
+    child: Column(
+      children: [
+        SizedBox(
+          height: 100,
+        ),
+        TextFormField(
+          controller: controller,
+          decoration: InputDecoration(
             hintText: 'Search for a destination',
+            contentPadding: EdgeInsets.symmetric(horizontal: 20),
             hintStyle: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -210,8 +265,24 @@ Widget buildTextField(TextEditingController controller) {
                 Icons.search,
               ),
             ),
-            border: InputBorder.none),
-      ),
+          ),
+        ),
+        Expanded(
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _placesList.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () async {
+                      List<Location> locations = await locationFromAddress(
+                          _placesList[index]['description']);
+                      print(locations.last.longitude);
+                      print(locations.last.latitude);
+                    },
+                    title: Text(_placesList[index]['description']),
+                  );
+                }))
+      ],
     ),
   );
 }
