@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:ecommercebig/core/constant/imageasset.dart';
 import 'package:ecommercebig/core/functions/checkinternet.dart';
+import 'package:ecommercebig/view/screen/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:geocoding/geocoding.dart';
@@ -35,7 +36,7 @@ class _nameState extends State<test> {
 //till here to check internet and there is nother page called checkinternet.dart
 
   TextEditingController _controller = TextEditingController();
-  var uuid = Uuid();
+  var uuid = const Uuid();
   String _sessionToken = '122344';
   List<dynamic> _placesList = [];
 
@@ -82,16 +83,27 @@ class _nameState extends State<test> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer:  const CustomDrawer(),
       appBar: AppBar(
-        title: Text("test"),
+        title: const Text("test"),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 12),
         child: Column(
           children: [
             TextFormField(
+              
               controller: _controller,
-              decoration: InputDecoration(hintText: 'search places with name'),
+              decoration: const InputDecoration(hintText: 'search places with name',
+                   suffixIcon: Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Icon(
+                      Icons.search,
+                    ),
+                    
+                  ),
+              ),
+              
             ),
             Expanded(
                 child: ListView.builder(

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 //import 'dart:html';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:ecommercebig/view/screen/drawer.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -18,6 +19,7 @@ class home extends StatefulWidget {
 
   @override
   State<home> createState() => MapSampleState();
+
 }
 
 class MapSampleState extends State<home> {
@@ -86,12 +88,16 @@ class MapSampleState extends State<home> {
     }
   }
 
+  GlobalKey<ScaffoldState> scaffoldkey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       /*appBar: AppBar(
         title: Text("maps"),
       ),*/
+      key: scaffoldkey,
+      drawer: const CustomDrawer(),
       body: Stack(
         children: [
           Positioned(
@@ -110,10 +116,40 @@ class MapSampleState extends State<home> {
               },
             ),
           ),
+          Positioned(
+            top: 50,
+            left: 20,
+            child: InkWell(
+              onTap: () {
+                scaffoldkey.currentState!.openDrawer();
+              },
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          spreadRadius: 4,
+                          blurRadius: 10)
+                    ]),
+                child: const Icon(
+                  Icons.menu,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            )
+
+          ,
           buildProfileTile(),
           buildTextField1(_controller, _placesList),
           buildCurrentLocationIcon(),
           buildNotificationIcon(),
+     
+     
         ],
       ),
     );
@@ -123,7 +159,7 @@ class MapSampleState extends State<home> {
 Widget buildProfileTile() {
   return Positioned(
       top: 35,
-      left: 50,
+      left: 70,
       right: 20,
       child: Container(
         width: Get.width,
