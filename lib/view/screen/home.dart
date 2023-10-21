@@ -41,7 +41,8 @@ class MapSampleState extends State<home> {
 
   GoogleMapController? mymapcontroller;
 
-  TextEditingController _controller = TextEditingController();
+  TextEditingController controller = TextEditingController();
+  TextEditingController _controller2 = TextEditingController();
   var uuid = Uuid();
   String _sessionToken = '122344';
   List<dynamic> _placesList = [];
@@ -50,7 +51,10 @@ class MapSampleState extends State<home> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _controller.addListener(() {
+    controller.addListener(() {
+      onChange();
+    });
+    _controller2.addListener(() {
       onChange();
     });
   }
@@ -62,7 +66,7 @@ class MapSampleState extends State<home> {
       });
     }
 
-    getSuggestion(_controller.text);
+    getSuggestion(controller.text);
   }
 
   void getSuggestion(String input) async {
@@ -80,6 +84,7 @@ class MapSampleState extends State<home> {
     if (response.statusCode == 200) {
       setState(() {
         _placesList = jsonDecode(response.body.toString())['predictions'];
+        sourcePlacesList = jsonDecode(response.body.toString())['predictions'];
       });
     } else {
       throw Exception('failed to load');
@@ -101,7 +106,7 @@ class MapSampleState extends State<home> {
             bottom: 0,*/
             child: GoogleMap(
               myLocationEnabled: true,
-              //zoomControlsEnabled: false,
+              zoomControlsEnabled: false,
               mapType: MapType.normal,
               initialCameraPosition: _kGooglePlex,
               onMapCreated: (GoogleMapController controller) {
@@ -111,74 +116,81 @@ class MapSampleState extends State<home> {
             ),
           ),
           buildProfileTile(),
-          buildTextField1(_controller, _placesList),
+          buildTextField(controller, _placesList),
+          //showSourceField ? buildTextFieldForSource() : Container(),
+          buildTextFieldForSource(sourceController, sourcePlacesList),
           buildCurrentLocationIcon(),
           buildNotificationIcon(),
+          buildBottomSheet(),
         ],
       ),
     );
   }
-}
 
-Widget buildProfileTile() {
-  return Positioned(
-      top: 35,
-      left: 50,
-      right: 20,
-      child: Container(
-        width: Get.width,
-        //color: Colors.transparent,
-        child: Row(
-          children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: const BoxDecoration(
-                //color: Colors.red,
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                    image: AssetImage('assets/images/lang.png'),
-                    fit: BoxFit.fill),
+  Widget buildProfileTile() {
+    return Positioned(
+        top: 35,
+        left: 50,
+        right: 20,
+        child: Container(
+          width: Get.width,
+          //color: Colors.transparent,
+          child: Row(
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: const BoxDecoration(
+                  //color: Colors.red,
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/lang.png'),
+                      fit: BoxFit.fill),
+                ),
               ),
-            ),
-            SizedBox(
-              width: 15,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                RichText(
-                    text: TextSpan(children: [
-                  TextSpan(
-                      text: "Hello, ",
-                      style: TextStyle(color: Colors.black, fontSize: 20)),
-                  TextSpan(
-                      text: "Mark",
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold)),
-                ])),
-                Text(
-                  "Where are you going ?",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                )
-              ],
-            )
-          ],
-        ),
-      ));
-}
+              SizedBox(
+                width: 15,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                      text: TextSpan(children: [
+                    TextSpan(
+                        text: "Hello, ",
+                        style: TextStyle(color: Colors.black, fontSize: 20)),
+                    TextSpan(
+                        text: "Mark",
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold)),
+                  ])),
+                  Text(
+                    "Where are you going ?",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )
+                ],
+              )
+            ],
+          ),
+        ));
+  }
 
-Widget buildTextField1(TextEditingController controller, List _placesList) {
-   int itemCount = _placesList.length;
-  double itemHeight = 50.0; // Height of each item
-  return SizedBox(
-    //height: _placesList.length < 1 ? 350 : 350,
-    child: Column(
+  TextEditingController sourceController = TextEditingController();
+
+  bool showSourceField = false;
+  Widget buildTextField( controller, List _placesList) {
+    int itemCount = _placesList.length;
+    double itemHeight = 50.0;
+
+    bool showList =
+        itemCount > 0; // Flag to determine if the list should be shown
+
+    return Column(
       children: [
         SizedBox(
-          height: 110,
+          height: 170,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -186,137 +198,342 @@ Widget buildTextField1(TextEditingController controller, List _placesList) {
             width: Get.width,
             height: 50,
             decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      spreadRadius: 4,
-                      blurRadius: 10)
-                ],
-                borderRadius: BorderRadius.circular(8)),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  spreadRadius: 4,
+                  blurRadius: 10,
+                ),
+              ],
+              borderRadius: BorderRadius.circular(8),
+            ),
             child: TextFormField(
               controller: controller,
-              //readOnly: true,
-              /* onTap: () async{
-                
-              },*/
               style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xffA7A7A7)),
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
               decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.only(top: 10, left: 20),
-                  hintText: 'Search for a destination',
-                  hintStyle: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                contentPadding: EdgeInsets.only(top: 10, left: 20),
+                hintText: 'Search for a destination',
+                hintStyle: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                suffixIcon: Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Icon(
+                    Icons.search,
                   ),
-                  suffixIcon: Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Icon(
-                      Icons.search,
-                    ),
-                  ),
-                  border: InputBorder.none),
-            ),
-          ),
-        ),
-        SizedBox(
-            height: itemCount * itemHeight,
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: _placesList.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () async {
-                      List<Location> locations = await locationFromAddress(
-                          _placesList[index]['description']);
-                      print(locations.last.longitude);
-                      print(locations.last.latitude);
-                    },
-                    title: Text(_placesList[index]['description']),
-                  );
-                }))
-      ],
-    ),
-  );
-}
-
-Widget buildTextField(TextEditingController controller, List _placesList) {
-  return SizedBox(
-    height: 300,
-    child: Column(
-      children: [
-        SizedBox(
-          height: 100,
-        ),
-        TextFormField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: 'Search for a destination',
-            contentPadding: EdgeInsets.symmetric(horizontal: 20),
-            hintStyle: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-            suffixIcon: Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: Icon(
-                Icons.search,
+                ),
+                border: InputBorder.none,
               ),
             ),
           ),
         ),
-        Expanded(
+        Visibility(
+          visible: showList,
+          child: SizedBox(
+            height: itemCount * itemHeight,
             child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: _placesList.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () async {
-                      List<Location> locations = await locationFromAddress(
-                          _placesList[index]['description']);
-                      print(locations.last.longitude);
-                      print(locations.last.latitude);
-                    },
-                    title: Text(_placesList[index]['description']),
-                  );
-                }))
+              shrinkWrap: true,
+              itemCount: _placesList.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  onTap: () async {
+                    controller.text = _placesList[index]['description'];
+                    sourceController.clear();
+                    List<Location> locations = await locationFromAddress(
+                        _placesList[index]['description']);
+                    print(locations.last.longitude);
+                    print(locations.last.latitude);
+                    _placesList.removeAt(index);
+                  },
+                  title: Text(_placesList[index]['description']),
+                );
+              },
+            ),
+          ),
+        ),
       ],
-    ),
-  );
-}
+    );
+  }
 
-Widget buildCurrentLocationIcon() {
-  return const Align(
-    alignment: Alignment.bottomRight,
-    child: Padding(
-      padding: const EdgeInsets.only(bottom: 40, right: 70),
-      child: CircleAvatar(
-        radius: 20,
-        backgroundColor: Colors.blue,
-        child: Icon(
-          Icons.my_location,
-          color: Colors.white,
+  List<dynamic> sourcePlacesList = [];
+  bool isBottomSheetOpen = false;
+  Widget buildTextFieldForSource(sourceController,List sourcePlacesList) {
+    return Positioned(
+      top: 110,
+      left: 20,
+      right: 20,
+      child: Container(
+        width: Get.width,
+        height: 50,
+        padding: EdgeInsets.only(left: 15),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  spreadRadius: 4,
+                  blurRadius: 10)
+            ],
+            borderRadius: BorderRadius.circular(8)),
+        child: TextFormField(
+          controller: sourceController,
+          readOnly: isBottomSheetOpen,
+          onChanged: (value) {
+            sourceController.text = value;
+            getSuggestion(sourceController.text);
+          },
+          onTap: () async {
+            Get.bottomSheet(SingleChildScrollView(
+              child: Container(
+                width: Get.width,
+                height: Get.height * 0.5,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        topRight: Radius.circular(8)),
+                    color: Colors.white),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 10),
+                    Text(
+                      "Select Your Location:",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "Home Address",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    //SizedBox(height: 10),
+                    Container(
+                      width: Get.width,
+                      height: 50,
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.03),
+                            spreadRadius: 4,
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                      child: const Row(
+                        children: [
+                          Text(
+                            "My Home",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "University Address",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    //SizedBox(height: 10),
+                    Container(
+                      width: Get.width,
+                      height: 50,
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.03),
+                            spreadRadius: 4,
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                      child: const Row(
+                        children: [
+                          Text(
+                            "My University",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    InkWell(
+                      onTap: () {
+                        Get.back();
+                        isBottomSheetOpen = false;
+                        //getSuggestion(sourceController.text);
+                        Expanded(
+                            child: ListView.builder(
+                                //shrinkWrap: true,
+                                itemCount: sourcePlacesList.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    onTap: () async {
+                                      sourceController.text = sourcePlacesList[index]['description'];
+                                      controller.clear(); 
+                                      List<Location> locations =
+                                          await locationFromAddress(
+                                              sourcePlacesList[index]
+                                                  ['description']);
+                                      print(locations.last.longitude);
+                                      print(locations.last.latitude);
+                                    },
+                                    title: Text(
+                                        sourcePlacesList[index]['description']),
+                                  );
+                                }));
+                      },
+                      child: Container(
+                        width: Get.width,
+                        height: 50,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.03),
+                              spreadRadius: 4,
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Search For Address",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.start,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ));
+          },
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+          decoration: InputDecoration(
+            hintText: 'From:',
+            hintStyle: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+            suffixIcon: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Icon(
+                Icons.search,
+              ),
+            ),
+            border: InputBorder.none,
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-Widget buildNotificationIcon() {
-  return const Align(
-    alignment: Alignment.bottomLeft,
-    child: Padding(
-      padding: const EdgeInsets.only(bottom: 40, left: 10),
-      child: CircleAvatar(
-        radius: 20,
-        backgroundColor: Colors.blue,
-        child: Icon(
-          Icons.notifications_none,
-          color: Colors.white,
+  Widget buildCurrentLocationIcon() {
+    return const Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 40, right: 10),
+        child: CircleAvatar(
+          radius: 20,
+          backgroundColor: Colors.blue,
+          child: Icon(
+            Icons.my_location,
+            color: Colors.white,
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
+
+  Widget buildNotificationIcon() {
+    return const Align(
+      alignment: Alignment.bottomLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 40, left: 10),
+        child: CircleAvatar(
+          radius: 20,
+          backgroundColor: Colors.blue,
+          child: Icon(
+            Icons.notifications_none,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildBottomSheet() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        width: Get.width * 0.8,
+        height: 25,
+        decoration: BoxDecoration(
+            color: Colors.blue[200],
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  spreadRadius: 4,
+                  blurRadius: 10),
+            ]),
+        child: Center(
+          child: Container(
+            width: Get.width * 0.6,
+            height: 4,
+            color: Colors.black45,
+          ),
+        ),
+      ),
+    );
+  }
 }
