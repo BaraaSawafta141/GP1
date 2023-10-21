@@ -54,11 +54,11 @@ class MapSampleState extends State<home> {
     controller.addListener(() {
       onChange();
     });
-    _controller2.addListener(() {
-      onChange();
+    sourceController.addListener(() {
+      onChangeSource();
     });
   }
-
+  
   void onChange() {
     if (_sessionToken == null) {
       setState(() {
@@ -67,6 +67,15 @@ class MapSampleState extends State<home> {
     }
 
     getSuggestion(controller.text);
+  }
+   void onChangeSource() {
+    if (_sessionToken == null) {
+      setState(() {
+        _sessionToken == uuid.v4();
+      });
+    }
+
+    getSuggestion(sourceController.text);
   }
 
   void getSuggestion(String input) async {
@@ -84,6 +93,8 @@ class MapSampleState extends State<home> {
     if (response.statusCode == 200) {
       setState(() {
         _placesList = jsonDecode(response.body.toString())['predictions'];
+      });
+      setState(() {
         sourcePlacesList = jsonDecode(response.body.toString())['predictions'];
       });
     } else {
@@ -180,6 +191,8 @@ class MapSampleState extends State<home> {
   TextEditingController sourceController = TextEditingController();
 
   bool showSourceField = false;
+  
+  
   Widget buildTextField( controller, List _placesList) {
     int itemCount = _placesList.length;
     double itemHeight = 50.0;
@@ -187,7 +200,7 @@ class MapSampleState extends State<home> {
     bool showList =
         itemCount > 0; // Flag to determine if the list should be shown
 
-    return Column(
+    return Column( 
       children: [
         SizedBox(
           height: 170,
@@ -209,6 +222,10 @@ class MapSampleState extends State<home> {
               borderRadius: BorderRadius.circular(8),
             ),
             child: TextFormField(
+              onChanged: (value) {
+            controller.text = value;
+            getSuggestion(controller.text);
+          },
               controller: controller,
               style: GoogleFonts.poppins(
                 fontSize: 14,
@@ -263,6 +280,7 @@ class MapSampleState extends State<home> {
 
   List<dynamic> sourcePlacesList = [];
   bool isBottomSheetOpen = false;
+  
   Widget buildTextFieldForSource(sourceController,List sourcePlacesList) {
     return Positioned(
       top: 110,
