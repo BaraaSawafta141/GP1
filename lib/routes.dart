@@ -13,6 +13,7 @@ import 'package:ecommercebig/view/screen/auth/success_signup.dart';
 import 'package:ecommercebig/view/screen/auth/verifycodesignup.dart';
 import 'package:ecommercebig/view/screen/home.dart';
 import 'package:ecommercebig/view/screen/language.dart';
+import 'package:ecommercebig/view/screen/myprofile.dart';
 import 'package:ecommercebig/view/screen/onboarding.dart';
 import 'package:get/get.dart';
 
@@ -20,7 +21,7 @@ List<GetPage<dynamic>>? routes = [
   //GetPage(name: "/", page: () => const Language() , middlewares: [
   //MyMiddleWare()
   //]),
-  GetPage(name: "/", page: () => const home()),
+  GetPage(name: "/", page: () => home()),
   //Auth
   GetPage(name: AppRoute.login, page: () => const Login()),
   GetPage(name: AppRoute.signUp, page: () => const SignUp()),
