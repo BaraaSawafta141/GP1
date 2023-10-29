@@ -190,8 +190,8 @@ class MapSampleState extends State<home> {
             right: 0,
             bottom: 0,*/
             child: GoogleMap(
-              myLocationButtonEnabled: true,
-              myLocationEnabled: true,
+              //myLocationButtonEnabled: true,
+              //myLocationEnabled: true,
               zoomControlsEnabled: false,
               mapType: MapType.normal,
               initialCameraPosition: _kGooglePlex,
@@ -721,7 +721,7 @@ class MapSampleState extends State<home> {
       ),
     );
   }*/
-
+  
   Future<void> getCurrentLocation() async {
     final status = await Permission.location.request();
     if (status.isGranted) {
@@ -735,20 +735,8 @@ class MapSampleState extends State<home> {
           mymapcontroller!.animateCamera(
             CameraUpdate.newLatLng(userLocation),
           );
-          print(position.latitude);
-          print(position.longitude);
-          /*marks.add(Marker(
-                        markerId:
-                            MarkerId("My Location"),
-                        infoWindow: InfoWindow(, 'Lat: ${position.latitude}, Lng: ${position.longitude}'),
-                        position: source)); */
-          // Add a marker at the user's current location
-          /*mymapcontroller!.addMarker(
-          MarkerOptions(
-            position: userLocation,
-            infoWindowText: InfoWindowText('Your Location', 'Lat: ${position.latitude}, Lng: ${position.longitude}'),
-          ),
-        );*/
+          //print(position.latitude);
+          //print(position.longitude);
         }
       } catch (e) {
         print("Error getting current location: $e");
@@ -772,7 +760,7 @@ class MapSampleState extends State<home> {
               color: Colors.white,
             ),
             onPressed: () {
-              getCurrentLocation();
+              //getCurrentLocation();
             },
           ),
         ),
