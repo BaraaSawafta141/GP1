@@ -21,7 +21,6 @@ import 'package:uuid/uuid.dart';
 import 'dart:ui' as ui;
 import 'package:permission_handler/permission_handler.dart';
 
-
 class home extends StatefulWidget {
   const home({super.key});
 
@@ -99,7 +98,6 @@ class MapSampleState extends State<home> {
     sourceController.addListener(() {
       onChangeSource();
     });
-    customButtonSource();
     loadData();
   }
 
@@ -274,11 +272,13 @@ class MapSampleState extends State<home> {
   bool showSourceField = false;
   double? srclong;
   double? srclati;
-
+  bool isListOpen = false;
+  bool showListsrc = true;
+  List<dynamic> sourcePlacesList = [];
   Widget customButtonSource() {
     int itemCount = sourcePlacesList.length;
     double itemHeight = 50.0;
-    bool showList = itemCount > 0;
+
     return Column(
       children: [
         SizedBox(
@@ -330,7 +330,7 @@ class MapSampleState extends State<home> {
           ),
         ),
         Visibility(
-          visible: showList,
+          visible: showListsrc,
           child: SizedBox(
             height: itemCount * itemHeight,
             child: ListView.builder(
@@ -339,11 +339,11 @@ class MapSampleState extends State<home> {
               itemBuilder: (context, index) {
                 return ListTile(
                   onTap: () async {
-                    String selectplacedest =
+                    String selectplacesrc =
                         sourcePlacesList[index]['description'];
                     sourceController.text =
                         sourcePlacesList[index]['description'];
-                    destinationController.clear();
+                    //destinationController.clear();
                     List<geoCoding.Location> locations =
                         await geoCoding.locationFromAddress(
                             sourcePlacesList[index]['description']);
@@ -355,16 +355,19 @@ class MapSampleState extends State<home> {
                         markerId:
                             MarkerId(sourcePlacesList[index]['description']),
                         infoWindow: InfoWindow(
-                            title: 'destination: $selectplacedest',
+                            title: 'source: $selectplacesrc',
                             snippet: 'Latitude: $srclati, Longitude: $srclong'),
                         position: source));
                     mymapcontroller!.animateCamera(
                         CameraUpdate.newCameraPosition(
                             CameraPosition(target: source, zoom: 15)));
-
                     print(locations.last.latitude);
                     print(locations.last.longitude);
                     sourcePlacesList.removeAt(index);
+                    setState(() {
+                      //sourcePlacesList.clear();
+                      showListsrc = false; // Hide the list
+                    });
                   },
                   title: Text(sourcePlacesList[index]['description']),
                 );
@@ -376,14 +379,12 @@ class MapSampleState extends State<home> {
     );
   }
 
+  bool showListdst = true;
   Widget buildTextField(destinationController, List _placesList) {
     double dstlong;
     double dstlati;
     int itemCount = _placesList.length;
     double itemHeight = 50.0;
-
-    bool showList =
-        itemCount > 0; // Flag to determine if the list should be shown
 
     return Column(
       children: [
@@ -436,7 +437,7 @@ class MapSampleState extends State<home> {
           ),
         ),
         Visibility(
-          visible: showList,
+          visible: showListdst,
           child: SizedBox(
             height: itemCount * itemHeight,
             child: ListView.builder(
@@ -448,7 +449,7 @@ class MapSampleState extends State<home> {
                     String selectplacedest = _placesList[index]['description'];
                     destinationController.text =
                         _placesList[index]['description'];
-                    sourceController.clear();
+                    //sourceController.clear();
                     List<geoCoding.Location> locations = await geoCoding
                         .locationFromAddress(_placesList[index]['description']);
                     dstlong = locations.last.latitude;
@@ -468,6 +469,10 @@ class MapSampleState extends State<home> {
                     print(locations.last.latitude);
                     print(locations.last.longitude);
                     _placesList.removeAt(index);
+                    setState(() {
+                      //_placesList.clear();
+                      showListdst = false;
+                    });
                   },
                   title: Text(_placesList[index]['description']),
                 );
@@ -479,7 +484,6 @@ class MapSampleState extends State<home> {
     );
   }
 
-  List<dynamic> sourcePlacesList = [];
   bool isBottomSheetOpen = false;
 
   /*Widget buildTextFieldForSource(sourceController, List sourcePlacesList) {
@@ -718,28 +722,41 @@ class MapSampleState extends State<home> {
     );
   }*/
 
-/*Future<void> getCurrentLocation() async {
-  var status = await Permission.location.status;
-  if (status.isDenied) {
-    await Permission.location.request();
-  }
+  Future<void> getCurrentLocation() async {
+    final status = await Permission.location.request();
+    if (status.isGranted) {
+      try {
+        Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
 
-  if (status.isGranted) {
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-      
-      if (mymapcontroller != null) {
-        mymapcontroller!.animateCamera(CameraUpdate.newLatLng(
-          LatLng(position.latitude, position.longitude),
-        ));
+        if (mymapcontroller != null) {
+          LatLng userLocation = LatLng(position.latitude, position.longitude);
+          mymapcontroller!.animateCamera(
+            CameraUpdate.newLatLng(userLocation),
+          );
+          print(position.latitude);
+          print(position.longitude);
+          /*marks.add(Marker(
+                        markerId:
+                            MarkerId("My Location"),
+                        infoWindow: InfoWindow(, 'Lat: ${position.latitude}, Lng: ${position.longitude}'),
+                        position: source)); */
+          // Add a marker at the user's current location
+          /*mymapcontroller!.addMarker(
+          MarkerOptions(
+            position: userLocation,
+            infoWindowText: InfoWindowText('Your Location', 'Lat: ${position.latitude}, Lng: ${position.longitude}'),
+          ),
+        );*/
+        }
+      } catch (e) {
+        print("Error getting current location: $e");
       }
-    } catch (e) {
-      print("Error getting current location: $e");
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings(); // Open app settings if permission is permanently denied.
     }
   }
-}*/
 
   Widget buildCurrentLocationIcon() {
     return Align(
@@ -755,7 +772,7 @@ class MapSampleState extends State<home> {
               color: Colors.white,
             ),
             onPressed: () {
-             // getCurrentLocation();
+              getCurrentLocation();
             },
           ),
         ),
