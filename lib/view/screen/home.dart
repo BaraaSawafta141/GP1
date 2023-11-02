@@ -6,7 +6,9 @@ import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
 import 'package:ecommercebig/view/screen/drawer.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
-import 'package:flutter_google_maps_webservices/directions.dart' as maps_directions;
+import 'package:flutter_google_maps_webservices/directions.dart'
+    as maps_directions;
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geocoding/geocoding.dart' as geoCoding;
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -16,8 +18,8 @@ import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 import 'dart:ui' as ui;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:google_maps_flutter_platform_interface/src/types/polyline.dart' as google_maps;
-
+import 'package:google_maps_flutter_platform_interface/src/types/polyline.dart'
+    as google_maps;
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -35,8 +37,7 @@ class MapSampleState extends State<home> {
   Uint8List? markerImage;
   final Set<Polyline> _polyline = {};
 
-
-  void drawPolyline(String placeId) {
+  /*void drawPolyline(String placeId) {
     _polyline.clear();
     _polyline.add(Polyline(
       polylineId: PolylineId(placeId),
@@ -45,7 +46,7 @@ class MapSampleState extends State<home> {
       color: Colors.green,
       width: 5,
     ));
-  }
+  }*/
 
   List<String> images = [
     'assets/images/1.png',
@@ -85,6 +86,35 @@ class MapSampleState extends State<home> {
       _mapStyle = string;
     });
   }*/
+
+  void drawPolyline(String placeId, LatLng source, LatLng destination) async {
+    PolylinePoints polylinePoints = PolylinePoints();
+    List<LatLng> polylineCoordinates = [];
+
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      "AIzaSyAWw0O5296K5kLNisnYj5YiRBKzMh5Dpq4",
+      PointLatLng(source.latitude, source.longitude),
+      PointLatLng(destination.latitude, destination.longitude),
+      travelMode: TravelMode.driving,
+    );
+
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    } else {
+      print(result.errorMessage);
+    }
+
+    _polyline.clear();
+    _polyline.add(Polyline(
+      polylineId: PolylineId(placeId),
+      visible: true,
+      points: polylineCoordinates,
+      color: Colors.green,
+      width: 5,
+    ));
+  }
 
   final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(32.223295060141346, 35.237885713381246),
@@ -628,9 +658,9 @@ class MapSampleState extends State<home> {
   }
 
   bool showListdst = true;
+  double? dstlong;
+  double? dstlati;
   Widget buildTextField(destinationController, List _placesList) {
-    double dstlong;
-    double dstlati;
     int itemCount = _placesList.length;
     double itemHeight = 50.0;
 
@@ -714,7 +744,7 @@ class MapSampleState extends State<home> {
                         CameraUpdate.newCameraPosition(
                             CameraPosition(target: destination, zoom: 15)));
 
-                    drawPolyline(selectplacedest);
+                    drawPolyline(selectplacedest, source, destination);
                     print(locations.last.latitude);
                     print(locations.last.longitude);
                     _placesList.removeAt(index);
