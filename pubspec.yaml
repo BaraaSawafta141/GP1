@@ -84,6 +84,7 @@ dependencies:
   google_places_flutter: ^2.0.6
   uuid: ^3.0.7
   permission_handler: ^11.0.1
+  flutter_google_maps_webservices: ^1.1.1
   
 
 dev_dependencies:

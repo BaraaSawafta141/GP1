@@ -1,26 +1,23 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:typed_data';
 //import 'dart:html';
-import 'package:dropdown_search/dropdown_search.dart';
-import 'package:ecommercebig/view/screen/auth/custombuttonsource.dart';
+import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
 import 'package:ecommercebig/view/screen/drawer.dart';
-import 'package:ecommercebig/view/screen/myprofile.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:flutter_google_maps_webservices/directions.dart' as maps_directions;
 import 'package:geocoding/geocoding.dart' as geoCoding;
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_places_flutter/google_places_flutter.dart';
-import 'package:google_places_flutter/model/prediction.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 import 'dart:ui' as ui;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:google_maps_flutter_platform_interface/src/types/polyline.dart' as google_maps;
+
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -36,6 +33,19 @@ class MapSampleState extends State<home> {
   String? _mapStyle;
 
   Uint8List? markerImage;
+  final Set<Polyline> _polyline = {};
+
+
+  void drawPolyline(String placeId) {
+    _polyline.clear();
+    _polyline.add(Polyline(
+      polylineId: PolylineId(placeId),
+      visible: true,
+      points: [source, destination],
+      color: Colors.green,
+      width: 5,
+    ));
+  }
 
   List<String> images = [
     'assets/images/1.png',
@@ -196,6 +206,7 @@ class MapSampleState extends State<home> {
             child: GoogleMap(
               //myLocationButtonEnabled: true,
               //myLocationEnabled: true,
+              polylines: _polyline,
               zoomControlsEnabled: false,
               mapType: MapType.normal,
               initialCameraPosition: _kGooglePlex,
@@ -305,6 +316,7 @@ class MapSampleState extends State<home> {
   bool isListOpen = false;
   bool showListsrc = true;
   List<dynamic> sourcePlacesList = [];
+
   Widget customButtonSource() {
     int itemCount = sourcePlacesList.length;
     double itemHeight = 50.0;
@@ -331,9 +343,210 @@ class MapSampleState extends State<home> {
               borderRadius: BorderRadius.circular(8),
             ),
             child: TextFormField(
+              readOnly: isBottomSheetOpen,
               onChanged: (value) {
                 sourceController.text = value;
                 getSuggestionSource(sourceController.text);
+              },
+              onTap: () {
+                Get.bottomSheet(SingleChildScrollView(
+                  child: Container(
+                    width: Get.width,
+                    height: Get.height * 0.5,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            topRight: Radius.circular(8)),
+                        color: Colors.white),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 10),
+                        Text(
+                          "Select Your Location:",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          "Home Address",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        //SizedBox(height: 10),
+                        Container(
+                          width: Get.width,
+                          height: 50,
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.03),
+                                spreadRadius: 4,
+                                blurRadius: 10,
+                              ),
+                            ],
+                          ),
+                          child: const Row(
+                            children: [
+                              Text(
+                                "My Home",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          "Current Location",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        //SizedBox(height: 10),
+                        Container(
+                          width: Get.width,
+                          height: 50,
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.03),
+                                spreadRadius: 4,
+                                blurRadius: 10,
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  getCurrentLocation();
+                                  sourceController.text = "Current Location";
+                                  showListsrc = false;
+                                  TrackingController trackingController =
+                                      Get.put(TrackingController());
+                                },
+                                child: Text(
+                                  "My Location",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            isBottomSheetOpen = false;
+                            sourceController.text = "";
+                            //getSuggestion(sourceController.text);
+                            Expanded(
+                                child: ListView.builder(
+                                    //shrinkWrap: true,
+                                    itemCount: sourcePlacesList.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        onTap: () async {
+                                          String selectplacesrc =
+                                              sourcePlacesList[index]
+                                                  ['description'];
+                                          sourceController.text =
+                                              sourcePlacesList[index]
+                                                  ['description'];
+                                          controller.clear();
+                                          List<geoCoding.Location> locations =
+                                              await geoCoding
+                                                  .locationFromAddress(
+                                                      sourcePlacesList[index]
+                                                          ['description']);
+                                          srclong = locations.last.longitude;
+                                          srclati = locations.last.latitude;
+                                          source = LatLng(
+                                              locations.first.latitude,
+                                              locations.first.longitude);
+                                          marks.add(Marker(
+                                              markerId: MarkerId(
+                                                  sourcePlacesList[index]
+                                                      ['description']),
+                                              infoWindow: InfoWindow(
+                                                title:
+                                                    'Source: $selectplacesrc',
+                                                snippet:
+                                                    'Latitude: $srclati, Longitude: $srclong',
+                                              ),
+                                              position: destination));
+                                          mymapcontroller!.animateCamera(
+                                              CameraUpdate.newCameraPosition(
+                                                  CameraPosition(
+                                                      target: source,
+                                                      zoom: 15)));
+                                        },
+                                        title: Text(sourcePlacesList[index]
+                                            ['description']),
+                                      );
+                                    }));
+                          },
+                          child: Container(
+                            width: Get.width,
+                            height: 50,
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.03),
+                                  spreadRadius: 4,
+                                  blurRadius: 10,
+                                ),
+                              ],
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Search For Address",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ));
               },
               controller: sourceController,
               style: GoogleFonts.poppins(
@@ -377,8 +590,8 @@ class MapSampleState extends State<home> {
                     List<geoCoding.Location> locations =
                         await geoCoding.locationFromAddress(
                             sourcePlacesList[index]['description']);
-                    srclong = locations.last.latitude;
-                    srclati = locations.last.longitude;
+                    srclong = locations.last.longitude;
+                    srclati = locations.last.latitude;
                     source = LatLng(
                         locations.first.latitude, locations.first.longitude);
                     marks.add(Marker(
@@ -395,8 +608,13 @@ class MapSampleState extends State<home> {
                     print(locations.last.longitude);
                     sourcePlacesList.removeAt(index);
                     setState(() {
-                      //sourcePlacesList.clear();
-                      showListsrc = false; // Hide the list
+                      if (sourceController.text.isEmpty) {
+                        showListsrc =
+                            true; // Show the list when the text field is empty
+                      } else {
+                        showListsrc =
+                            false; // Hide the list when an address is chosen
+                      }
                     });
                   },
                   title: Text(sourcePlacesList[index]['description']),
@@ -482,8 +700,8 @@ class MapSampleState extends State<home> {
                     //sourceController.clear();
                     List<geoCoding.Location> locations = await geoCoding
                         .locationFromAddress(_placesList[index]['description']);
-                    dstlong = locations.last.latitude;
-                    dstlati = locations.last.longitude;
+                    dstlong = locations.last.longitude;
+                    dstlati = locations.last.latitude;
                     destination = LatLng(
                         locations.first.latitude, locations.first.longitude);
                     marks.add(Marker(
@@ -496,12 +714,14 @@ class MapSampleState extends State<home> {
                         CameraUpdate.newCameraPosition(
                             CameraPosition(target: destination, zoom: 15)));
 
+                    drawPolyline(selectplacedest);
                     print(locations.last.latitude);
                     print(locations.last.longitude);
                     _placesList.removeAt(index);
                     setState(() {
                       //_placesList.clear();
                       showListdst = false;
+                      buildRideConfirmationSheet();
                     });
                   },
                   title: Text(_placesList[index]['description']),
@@ -765,8 +985,8 @@ class MapSampleState extends State<home> {
           mymapcontroller!.animateCamera(
             CameraUpdate.newLatLng(userLocation),
           );
-          //print(position.latitude);
-          //print(position.longitude);
+          print(position.latitude);
+          print(position.longitude);
         }
       } catch (e) {
         print("Error getting current location: $e");
@@ -838,6 +1058,197 @@ class MapSampleState extends State<home> {
             color: Colors.black45,
           ),
         ),
+      ),
+    );
+  }
+
+  buildRideConfirmationSheet() {
+    Get.bottomSheet(Container(
+      width: Get.width,
+      height: Get.height * 0.4,
+      padding: EdgeInsets.only(left: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(12), topLeft: Radius.circular(12)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            height: 10,
+          ),
+          Center(
+            child: Container(
+              width: Get.width * 0.2,
+              height: 8,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8), color: Colors.grey),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            'Select an option:',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          buildDriversList(),
+          const SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: Divider(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(child: buildPaymentCardWidget()),
+                MaterialButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Confirm',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  color: Colors.green,
+                  shape: StadiumBorder(),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    ));
+  }
+
+  int selectedRide = 0;
+  buildDriversList() {
+    return Container(
+      height: 120,
+      width: Get.width,
+      child: StatefulBuilder(builder: (context, set) {
+        return ListView.builder(
+          itemBuilder: (ctx, i) {
+            return InkWell(
+              onTap: () {
+                set(() {
+                  selectedRide = i;
+                });
+              },
+              child: buildDriverCard(selectedRide == i),
+            );
+          },
+          itemCount: images.length,
+          scrollDirection: Axis.horizontal,
+        );
+      }),
+    );
+  }
+
+  buildDriverCard(bool selected) {
+    return Container(
+      margin: EdgeInsets.only(right: 8, left: 8, top: 4, bottom: 4),
+      height: 85,
+      width: 165,
+      decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                color: selected
+                    ? Color(0xff2DBB54).withOpacity(0.2)
+                    : Colors.grey.withOpacity(0.2),
+                offset: Offset(0, 5),
+                blurRadius: 5,
+                spreadRadius: 1)
+          ],
+          borderRadius: BorderRadius.circular(12),
+          color: selected ? Color(0xff2DBB54) : Colors.grey),
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Standard',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w700),
+                ),
+                Text(
+                  '\$9.90',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  '3 MIN',
+                  style: TextStyle(
+                      color: Colors.white.withOpacity(0.8),
+                      fontWeight: FontWeight.normal,
+                      fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+              right: -20,
+              top: 0,
+              bottom: 0,
+              child: Image.asset(
+                'assets/images/carcard.png',
+                width: 100,
+                height: 70,
+              ))
+        ],
+      ),
+    );
+  }
+
+  String dropdownValue = '**** **** **** 8789';
+  List<String> list = <String>[
+    '**** **** **** 8789',
+    '**** **** **** 8921',
+    '**** **** **** 1233',
+    '**** **** **** 4352'
+  ];
+  buildPaymentCardWidget() {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/images/visa.png',
+            width: 40,
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          DropdownButton<String>(
+            value: dropdownValue,
+            icon: const Icon(Icons.keyboard_arrow_down),
+            elevation: 16,
+            style: const TextStyle(color: Colors.deepPurple),
+            underline: Container(),
+            onChanged: (String? value) {
+              // This is called when the user selects an item.
+              setState(() {
+                dropdownValue = value!;
+              });
+            },
+            items: list.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          )
+        ],
       ),
     );
   }
