@@ -1,7 +1,8 @@
 import 'package:ecommercebig/core/constant/routes.dart';
 import 'package:ecommercebig/core/functions/checkconnectivity.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
-import 'package:ecommercebig/test.dart';
+import 'package:ecommercebig/main.dart';
+import 'package:ecommercebig/view/widget/testfolder/test.dart';
 import 'package:ecommercebig/test_view.dart';
 import 'package:ecommercebig/view/screen/auth/forgetpassword/forgetpassword.dart';
 import 'package:ecommercebig/view/screen/auth/forgetpassword/resetpassword.dart';

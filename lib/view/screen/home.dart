@@ -3,12 +3,15 @@ import 'dart:convert';
 import 'dart:typed_data';
 //import 'dart:html';
 import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
+import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
 import 'package:ecommercebig/view/screen/drawer.dart';
+import 'package:ecommercebig/view/widget/testfolder/test.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:flutter_google_maps_webservices/directions.dart'
     as maps_directions;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:geocoding/geocoding.dart' as geoCoding;
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -29,8 +32,8 @@ class home extends StatefulWidget {
 }
 
 class MapSampleState extends State<home> {
-  final Completer<GoogleMapController> _controllergoogle =
-      Completer<GoogleMapController>();
+  //final Completer<GoogleMapController> _controllergoogle =
+    //  Completer<GoogleMapController>();
 
   String? _mapStyle;
 
@@ -86,13 +89,14 @@ class MapSampleState extends State<home> {
       _mapStyle = string;
     });
   }*/
+  String googleAPIKey = 'AIzaSyAWw0O5296K5kLNisnYj5YiRBKzMh5Dpq4';
 
-  void drawPolyline(String placeId, LatLng source, LatLng destination) async {
+  /*void drawPolyline(String placeId, LatLng source, LatLng destination) async {
     PolylinePoints polylinePoints = PolylinePoints();
     List<LatLng> polylineCoordinates = [];
 
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      "AIzaSyAWw0O5296K5kLNisnYj5YiRBKzMh5Dpq4",
+      googleAPIKey,
       PointLatLng(source.latitude, source.longitude),
       PointLatLng(destination.latitude, destination.longitude),
       travelMode: TravelMode.driving,
@@ -114,7 +118,7 @@ class MapSampleState extends State<home> {
       color: Colors.green,
       width: 5,
     ));
-  }
+  }*/
 
   final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(32.223295060141346, 35.237885713381246),
@@ -140,6 +144,8 @@ class MapSampleState extends State<home> {
       onChangeSource();
     });
     loadData();
+    _ratingController = TextEditingController(text: '3.0');
+    _rating = _initialRating;
   }
 
   loadData() async {
@@ -236,7 +242,7 @@ class MapSampleState extends State<home> {
             child: GoogleMap(
               //myLocationButtonEnabled: true,
               //myLocationEnabled: true,
-              polylines: _polyline,
+              polylines: polelineSet,
               zoomControlsEnabled: false,
               mapType: MapType.normal,
               initialCameraPosition: _kGooglePlex,
@@ -744,7 +750,8 @@ class MapSampleState extends State<home> {
                         CameraUpdate.newCameraPosition(
                             CameraPosition(target: destination, zoom: 15)));
 
-                    drawPolyline(selectplacedest, source, destination);
+                    //drawPolyline(selectplacedest);
+                    await getPolyline(srclati, srclong , dstlati, dstlong) ;
                     print(locations.last.latitude);
                     print(locations.last.longitude);
                     _placesList.removeAt(index);
@@ -1141,7 +1148,9 @@ class MapSampleState extends State<home> {
               children: [
                 Expanded(child: buildPaymentCardWidget()),
                 MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.to(MyAppRating());
+                  },
                   child: Text(
                     'Confirm',
                     style: TextStyle(color: Colors.white),
@@ -1156,6 +1165,216 @@ class MapSampleState extends State<home> {
       ),
     ));
   }
+
+  late final _ratingController;
+  late double _rating;
+
+  double _userRating = 3.0;
+  int _ratingBarMode = 1;
+  double _initialRating = 2.0;
+  bool _isRTLMode = false;
+  bool _isVertical = false;
+
+  IconData? _selectedIcon;
+
+  void buildRatingAndCommentSheet() {
+    Get.bottomSheet(
+      Container(
+        width: Get.width,
+        //height: Get.height * 0.4,
+        padding: EdgeInsets.only(left: 20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(12),
+            topLeft: Radius.circular(12),
+          ),
+        ),
+        child: Builder(
+          builder: (context) => Scaffold(
+            body: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                    height: 40.0,
+                  ),
+                  _heading('Rate the driver'),
+                  _ratingBar(_ratingBarMode),
+                  SizedBox(height: 20.0),
+                  Text(
+                    'Rating: $_rating',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    'Rating Bar Modes',
+                    style: TextStyle(fontWeight: FontWeight.w300),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _radio(1),
+                      _radio(3),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Center(
+                      //padding: const EdgeInsets.all(15),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Add a comment',
+                          border: OutlineInputBorder(),
+                        ),
+                        maxLines: 5,
+                        // You can store the comment in a variable.
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    height: 40,
+                    width: 200,
+                    child: MaterialButton(
+                        color: Colors.blue,
+                        child: Text(
+                          "Submit",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        onPressed: () {}),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _radio(int value) {
+    return Expanded(
+      child: RadioListTile<int>(
+        value: value,
+        groupValue: _ratingBarMode,
+        dense: true,
+        title: Text(
+          'Mode $value',
+          style: TextStyle(
+            fontWeight: FontWeight.w300,
+            fontSize: 14.0,
+          ),
+        ),
+        onChanged: (value) {
+          setState(() {
+            _ratingBarMode = value!;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _ratingBar(int mode) {
+    switch (mode) {
+      case 1:
+        return RatingBar.builder(
+          initialRating: _initialRating,
+          minRating: 1,
+          direction: _isVertical ? Axis.vertical : Axis.horizontal,
+          allowHalfRating: true,
+          unratedColor: Colors.blue.withAlpha(50),
+          itemCount: 5,
+          itemSize: 50.0,
+          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+          itemBuilder: (context, _) => Icon(
+            _selectedIcon ?? Icons.star,
+            color: Colors.blue,
+          ),
+          onRatingUpdate: (rating) {
+            setState(() {
+              _rating = rating;
+            });
+          },
+          updateOnDrag: true,
+        );
+      case 3:
+        print("========================Case 2=========================== ");
+        return RatingBar.builder(
+          initialRating: _initialRating,
+          direction: _isVertical ? Axis.vertical : Axis.horizontal,
+          itemCount: 5,
+          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+          itemBuilder: (context, index) {
+            switch (index) {
+              case 0:
+                return Icon(
+                  Icons.sentiment_very_dissatisfied,
+                  color: Colors.red,
+                );
+              case 1:
+                return Icon(
+                  Icons.sentiment_dissatisfied,
+                  color: Colors.redAccent,
+                );
+              case 2:
+                return Icon(
+                  Icons.sentiment_neutral,
+                  color: Colors.blue,
+                );
+              case 3:
+                return Icon(
+                  Icons.sentiment_satisfied,
+                  color: Colors.lightGreen,
+                );
+              case 4:
+                return Icon(
+                  Icons.sentiment_very_satisfied,
+                  color: Colors.green,
+                );
+              default:
+                return Container();
+            }
+          },
+          onRatingUpdate: (rating) {
+            setState(() {
+              _rating = rating;
+            });
+          },
+          updateOnDrag: true,
+        );
+      default:
+        return Container();
+    }
+  }
+
+  Widget _heading(String text) => Column(
+        children: [
+          Text(
+            text,
+            style: TextStyle(
+              fontWeight: FontWeight.w300,
+              fontSize: 24.0,
+            ),
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
+        ],
+      );
 
   int selectedRide = 0;
   buildDriversList() {

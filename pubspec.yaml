@@ -85,6 +85,7 @@ dependencies:
   uuid: ^3.0.7
   permission_handler: ^11.0.1
   flutter_google_maps_webservices: ^1.1.1
+  flutter_rating_bar: ^4.0.1
   
 
 dev_dependencies:
