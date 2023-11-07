@@ -45,7 +45,16 @@ class _MyAppState extends State<MyAppRating> {
       home: Builder(
         builder: (context) => Scaffold(
           appBar: AppBar(
-            title: Text('Flutter Rating Bar'),
+            title: Text('Rate The Driver'),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => home()),
+                );
+              },
+            ),
             actions: [
               IconButton(
                 icon: Icon(Icons.settings),

@@ -1,4 +1,6 @@
+import 'package:ecommercebig/view/screen/home.dart';
 import 'package:ecommercebig/view/screen/myprofile.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -69,9 +71,9 @@ class CustomDrawer extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 30),
           child: Column(
             children: [
-              buildDrawerItem(
-                  title: 'Payment History',
-                  onPressed: () {} /*=> Get.to(()=> PaymentScreen())*/),
+              buildDrawerItem(title: 'Payment History',
+               onPressed: () => Get.to(()=> home())
+               ),
               buildDrawerItem(
                   title: 'Ride History', onPressed: () {}, isVisible: true),
               buildDrawerItem(title: 'Invite Friends', onPressed: () {}),

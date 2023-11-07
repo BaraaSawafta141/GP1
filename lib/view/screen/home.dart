@@ -10,6 +10,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:flutter_google_maps_webservices/directions.dart'
     as maps_directions;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:geocoding/geocoding.dart' as geoCoding;
@@ -33,7 +34,7 @@ class home extends StatefulWidget {
 
 class MapSampleState extends State<home> {
   //final Completer<GoogleMapController> _controllergoogle =
-    //  Completer<GoogleMapController>();
+  //  Completer<GoogleMapController>();
 
   String? _mapStyle;
 
@@ -62,7 +63,6 @@ class MapSampleState extends State<home> {
   late LatLng destination;
   late LatLng source;
   Set<Marker> marks = Set<Marker>();
-
   final List<Marker> _markers = <Marker>[];
   final List<LatLng> _latlng = <LatLng>[
     LatLng(32.223295060141346, 35.237885713381246),
@@ -126,7 +126,7 @@ class MapSampleState extends State<home> {
   );
 
   GoogleMapController? mymapcontroller;
-
+  TrackingController trackingController = Get.put(TrackingController());
   TextEditingController controller = TextEditingController();
   TextEditingController _controller2 = TextEditingController();
   var uuid = Uuid();
@@ -146,6 +146,13 @@ class MapSampleState extends State<home> {
     loadData();
     _ratingController = TextEditingController(text: '3.0');
     _rating = _initialRating;
+    WidgetsFlutterBinding.ensureInitialized();
+    notifications.initialize(
+      InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        //iOS: IOSInitializationSettings(),
+      ),
+    );
   }
 
   loadData() async {
@@ -475,12 +482,14 @@ class MapSampleState extends State<home> {
                           child: Row(
                             children: [
                               InkWell(
-                                onTap: () {
-                                  getCurrentLocation();
+                                onTap: () async {
+                                  await trackingController.getCurrentLocation();
                                   sourceController.text = "Current Location";
                                   showListsrc = false;
-                                  TrackingController trackingController =
-                                      Get.put(TrackingController());
+                                  getPolyline(32.3298283, 35.3670633,
+                                      32.223295060141346, 35.237885713381246);
+                                  Get.back(); 
+                                  showNotification();
                                 },
                                 child: Text(
                                   "My Location",
@@ -751,7 +760,7 @@ class MapSampleState extends State<home> {
                             CameraPosition(target: destination, zoom: 15)));
 
                     //drawPolyline(selectplacedest);
-                    await getPolyline(srclati, srclong , dstlati, dstlong) ;
+                    await getPolyline(srclati, srclong, dstlati, dstlong);
                     print(locations.last.latitude);
                     print(locations.last.longitude);
                     _placesList.removeAt(index);
@@ -1008,8 +1017,9 @@ class MapSampleState extends State<home> {
       ),
     );
   }*/
-
-  Future<void> getCurrentLocation() async {
+  double? myPosLatitude;
+  double? myPoslongitude;
+  Future<void> getCurrentLocationicon() async {
     final status = await Permission.location.request();
     if (status.isGranted) {
       try {
@@ -1018,12 +1028,14 @@ class MapSampleState extends State<home> {
         );
 
         if (mymapcontroller != null) {
+          myPosLatitude = position.latitude;
+          myPoslongitude = position.longitude;
           LatLng userLocation = LatLng(position.latitude, position.longitude);
           mymapcontroller!.animateCamera(
             CameraUpdate.newLatLng(userLocation),
           );
-          print(position.latitude);
-          print(position.longitude);
+          print(myPosLatitude);
+          print(myPoslongitude);
         }
       } catch (e) {
         print("Error getting current location: $e");
@@ -1047,7 +1059,7 @@ class MapSampleState extends State<home> {
               color: Colors.white,
             ),
             onPressed: () {
-              getCurrentLocation();
+              getCurrentLocationicon();
             },
           ),
         ),
@@ -1096,6 +1108,27 @@ class MapSampleState extends State<home> {
           ),
         ),
       ),
+    );
+  }
+
+  final FlutterLocalNotificationsPlugin notifications =
+      FlutterLocalNotificationsPlugin();
+  Future<void> showNotification() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'channel_id',
+      'channel_name',
+      importance: Importance.max,
+      priority: Priority.high,
+      channelDescription: 'channel_description',
+    );
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await notifications.show(
+      0,
+      'Driver On His Way',
+      'The driver is on his way!',
+      platformChannelSpecifics,
     );
   }
 
@@ -1149,7 +1182,9 @@ class MapSampleState extends State<home> {
                 Expanded(child: buildPaymentCardWidget()),
                 MaterialButton(
                   onPressed: () {
-                    Get.to(MyAppRating());
+                    showNotification();
+                    //Get.to(MyAppRating());
+                    Get.back();
                   },
                   child: Text(
                     'Confirm',
