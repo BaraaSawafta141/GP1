@@ -1,5 +1,6 @@
 import 'package:ecommercebig/view/screen/emergency.dart';
 import 'package:ecommercebig/view/screen/home.dart';
+import 'package:ecommercebig/view/screen/maptheme.dart';
 import 'package:ecommercebig/view/screen/myprofile.dart';
 import 'package:ecommercebig/view/screen/payment/payment.dart';
 import 'package:ecommercebig/view/widget/testfolder/test.dart';
@@ -88,7 +89,7 @@ class CustomDrawer extends StatelessWidget {
               buildDrawerItem(
                   title: 'Custom map',
                   onPressed: () {
-                    Get.to(() => testfile());
+                    Get.to(() => maptheme());
                   }),
               buildDrawerItem(title: 'Settings', onPressed: () {}),
               buildDrawerItem(title: 'Support', onPressed: () {}),

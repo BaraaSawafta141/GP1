@@ -5,8 +5,8 @@ import 'dart:typed_data';
 import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
 import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
 import 'package:ecommercebig/view/screen/drawer.dart';
+import 'package:ecommercebig/view/screen/maptheme.dart';
 import 'package:ecommercebig/view/screen/rating_driver.dart';
-import 'package:ecommercebig/view/widget/testfolder/test.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:flutter_google_maps_webservices/directions.dart'
@@ -58,7 +58,6 @@ class MapSampleState extends State<home> {
   ];
   late LatLng destination;
   late LatLng source;
-
   final List<Marker> _markers = <Marker>[];
   final List<LatLng> _latlng = <LatLng>[
     LatLng(32.223295060141346, 35.237885713381246),
@@ -78,11 +77,11 @@ class MapSampleState extends State<home> {
         .asUint8List();
   }
 
-  void updateMapStyle(String mapStyle) {
+  /*void updateMapStyle(String mapTheme) {
     if (mymapcontroller != null) {
-      mymapcontroller!.setMapStyle(mapStyle);
+      mymapcontroller!.setMapStyle(mapTheme);
     }
-  }
+  }*/
 
   @override
   /*void initState() {
@@ -191,7 +190,6 @@ class MapSampleState extends State<home> {
 
   GlobalKey<ScaffoldState> scaffoldkey = GlobalKey<ScaffoldState>();
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -201,7 +199,7 @@ class MapSampleState extends State<home> {
         title: Text("maps"),
       ),*/
       body: Stack(
-       children: [
+        children: [
           Positioned(
             /*top: 110,
             left: 0,
@@ -224,7 +222,7 @@ class MapSampleState extends State<home> {
                 //markers: Set<Marker>.of(_markers),
                 onMapCreated: (GoogleMapController controller) {
                   mymapcontroller = controller;
-                  mymapcontroller!.setMapStyle(_mapStyle);
+                  mymapcontroller!.setMapStyle(mapTheme);
                 },
               );
             }),
@@ -459,12 +457,11 @@ class MapSampleState extends State<home> {
                                   //     icon: BitmapDescriptor.defaultMarker,
                                   //   ),
                                   // );
-                                  final trackingController =
-                                      Get.find<TrackingController>();
+                                  //final trackingController =Get.find<TrackingController>();
                                   sourceController.text = "Current Location";
                                   showListsrc = false;
 
-                                  trackingController.getCurrentLocation();
+                                  //trackingController.getCurrentLocation();
                                 },
                                 child: Text(
                                   "My Location",
@@ -739,6 +736,8 @@ class MapSampleState extends State<home> {
                     //drawPolyline(selectplacedest);
                     await getPolyline(
                         context, srclati, srclong, dstlati, dstlong);
+                    final trackingController = Get.find<TrackingController>();
+                    trackingController.getCurrentLocation();
                     print(locations.last.latitude);
                     print(locations.last.longitude);
                     _placesList.removeAt(index);

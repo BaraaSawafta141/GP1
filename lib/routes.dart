@@ -18,7 +18,6 @@ import 'package:ecommercebig/view/screen/home.dart';
 import 'package:ecommercebig/view/screen/language.dart';
 import 'package:ecommercebig/view/screen/myprofile.dart';
 import 'package:ecommercebig/view/screen/onboarding.dart';
-import 'package:ecommercebig/view/widget/testfolder/test.dart';
 import 'package:get/get.dart';
 
 List<GetPage<dynamic>>? routes = [
