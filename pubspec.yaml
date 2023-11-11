@@ -46,6 +46,7 @@ dependencies:
   google_maps_flutter: ^2.5.0
   geolocator: ^10.0.1
   geocoding: ^2.0.4
+  # location: ^4.4.0
   # Firebase And Notification 
   firebase_messaging: ^14.6.7
   firebase_core: ^2.15.1
@@ -88,10 +89,6 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   flutter_credit_card: ^4.0.1
  
-  
-  
-  
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

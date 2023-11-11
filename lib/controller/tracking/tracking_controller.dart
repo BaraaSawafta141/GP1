@@ -31,6 +31,7 @@ class TrackingController extends GetxController {
         marks.add(Marker(
           markerId: const MarkerId('currentLocation'),
           position: LatLng(position!.latitude, position.longitude),
+          
         ));
         update();
       }
