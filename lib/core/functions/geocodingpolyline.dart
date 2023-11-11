@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 Set<Polyline> polelineSet = {};
 
-Future getPolyline(lat, long, destlat, destlong) async {
+Future getPolyline(context, lat, long, destlat, destlong) async {
   List<LatLng> polylineco = [];
   PolylinePoints polylinePoints = PolylinePoints();
   String url =
@@ -15,21 +15,52 @@ Future getPolyline(lat, long, destlat, destlong) async {
 
   var responsebody = jsonDecode(response.body);
 
-  var point = responsebody["routes"][0]["overview_polyline"]["points"];
-
-  List<PointLatLng> result = polylinePoints.decodePolyline(point);
-
-  if (result.isNotEmpty) {
-    result.forEach((PointLatLng point) {
-      polylineco.add(LatLng(point.latitude, point.longitude));
-    });
+  void showDialogWithMessage(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Warning'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  Polyline polyline = Polyline(
-      polylineId: PolylineId("polyline"),
-      color: Colors.blue,
-      points: polylineco,
-      width: 5);
+  try {
+    if (responsebody != null &&
+        responsebody["routes"] != null &&
+        responsebody["routes"].isNotEmpty) {
+      var point = responsebody["routes"][0]["overview_polyline"]["points"];
 
-  polelineSet.add(polyline);
+      if (point != null) {
+        List<PointLatLng> result = polylinePoints.decodePolyline(point);
+
+        if (result.isNotEmpty) {
+          result.forEach((PointLatLng point) {
+            polylineco.add(LatLng(point.latitude, point.longitude));
+          });
+        } else {
+          // Handle case where 'result' is empty
+          showDialogWithMessage('Result is empty');
+        }
+      } else {
+        // Handle case where 'point' is null or empty
+        showDialogWithMessage('Point is null or empty');
+      }
+    } else {
+      // Handle case where 'routes' in the response is empty
+      showDialogWithMessage('No routes found in response');
+    }
+  } catch (e) {
+    showDialogWithMessage('An error occurred: $e');
+  }
 }

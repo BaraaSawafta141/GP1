@@ -18,6 +18,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+// import 'package:location/location.dart' as lo;
 import 'package:uuid/uuid.dart';
 import 'dart:ui' as ui;
 import 'package:permission_handler/permission_handler.dart';
@@ -31,9 +32,12 @@ class home extends StatefulWidget {
   State<home> createState() => MapSampleState();
 }
 
+final homePageMarkers = <Marker>{}.obs;
+GoogleMapController? mymapcontroller;
+
 class MapSampleState extends State<home> {
   //final Completer<GoogleMapController> _controllergoogle =
-    //  Completer<GoogleMapController>();
+  //  Completer<GoogleMapController>();
 
   String? _mapStyle;
 
@@ -61,7 +65,15 @@ class MapSampleState extends State<home> {
   ];
   late LatLng destination;
   late LatLng source;
-  Set<Marker> marks = Set<Marker>();
+
+  // lo.LocationData? currentLocation;
+
+  // void getUserLocation() {
+  //   lo.Location location = lo.Location();
+  //   location.getLocation().then((location) {
+  //     currentLocation = location;
+  //   });
+  // }
 
   final List<Marker> _markers = <Marker>[];
   final List<LatLng> _latlng = <LatLng>[
@@ -125,8 +137,6 @@ class MapSampleState extends State<home> {
     zoom: 15,
   );
 
-  GoogleMapController? mymapcontroller;
-
   TextEditingController controller = TextEditingController();
   TextEditingController _controller2 = TextEditingController();
   var uuid = Uuid();
@@ -151,7 +161,7 @@ class MapSampleState extends State<home> {
   loadData() async {
     for (int i = 0; i < images.length; i++) {
       final Uint8List markericon = await getBytesFromAssets(images[i], 140);
-      marks.add(Marker(
+      homePageMarkers.add(Marker(
           markerId: MarkerId(i.toString()),
           position: _latlng[i],
           icon: BitmapDescriptor.fromBytes(markericon),
@@ -161,22 +171,10 @@ class MapSampleState extends State<home> {
   }
 
   void onChangedest() {
-    if (_sessionToken == null) {
-      setState(() {
-        _sessionToken == uuid.v4();
-      });
-    }
-
     getSuggestionDest(destinationController.text);
   }
 
   void onChangeSource() {
-    if (_sessionToken == null) {
-      setState(() {
-        _sessionToken == uuid.v4();
-      });
-    }
-
     getSuggestionSource(sourceController.text);
   }
 
@@ -239,20 +237,27 @@ class MapSampleState extends State<home> {
             left: 0,
             right: 0,
             bottom: 0,*/
-            child: GoogleMap(
-              //myLocationButtonEnabled: true,
-              //myLocationEnabled: true,
-              polylines: polelineSet,
-              zoomControlsEnabled: false,
-              mapType: MapType.normal,
-              initialCameraPosition: _kGooglePlex,
-              markers: marks,
-              //markers: Set<Marker>.of(_markers),
-              onMapCreated: (GoogleMapController controller) {
-                mymapcontroller = controller;
-                mymapcontroller!.setMapStyle(_mapStyle);
-              },
-            ),
+            child: Obx(() {
+              Get.lazyPut<TrackingController>(() => TrackingController());
+              final trackingController = Get.find<TrackingController>();
+              final marks = trackingController.marks;
+              // Combine the markers from both sources
+              final allMarkers = {...homePageMarkers, ...marks};
+              return GoogleMap(
+                //myLocationButtonEnabled: true,
+                //myLocationEnabled: true,
+                polylines: polelineSet,
+                zoomControlsEnabled: false,
+                mapType: MapType.normal,
+                initialCameraPosition: _kGooglePlex,
+                markers: Set<Marker>.from(allMarkers),
+                //markers: Set<Marker>.of(_markers),
+                onMapCreated: (GoogleMapController controller) {
+                  mymapcontroller = controller;
+                  mymapcontroller!.setMapStyle(_mapStyle);
+                },
+              );
+            }),
           ),
           Positioned(
             top: 50,
@@ -476,11 +481,20 @@ class MapSampleState extends State<home> {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  getCurrentLocation();
+                                  // homePageMarkers.add(
+                                  // const  Marker(
+                                  //     markerId:  MarkerId('currentLocation'),
+                                  //     position:
+                                  //         LatLng(0.0, 0.0), // Initial position.
+                                  //     icon: BitmapDescriptor.defaultMarker,
+                                  //   ),
+                                  // );
+                                  final trackingController =
+                                      Get.find<TrackingController>();
                                   sourceController.text = "Current Location";
                                   showListsrc = false;
-                                  TrackingController trackingController =
-                                      Get.put(TrackingController());
+
+                                  trackingController.getCurrentLocation();
                                 },
                                 child: Text(
                                   "My Location",
@@ -526,7 +540,7 @@ class MapSampleState extends State<home> {
                                           source = LatLng(
                                               locations.first.latitude,
                                               locations.first.longitude);
-                                          marks.add(Marker(
+                                          homePageMarkers.add(Marker(
                                               markerId: MarkerId(
                                                   sourcePlacesList[index]
                                                       ['description']),
@@ -630,7 +644,7 @@ class MapSampleState extends State<home> {
                     srclati = locations.last.latitude;
                     source = LatLng(
                         locations.first.latitude, locations.first.longitude);
-                    marks.add(Marker(
+                    homePageMarkers.add(Marker(
                         markerId:
                             MarkerId(sourcePlacesList[index]['description']),
                         infoWindow: InfoWindow(
@@ -740,8 +754,10 @@ class MapSampleState extends State<home> {
                     dstlati = locations.last.latitude;
                     destination = LatLng(
                         locations.first.latitude, locations.first.longitude);
-                    marks.add(Marker(
+                    homePageMarkers.add(Marker(
                         markerId: MarkerId(_placesList[index]['description']),
+                        icon: BitmapDescriptor.defaultMarkerWithHue(
+                            BitmapDescriptor.hueBlue),
                         infoWindow: InfoWindow(
                             title: 'destination: $selectplacedest',
                             snippet: 'Latitude: $dstlati, Longitude: $dstlong'),
@@ -751,7 +767,8 @@ class MapSampleState extends State<home> {
                             CameraPosition(target: destination, zoom: 15)));
 
                     //drawPolyline(selectplacedest);
-                    await getPolyline(srclati, srclong , dstlati, dstlong) ;
+                    await getPolyline(
+                        context, srclati, srclong, dstlati, dstlong);
                     print(locations.last.latitude);
                     print(locations.last.longitude);
                     _placesList.removeAt(index);
@@ -1009,7 +1026,7 @@ class MapSampleState extends State<home> {
     );
   }*/
 
-  Future<void> getCurrentLocation() async {
+  Future<void> getCurrentLocationIcon() async {
     final status = await Permission.location.request();
     if (status.isGranted) {
       try {
@@ -1047,7 +1064,7 @@ class MapSampleState extends State<home> {
               color: Colors.white,
             ),
             onPressed: () {
-              getCurrentLocation();
+              getCurrentLocationIcon();
             },
           ),
         ),
