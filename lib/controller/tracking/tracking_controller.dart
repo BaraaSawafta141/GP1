@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:ecommercebig/view/screen/home.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -10,8 +11,9 @@ double? myposLastlong;
 
 class TrackingController extends GetxController {
   StreamSubscription<Position>? positionStream;
-
-  
+  RxSet<Marker> _marks = <Marker>{}.obs;
+  // Create a getter for 'marks'
+  RxSet<Marker> get marks => _marks;
 
   getCurrentLocation() {
     positionStream =
@@ -19,14 +21,13 @@ class TrackingController extends GetxController {
       print(
           'current position:=>> ${position?.latitude.toString()}, ${position?.longitude.toString()}');
       if (mymapcontroller != null) {
-        myposLastlati = position!.latitude;
-        myposLastlong = position.longitude;
         mymapcontroller
             ?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-          target: LatLng(myposLastlati!, myposLastlong!),
+          target: LatLng(position!.latitude, position.longitude),
           zoom: 15,
         )));
-         marks.clear();
+        marks.removeWhere(
+            (element) => element.markerId.value == 'currentLocation');
         marks.add(Marker(
           markerId: const MarkerId('currentLocation'),
           position: LatLng(position!.latitude, position.longitude),
@@ -36,11 +37,8 @@ class TrackingController extends GetxController {
     });
   }
 
-  
-
   @override
   void onInit() {
-    getCurrentLocation();
     super.onInit();
   }
 }
