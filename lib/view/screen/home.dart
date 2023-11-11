@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
 import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
 import 'package:ecommercebig/view/screen/drawer.dart';
+import 'package:ecommercebig/view/screen/rating_driver.dart';
 import 'package:ecommercebig/view/widget/testfolder/test.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
@@ -32,25 +33,16 @@ class home extends StatefulWidget {
   State<home> createState() => MapSampleState();
 }
 
+Set<Marker> marks = Set<Marker>();
+GoogleMapController? mymapcontroller;
+String? _mapStyle;
+
 class MapSampleState extends State<home> {
   //final Completer<GoogleMapController> _controllergoogle =
   //  Completer<GoogleMapController>();
 
-  String? _mapStyle;
-
   Uint8List? markerImage;
   final Set<Polyline> _polyline = {};
-
-  /*void drawPolyline(String placeId) {
-    _polyline.clear();
-    _polyline.add(Polyline(
-      polylineId: PolylineId(placeId),
-      visible: true,
-      points: [source, destination],
-      color: Colors.green,
-      width: 5,
-    ));
-  }*/
 
   List<String> images = [
     'assets/images/1.png',
@@ -62,7 +54,7 @@ class MapSampleState extends State<home> {
   ];
   late LatLng destination;
   late LatLng source;
-  Set<Marker> marks = Set<Marker>();
+
   final List<Marker> _markers = <Marker>[];
   final List<LatLng> _latlng = <LatLng>[
     LatLng(32.223295060141346, 35.237885713381246),
@@ -82,6 +74,12 @@ class MapSampleState extends State<home> {
         .asUint8List();
   }
 
+  void updateMapStyle(String mapStyle) {
+    if (mymapcontroller != null) {
+      mymapcontroller!.setMapStyle(mapStyle);
+    }
+  }
+
   @override
   /*void initState() {
     super.initState();
@@ -91,42 +89,12 @@ class MapSampleState extends State<home> {
   }*/
   String googleAPIKey = 'AIzaSyAWw0O5296K5kLNisnYj5YiRBKzMh5Dpq4';
 
-  /*void drawPolyline(String placeId, LatLng source, LatLng destination) async {
-    PolylinePoints polylinePoints = PolylinePoints();
-    List<LatLng> polylineCoordinates = [];
-
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      googleAPIKey,
-      PointLatLng(source.latitude, source.longitude),
-      PointLatLng(destination.latitude, destination.longitude),
-      travelMode: TravelMode.driving,
-    );
-
-    if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
-    } else {
-      print(result.errorMessage);
-    }
-
-    _polyline.clear();
-    _polyline.add(Polyline(
-      polylineId: PolylineId(placeId),
-      visible: true,
-      points: polylineCoordinates,
-      color: Colors.green,
-      width: 5,
-    ));
-  }*/
-
   final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(32.223295060141346, 35.237885713381246),
     zoom: 15,
   );
 
-  GoogleMapController? mymapcontroller;
-  TrackingController trackingController = Get.put(TrackingController());
+  TrackingController trackingController = TrackingController();
   TextEditingController controller = TextEditingController();
   TextEditingController _controller2 = TextEditingController();
   var uuid = Uuid();
@@ -231,6 +199,7 @@ class MapSampleState extends State<home> {
 
   GlobalKey<ScaffoldState> scaffoldkey = GlobalKey<ScaffoldState>();
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -257,7 +226,7 @@ class MapSampleState extends State<home> {
               //markers: Set<Marker>.of(_markers),
               onMapCreated: (GoogleMapController controller) {
                 mymapcontroller = controller;
-                mymapcontroller!.setMapStyle(_mapStyle);
+                mymapcontroller!.setMapStyle(mapTheme);
               },
             ),
           ),
@@ -317,7 +286,7 @@ class MapSampleState extends State<home> {
                   //color: Colors.red,
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: AssetImage('assets/images/lang.png'),
+                      image: AssetImage('assets/images/profile.png'),
                       fit: BoxFit.fill),
                 ),
               ),
@@ -482,14 +451,22 @@ class MapSampleState extends State<home> {
                           child: Row(
                             children: [
                               InkWell(
-                                onTap: () async {
+                                /*onTap: () async {
                                   await trackingController.getCurrentLocation();
                                   sourceController.text = "Current Location";
                                   showListsrc = false;
                                   getPolyline(32.3298283, 35.3670633,
                                       32.223295060141346, 35.237885713381246);
-                                  Get.back(); 
+                                  Get.back();
                                   showNotification();
+                                },*/
+                                onTap: () {
+                                  final trackingController =
+                                      Get.put(TrackingController());
+                                  trackingController.getCurrentLocation();
+                                  trackingController.getCurrentLocation();
+                                  sourceController.text = "Current Location";
+                                  showListsrc = false;
                                 },
                                 child: Text(
                                   "My Location",
@@ -761,6 +738,7 @@ class MapSampleState extends State<home> {
 
                     //drawPolyline(selectplacedest);
                     await getPolyline(srclati, srclong, dstlati, dstlong);
+                    //trackingController.getCurrentLocation();
                     print(locations.last.latitude);
                     print(locations.last.longitude);
                     _placesList.removeAt(index);
@@ -1183,7 +1161,7 @@ class MapSampleState extends State<home> {
                 MaterialButton(
                   onPressed: () {
                     showNotification();
-                    //Get.to(MyAppRating());
+                    Get.to(MyAppRating());
                     Get.back();
                   },
                   child: Text(
