@@ -1,4 +1,9 @@
+import 'package:ecommercebig/view/screen/emergency.dart';
+import 'package:ecommercebig/view/screen/home.dart';
 import 'package:ecommercebig/view/screen/myprofile.dart';
+import 'package:ecommercebig/view/screen/payment/payment.dart';
+import 'package:ecommercebig/view/widget/testfolder/test.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,20 +34,19 @@ class CustomDrawer extends StatelessWidget {
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                          image: AssetImage('assets/images/lang.png'))),
+                          image: AssetImage('assets/images/profile.png'))),
                 ),
                 const SizedBox(
                   width: 10,
                 ),
                 Expanded(
-                  child: Column(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Good Morning, ',
+                      Text('Hello , ',
                           style: GoogleFonts.poppins(
-                              color: Colors.black.withOpacity(0.28),
-                              fontSize: 14)),
+                              color: Colors.black, fontSize: 20)),
                       Text(
                         /*authController.myUser.value.name == null
                                 ? "Mark"
@@ -71,11 +75,21 @@ class CustomDrawer extends StatelessWidget {
             children: [
               buildDrawerItem(
                   title: 'Payment History',
-                  onPressed: () {} /*=> Get.to(()=> PaymentScreen())*/),
+                  onPressed: () {
+                    //Get.to(() => PaymentScreen());
+                  }),
               buildDrawerItem(
                   title: 'Ride History', onPressed: () {}, isVisible: true),
-              buildDrawerItem(title: 'Invite Friends', onPressed: () {}),
-              buildDrawerItem(title: 'Promo Codes', onPressed: () {}),
+              buildDrawerItem(
+                  title: 'Emergency',
+                  onPressed: () {
+                    Get.to(SOSPage());
+                  }),
+              buildDrawerItem(
+                  title: 'Custom map',
+                  onPressed: () {
+                    Get.to(() => testfile());
+                  }),
               buildDrawerItem(title: 'Settings', onPressed: () {}),
               buildDrawerItem(title: 'Support', onPressed: () {}),
               buildDrawerItem(

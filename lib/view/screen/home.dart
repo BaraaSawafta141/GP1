@@ -5,11 +5,13 @@ import 'dart:typed_data';
 import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
 import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
 import 'package:ecommercebig/view/screen/drawer.dart';
+import 'package:ecommercebig/view/screen/rating_driver.dart';
 import 'package:ecommercebig/view/widget/testfolder/test.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:flutter_google_maps_webservices/directions.dart'
     as maps_directions;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:geocoding/geocoding.dart' as geoCoding;
@@ -32,8 +34,10 @@ class home extends StatefulWidget {
   State<home> createState() => MapSampleState();
 }
 
-final homePageMarkers = <Marker>{}.obs;
+Set<Marker> marks = Set<Marker>();
 GoogleMapController? mymapcontroller;
+String? _mapStyle;
+final homePageMarkers = <Marker>{}.obs;
 
 class MapSampleState extends State<home> {
   //final Completer<GoogleMapController> _controllergoogle =
@@ -43,17 +47,6 @@ class MapSampleState extends State<home> {
 
   Uint8List? markerImage;
   final Set<Polyline> _polyline = {};
-
-  /*void drawPolyline(String placeId) {
-    _polyline.clear();
-    _polyline.add(Polyline(
-      polylineId: PolylineId(placeId),
-      visible: true,
-      points: [source, destination],
-      color: Colors.green,
-      width: 5,
-    ));
-  }*/
 
   List<String> images = [
     'assets/images/1.png',
@@ -65,15 +58,6 @@ class MapSampleState extends State<home> {
   ];
   late LatLng destination;
   late LatLng source;
-
-  // lo.LocationData? currentLocation;
-
-  // void getUserLocation() {
-  //   lo.Location location = lo.Location();
-  //   location.getLocation().then((location) {
-  //     currentLocation = location;
-  //   });
-  // }
 
   final List<Marker> _markers = <Marker>[];
   final List<LatLng> _latlng = <LatLng>[
@@ -94,6 +78,12 @@ class MapSampleState extends State<home> {
         .asUint8List();
   }
 
+  void updateMapStyle(String mapStyle) {
+    if (mymapcontroller != null) {
+      mymapcontroller!.setMapStyle(mapStyle);
+    }
+  }
+
   @override
   /*void initState() {
     super.initState();
@@ -103,40 +93,12 @@ class MapSampleState extends State<home> {
   }*/
   String googleAPIKey = 'AIzaSyAWw0O5296K5kLNisnYj5YiRBKzMh5Dpq4';
 
-  /*void drawPolyline(String placeId, LatLng source, LatLng destination) async {
-    PolylinePoints polylinePoints = PolylinePoints();
-    List<LatLng> polylineCoordinates = [];
-
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      googleAPIKey,
-      PointLatLng(source.latitude, source.longitude),
-      PointLatLng(destination.latitude, destination.longitude),
-      travelMode: TravelMode.driving,
-    );
-
-    if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
-    } else {
-      print(result.errorMessage);
-    }
-
-    _polyline.clear();
-    _polyline.add(Polyline(
-      polylineId: PolylineId(placeId),
-      visible: true,
-      points: polylineCoordinates,
-      color: Colors.green,
-      width: 5,
-    ));
-  }*/
-
   final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(32.223295060141346, 35.237885713381246),
     zoom: 15,
   );
 
+  TrackingController trackingController = TrackingController();
   TextEditingController controller = TextEditingController();
   TextEditingController _controller2 = TextEditingController();
   var uuid = Uuid();
@@ -156,6 +118,13 @@ class MapSampleState extends State<home> {
     loadData();
     _ratingController = TextEditingController(text: '3.0');
     _rating = _initialRating;
+    WidgetsFlutterBinding.ensureInitialized();
+    notifications.initialize(
+      InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        //iOS: IOSInitializationSettings(),
+      ),
+    );
   }
 
   loadData() async {
@@ -222,6 +191,7 @@ class MapSampleState extends State<home> {
 
   GlobalKey<ScaffoldState> scaffoldkey = GlobalKey<ScaffoldState>();
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -231,7 +201,7 @@ class MapSampleState extends State<home> {
         title: Text("maps"),
       ),*/
       body: Stack(
-        children: [
+       children: [
           Positioned(
             /*top: 110,
             left: 0,
@@ -315,7 +285,7 @@ class MapSampleState extends State<home> {
                   //color: Colors.red,
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: AssetImage('assets/images/lang.png'),
+                      image: AssetImage('assets/images/profile.png'),
                       fit: BoxFit.fill),
                 ),
               ),
@@ -1025,7 +995,8 @@ class MapSampleState extends State<home> {
       ),
     );
   }*/
-
+  double? myPosLatitude;
+  double? myPoslongitude;
   Future<void> getCurrentLocationIcon() async {
     final status = await Permission.location.request();
     if (status.isGranted) {
@@ -1035,12 +1006,14 @@ class MapSampleState extends State<home> {
         );
 
         if (mymapcontroller != null) {
+          myPosLatitude = position.latitude;
+          myPoslongitude = position.longitude;
           LatLng userLocation = LatLng(position.latitude, position.longitude);
           mymapcontroller!.animateCamera(
             CameraUpdate.newLatLng(userLocation),
           );
-          print(position.latitude);
-          print(position.longitude);
+          print(myPosLatitude);
+          print(myPoslongitude);
         }
       } catch (e) {
         print("Error getting current location: $e");
@@ -1116,6 +1089,27 @@ class MapSampleState extends State<home> {
     );
   }
 
+  final FlutterLocalNotificationsPlugin notifications =
+      FlutterLocalNotificationsPlugin();
+  Future<void> showNotification() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'channel_id',
+      'channel_name',
+      importance: Importance.max,
+      priority: Priority.high,
+      channelDescription: 'channel_description',
+    );
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await notifications.show(
+      0,
+      'Driver On His Way',
+      'The driver is on his way!',
+      platformChannelSpecifics,
+    );
+  }
+
   buildRideConfirmationSheet() {
     Get.bottomSheet(Container(
       width: Get.width,
@@ -1166,7 +1160,9 @@ class MapSampleState extends State<home> {
                 Expanded(child: buildPaymentCardWidget()),
                 MaterialButton(
                   onPressed: () {
+                    showNotification();
                     Get.to(MyAppRating());
+                    Get.back();
                   },
                   child: Text(
                     'Confirm',

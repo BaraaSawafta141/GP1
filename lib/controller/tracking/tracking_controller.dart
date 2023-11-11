@@ -6,12 +6,16 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+double? myposLastlati;
+double? myposLastlong;
 
 class TrackingController extends GetxController {
   StreamSubscription<Position>? positionStream;
   RxSet<Marker> _marks = <Marker>{}.obs;
   // Create a getter for 'marks'
   RxSet<Marker> get marks => _marks;
+
+  
 
   getCurrentLocation() {
     positionStream =
@@ -35,6 +39,8 @@ class TrackingController extends GetxController {
       }
     });
   }
+
+  
 
   @override
   void onInit() {
