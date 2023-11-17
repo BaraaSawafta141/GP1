@@ -323,7 +323,7 @@ class MapSampleState extends State<home> {
   double? srclong;
   double? srclati;
   bool isListOpen = false;
-  bool showListsrc = true;
+  bool showListsrc = false;
   List<dynamic> sourcePlacesList = [];
 
   Widget customButtonSource() {
@@ -356,6 +356,9 @@ class MapSampleState extends State<home> {
               onChanged: (value) {
                 sourceController.text = value;
                 getSuggestionSource(sourceController.text);
+                setState(() {
+                  showListsrc = true;
+                });
               },
               onTap: () {
                 Get.bottomSheet(SingleChildScrollView(
@@ -593,50 +596,51 @@ class MapSampleState extends State<home> {
           visible: showListsrc,
           child: SizedBox(
             height: itemCount * itemHeight,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: sourcePlacesList.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  onTap: () async {
-                    String selectplacesrc =
-                        sourcePlacesList[index]['description'];
-                    sourceController.text =
-                        sourcePlacesList[index]['description'];
-                    //destinationController.clear();
-                    List<geoCoding.Location> locations =
-                        await geoCoding.locationFromAddress(
-                            sourcePlacesList[index]['description']);
-                    srclong = locations.last.longitude;
-                    srclati = locations.last.latitude;
-                    source = LatLng(
-                        locations.first.latitude, locations.first.longitude);
-                    homePageMarkers.add(Marker(
-                        markerId:
-                            MarkerId(sourcePlacesList[index]['description']),
-                        infoWindow: InfoWindow(
-                            title: 'source: $selectplacesrc',
-                            snippet: 'Latitude: $srclati, Longitude: $srclong'),
-                        position: source));
-                    mymapcontroller!.animateCamera(
-                        CameraUpdate.newCameraPosition(
-                            CameraPosition(target: source, zoom: 15)));
-                    print(locations.last.latitude);
-                    print(locations.last.longitude);
-                    sourcePlacesList.removeAt(index);
-                    setState(() {
-                      if (sourceController.text.isEmpty) {
-                        showListsrc =
-                            true; // Show the list when the text field is empty
-                      } else {
-                        showListsrc =
-                            false; // Hide the list when an address is chosen
-                      }
-                    });
-                  },
-                  title: Text(sourcePlacesList[index]['description']),
-                );
-              },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.blue[100],
+                  borderRadius: BorderRadius.circular(17)),
+              margin: EdgeInsets.symmetric(horizontal: 17),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: sourcePlacesList.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () async {
+                      String selectplacesrc =
+                          sourcePlacesList[index]['description'];
+                      sourceController.text =
+                          sourcePlacesList[index]['description'];
+                      //destinationController.clear();
+                      List<geoCoding.Location> locations =
+                          await geoCoding.locationFromAddress(
+                              sourcePlacesList[index]['description']);
+                      srclong = locations.last.longitude;
+                      srclati = locations.last.latitude;
+                      source = LatLng(
+                          locations.first.latitude, locations.first.longitude);
+                      homePageMarkers.add(Marker(
+                          markerId:
+                              MarkerId(sourcePlacesList[index]['description']),
+                          infoWindow: InfoWindow(
+                              title: 'source: $selectplacesrc',
+                              snippet:
+                                  'Latitude: $srclati, Longitude: $srclong'),
+                          position: source));
+                      mymapcontroller!.animateCamera(
+                          CameraUpdate.newCameraPosition(
+                              CameraPosition(target: source, zoom: 15)));
+                      print(locations.last.latitude);
+                      print(locations.last.longitude);
+                      sourcePlacesList.removeAt(index);
+                      setState(() {
+                        showListsrc = false;
+                      });
+                    },
+                    title: Text(sourcePlacesList[index]['description']),
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -644,7 +648,7 @@ class MapSampleState extends State<home> {
     );
   }
 
-  bool showListdst = true;
+  bool showListdst = false;
   double? dstlong;
   double? dstlati;
   Widget buildTextField(destinationController, List _placesList) {
@@ -676,6 +680,9 @@ class MapSampleState extends State<home> {
               onChanged: (value) {
                 destinationController.text = value;
                 getSuggestionDest(destinationController.text);
+                setState(() {
+                  showListdst = true;
+                });
               },
               controller: destinationController,
               style: GoogleFonts.poppins(
@@ -705,51 +712,59 @@ class MapSampleState extends State<home> {
           visible: showListdst,
           child: SizedBox(
             height: itemCount * itemHeight,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: _placesList.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  onTap: () async {
-                    String selectplacedest = _placesList[index]['description'];
-                    destinationController.text =
-                        _placesList[index]['description'];
-                    //sourceController.clear();
-                    List<geoCoding.Location> locations = await geoCoding
-                        .locationFromAddress(_placesList[index]['description']);
-                    dstlong = locations.last.longitude;
-                    dstlati = locations.last.latitude;
-                    destination = LatLng(
-                        locations.first.latitude, locations.first.longitude);
-                    homePageMarkers.add(Marker(
-                        markerId: MarkerId(_placesList[index]['description']),
-                        icon: BitmapDescriptor.defaultMarkerWithHue(
-                            BitmapDescriptor.hueBlue),
-                        infoWindow: InfoWindow(
-                            title: 'destination: $selectplacedest',
-                            snippet: 'Latitude: $dstlati, Longitude: $dstlong'),
-                        position: destination));
-                    mymapcontroller!.animateCamera(
-                        CameraUpdate.newCameraPosition(
-                            CameraPosition(target: destination, zoom: 15)));
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.blue[100],
+                  borderRadius: BorderRadius.circular(15)),
+              margin: EdgeInsets.symmetric(horizontal: 17),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _placesList.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () async {
+                      String selectplacedest =
+                          _placesList[index]['description'];
+                      destinationController.text =
+                          _placesList[index]['description'];
+                      //sourceController.clear();
+                      List<geoCoding.Location> locations =
+                          await geoCoding.locationFromAddress(
+                              _placesList[index]['description']);
+                      dstlong = locations.last.longitude;
+                      dstlati = locations.last.latitude;
+                      destination = LatLng(
+                          locations.first.latitude, locations.first.longitude);
+                      homePageMarkers.add(Marker(
+                          markerId: MarkerId(_placesList[index]['description']),
+                          icon: BitmapDescriptor.defaultMarkerWithHue(
+                              BitmapDescriptor.hueBlue),
+                          infoWindow: InfoWindow(
+                              title: 'destination: $selectplacedest',
+                              snippet:
+                                  'Latitude: $dstlati, Longitude: $dstlong'),
+                          position: destination));
+                      mymapcontroller!.animateCamera(
+                          CameraUpdate.newCameraPosition(
+                              CameraPosition(target: destination, zoom: 15)));
 
-                    //drawPolyline(selectplacedest);
-                    await getPolyline(
-                        context, srclati, srclong, dstlati, dstlong);
-                    final trackingController = Get.find<TrackingController>();
-                    trackingController.getCurrentLocation();
-                    print(locations.last.latitude);
-                    print(locations.last.longitude);
-                    _placesList.removeAt(index);
-                    setState(() {
-                      //_placesList.clear();
-                      showListdst = false;
-                      buildRideConfirmationSheet();
-                    });
-                  },
-                  title: Text(_placesList[index]['description']),
-                );
-              },
+                      //drawPolyline(selectplacedest);
+                      await getPolyline(
+                          context, srclati, srclong, dstlati, dstlong);
+                      //final trackingController = Get.find<TrackingController>();
+                      //trackingController.getCurrentLocation();
+                      print(locations.last.latitude);
+                      print(locations.last.longitude);
+                      _placesList.removeAt(index);
+                      setState(() {
+                        showListdst = false;
+                        buildRideConfirmationSheet();
+                      });
+                    },
+                    title: Text(_placesList[index]['description']),
+                  );
+                },
+              ),
             ),
           ),
         ),
