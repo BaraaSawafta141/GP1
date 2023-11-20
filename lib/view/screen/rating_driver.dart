@@ -1,3 +1,4 @@
+import 'package:ecommercebig/view/screen/commentpage.dart';
 import 'package:ecommercebig/view/screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -6,6 +7,7 @@ import 'package:get/get.dart';
 void main() => runApp(MyAppRating());
 
 class MyAppRating extends StatefulWidget {
+  String commentText = '';
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -31,6 +33,8 @@ class _MyAppState extends State<MyAppRating> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController commentController = TextEditingController();
+    //TextEditingController? textformcontroller;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -80,11 +84,11 @@ class _MyAppState extends State<MyAppRating> {
                   SizedBox(
                     height: 40.0,
                   ),
-                  InkWell(
+                  /*InkWell(
                       onTap: () {
                         Get.to(home());
                       },
-                      child: Icon(Icons.arrow_back)),
+                      child: Icon(Icons.arrow_back)),*/
                   _heading('Rate the driver'),
                   _ratingBar(_ratingBarMode),
                   SizedBox(height: 20.0),
@@ -97,9 +101,9 @@ class _MyAppState extends State<MyAppRating> {
                     'Rating Bar Modes',
                     style: TextStyle(fontWeight: FontWeight.w300),
                   ),
-                  SizedBox(
+                  /*SizedBox(
                     height: 10,
-                  ),
+                  ),*/
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -108,19 +112,54 @@ class _MyAppState extends State<MyAppRating> {
                       _radio(2),
                     ],
                   ),
-                  SizedBox(
+                  /*SizedBox(
                     height: 30,
-                  ),
-                  Padding(
+                  ),*/
+                  /*Padding(
                     padding: const EdgeInsets.all(15),
                     child: TextFormField(
+                      controller: commentController,
                       decoration: InputDecoration(
                         labelText: 'Add a comment',
                         border: OutlineInputBorder(),
                       ),
-                      maxLines: 5,
+                      maxLines: 2,
                       // You can store the comment in a variable.
                     ),
+                  ),*/
+                  /*Column(
+                    children: [
+                      Container(
+                        width: 385,
+                        height: 310,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.blue,
+                            width: 1,
+                          ),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Text(
+                                      widget.commentText,
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),*/
+                  /*SizedBox(
+                    height: 20,
                   ),
                   Container(
                     height: 40,
@@ -131,8 +170,22 @@ class _MyAppState extends State<MyAppRating> {
                           "Submit",
                           style: TextStyle(fontSize: 18),
                         ),
-                        onPressed: () {}),
-                  )
+                        onPressed: () {
+                          setState(() {
+                            Get.to(commentpage());
+                            //widget.commentText = commentController.text;
+                          });
+                          commentController.clear();
+                        }),
+                  ),*/
+                  /*Container(
+                    height: 200,
+                    width: Get.width,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.red,width: 2)
+                    ),
+                    
+                  )*/
                 ],
               ),
             ),

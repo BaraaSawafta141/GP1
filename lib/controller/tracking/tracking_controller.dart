@@ -20,6 +20,8 @@ class TrackingController extends GetxController {
         Geolocator.getPositionStream().listen((Position? position) {
       print(
           'current position:=>> ${position?.latitude.toString()}, ${position?.longitude.toString()}');
+      myposLastlati = position!.latitude;
+      myposLastlong = position!.longitude;
       if (mymapcontroller != null) {
         mymapcontroller
             ?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
@@ -31,7 +33,7 @@ class TrackingController extends GetxController {
         marks.add(Marker(
           markerId: const MarkerId('currentLocation'),
           position: LatLng(position!.latitude, position.longitude),
-          
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
         ));
         update();
       }

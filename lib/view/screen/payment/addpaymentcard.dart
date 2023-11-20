@@ -36,15 +36,35 @@ class AddPaymentCardScreenState extends State<AddPaymentCardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.green,
+          leading: InkWell(
+              onTap: () {
+                Get.to(() => PaymentScreen());
+              },
+              child: Icon(Icons.arrow_back)),
+          title: Text("Add Card"),
+        ),
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
-            greenIntroWidgetWithoutLogos(title: 'Add Card'),
+            /*FloatingActionButton(
+              onPressed: () {
+                // Navigate to AddPaymentCardScreen
+                
+              },
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+              backgroundColor: Colors.green,
+            ),*/
+            //greenIntroWidgetWithoutLogos(title: 'Add Card'),
             Column(
               children: <Widget>[
                 SizedBox(
-                  height: 150,
+                  height: 100,
                 ),
                 CreditCardWidget(
                   cardNumber: cardNumber,
@@ -185,28 +205,28 @@ class AddPaymentCardScreenState extends State<AddPaymentCardScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Positioned(
-              top: 10,
-              left: 10,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 10,
-                  ),
-                  FloatingActionButton(
-                    onPressed: () {
-                      // Navigate to AddPaymentCardScreen
-                      Get.to(() => PaymentScreen());
-                    },
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
+                top: 10,
+                left: 10,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 10,
                     ),
-                    backgroundColor: Colors.green,
-                  ),
-                ],
+                    FloatingActionButton(
+                      onPressed: () {
+                        // Navigate to AddPaymentCardScreen
+                        Get.to(() => PaymentScreen());
+                      },
+                      child: Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  ],
+                ),
               ),
-            ),
               Text(
                 title,
                 style: GoogleFonts.poppins(

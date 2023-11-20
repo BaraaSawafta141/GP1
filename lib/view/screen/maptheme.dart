@@ -5,7 +5,9 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class maptheme extends StatefulWidget {
-  const maptheme({super.key});
+  const maptheme({
+    super.key,
+  });
 
   @override
   State<maptheme> createState() => _nameState();

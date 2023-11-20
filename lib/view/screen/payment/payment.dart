@@ -15,7 +15,7 @@ class PaymentScreen extends StatefulWidget {
 class PaymentScreenState extends State<PaymentScreen> {
   String cardNumber = '5555 55555 5555 4444';
   String expiryDate = '12/25';
-  String cardHolderName = 'Osama Qureshi';
+  String cardHolderName = 'user one';
   String cvvCode = '123';
   bool isCvvFocused = false;
   bool useGlassMorphism = false;
@@ -36,18 +36,24 @@ class PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        leading: InkWell(
+            onTap: () {
+              Get.to(() => home());
+            },
+            child: Icon(Icons.arrow_back)),
+        title: Text("Your Cards"),
+      ),
       resizeToAvoidBottomInset: false,
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Stack(
           children: <Widget>[
-            SizedBox(
-              height: 100,
-            ),
-            greenIntroWidgetWithoutLogos(title: 'My Card'),
+            //greenIntroWidgetWithoutLogos(title: 'My Card'),
             Positioned(
-              top: 120,
+              top: 50,
               left: 0,
               right: 0,
               bottom: 80,
@@ -102,36 +108,41 @@ class PaymentScreenState extends State<PaymentScreen> {
                 itemCount: 4,
               ),
             ),
-            Positioned(
-              bottom: 10,
-              right: 10,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    "Add new card",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      height: 80,
+                      width: 200,
                     ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  FloatingActionButton(
-                    onPressed: () {
-                      // Navigate to AddPaymentCardScreen
-                      Get.to(() => AddPaymentCardScreen());
-                    },
-                    child: Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
+                    Text(
+                      "Add new card",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
                     ),
-                    backgroundColor: Colors.green,
-                  ),
-                ],
-              ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    FloatingActionButton(
+                      onPressed: () {
+                        // Navigate to AddPaymentCardScreen
+                        Get.off(() => AddPaymentCardScreen());
+                      },
+                      child: Icon(
+                        Icons.arrow_forward,
+                        color: Colors.white,
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  ],
+                )
+              ],
             ),
           ],
         ),
@@ -144,57 +155,67 @@ class PaymentScreenState extends State<PaymentScreen> {
     return Container(
       width: Get.width,
       decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/images/mask.png'), fit: BoxFit.fill)),
+        image: DecorationImage(
+          image: AssetImage('assets/images/mask.png'),
+          fit: BoxFit.fill,
+        ),
+      ),
       height: Get.height * 0.3,
-      child: Container(
-          height: Get.height * 0.1,
-          width: Get.width,
-          margin: EdgeInsets.only(bottom: Get.height * 0.05),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Positioned(
-              top: 10,
-              left: 10,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 10,
+      child: Stack(
+        children: [
+          Positioned(
+            top: 10,
+            left: 10,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 10,
+                ),
+                FloatingActionButton(
+                  onPressed: () {
+                    // Navigate to AddPaymentCardScreen
+                    Get.to(() => home());
+                  },
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
                   ),
-                  FloatingActionButton(
-                    onPressed: () {
-                      // Navigate to AddPaymentCardScreen
-                      Get.to(() => home());
-                    },
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                    ),
-                    backgroundColor: Colors.green,
-                  ),
-                ],
-              ),
+                  backgroundColor: Colors.green,
+                ),
+              ],
             ),
-              Text(
-                title,
-                style: GoogleFonts.poppins(
+          ),
+          Container(
+            height: Get.height * 0.1,
+            width: Get.width,
+            margin: EdgeInsets.only(bottom: Get.height * 0.05),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.poppins(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-              if (subtitle != null)
-                Text(
-                  subtitle,
-                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                ),
+                if (subtitle != null)
+                  Text(
+                    subtitle,
+                    style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
-                      color: Colors.white),
-                ),
-            ],
-          )),
+                      color: Colors.white,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

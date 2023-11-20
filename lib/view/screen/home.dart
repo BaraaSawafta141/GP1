@@ -4,6 +4,7 @@ import 'dart:typed_data';
 //import 'dart:html';
 import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
 import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
+import 'package:ecommercebig/view/screen/commentpage.dart';
 import 'package:ecommercebig/view/screen/drawer.dart';
 import 'package:ecommercebig/view/screen/maptheme.dart';
 import 'package:ecommercebig/view/screen/rating_driver.dart';
@@ -194,7 +195,7 @@ class MapSampleState extends State<home> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldkey,
-      drawer: const CustomDrawer(),
+      drawer: CustomDrawer(),
       /*appBar: AppBar(
         title: Text("maps"),
       ),*/
@@ -222,7 +223,7 @@ class MapSampleState extends State<home> {
                 //markers: Set<Marker>.of(_markers),
                 onMapCreated: (GoogleMapController controller) {
                   mymapcontroller = controller;
-                  mymapcontroller!.setMapStyle(mapTheme);
+                  //mymapcontroller!.setMapStyle(mapTheme);
                 },
               );
             }),
@@ -463,8 +464,8 @@ class MapSampleState extends State<home> {
                                   //final trackingController =Get.find<TrackingController>();
                                   sourceController.text = "Current Location";
                                   showListsrc = false;
-
-                                  //trackingController.getCurrentLocation();
+                                  trackingController.getCurrentLocation();
+                                  Get.back();
                                 },
                                 child: Text(
                                   "My Location",
@@ -750,7 +751,11 @@ class MapSampleState extends State<home> {
 
                       //drawPolyline(selectplacedest);
                       await getPolyline(
-                          context, srclati, srclong, dstlati, dstlong);
+                          context,
+                          srclati == null ? myposLastlati : srclati,
+                          srclong == null ? myposLastlong : srclong,
+                          dstlati,
+                          dstlong);
                       //final trackingController = Get.find<TrackingController>();
                       //trackingController.getCurrentLocation();
                       print(locations.last.latitude);
@@ -1175,8 +1180,28 @@ class MapSampleState extends State<home> {
                 MaterialButton(
                   onPressed: () {
                     showNotification();
-                    Get.to(MyAppRating());
-                    Get.back();
+                    showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Driver Rating'),
+                        content:
+                            const Text('Do You Want To See The Driver Rating '),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'Cancel'),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Get.to(commentpage());
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                    //Get.to(() => commentpage());
+                    //Get.back();
                   },
                   child: Text(
                     'Confirm',

@@ -77,7 +77,7 @@ class CustomDrawer extends StatelessWidget {
               buildDrawerItem(
                   title: 'Payment History',
                   onPressed: () {
-                    //Get.to(() => PaymentScreen());
+                     Get.off(() => PaymentScreen());
                   }),
               buildDrawerItem(
                   title: 'Ride History', onPressed: () {}, isVisible: true),
