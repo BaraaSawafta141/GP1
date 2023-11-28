@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
 Set<Polyline> polelineSet = {};
-
+bool showconfbox = true;
 Future getPolyline(context, lat, long, destlat, destlong) async {
   List<LatLng> polylineco = [];
   PolylinePoints polylinePoints = PolylinePoints();
@@ -58,16 +59,20 @@ Future getPolyline(context, lat, long, destlat, destlong) async {
         } else {
           // Handle case where 'result' is empty
           showDialogWithMessage('Result is empty');
+          showconfbox = false;
         }
       } else {
         // Handle case where 'point' is null or empty
         showDialogWithMessage('Point is null or empty');
+        showconfbox = false;
       }
     } else {
       // Handle case where 'routes' in the response is empty
       showDialogWithMessage('No routes found in response');
+      showconfbox = false;
     }
   } catch (e) {
     showDialogWithMessage('An error occurred: $e');
+    showconfbox = false;
   }
 }

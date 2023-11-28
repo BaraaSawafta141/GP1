@@ -118,6 +118,7 @@ class _SOSPageState extends State<SOSPage> {
               child: ElevatedButton(
                 onPressed: () {
                   // Add logic for emergency contact button
+                  
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.white,

@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 class OnBoarding extends StatelessWidget {
   const OnBoarding({Key? key}) : super(key: key);
 
-  @override
+  @override  
   Widget build(BuildContext context) {
     Get.put(OnBoardingControllerImp()) ;
     return Scaffold(

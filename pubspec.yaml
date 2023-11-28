@@ -64,7 +64,7 @@ dependencies:
   dropdown_search: ^5.0.6
   badges: ^3.1.2
   # Icon 
-  # flutter_svg: ^1.0.3
+  flutter_svg: ^1.0.3
   font_awesome_flutter: ^10.1.0
   fluttericon: ^2.0.0
   dartz: ^0.10.1
@@ -89,6 +89,8 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   flutter_credit_card: ^4.0.1
   comment_box: ^0.0.18
+  pinput: ^3.0.1
+  fl_country_code_picker: ^0.1.7+1
  
 dev_dependencies:
   flutter_test:

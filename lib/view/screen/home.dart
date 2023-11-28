@@ -43,7 +43,7 @@ final homePageMarkers = <Marker>{}.obs;
 class MapSampleState extends State<home> {
   //final Completer<GoogleMapController> _controllergoogle =
   //  Completer<GoogleMapController>();
-
+  final _formKey = GlobalKey<FormState>();
   String? _mapStyle;
 
   Uint8List? markerImage;
@@ -206,6 +206,7 @@ class MapSampleState extends State<home> {
             left: 0,
             right: 0,
             bottom: 0,*/
+
             child: Obx(() {
               Get.lazyPut<TrackingController>(() => TrackingController());
               final trackingController = Get.find<TrackingController>();
@@ -274,7 +275,9 @@ class MapSampleState extends State<home> {
         right: 20,
         child: Container(
           width: Get.width,
-          //color: Colors.transparent,
+          decoration: BoxDecoration(
+              color: Colors.blue[50],
+              borderRadius: BorderRadius.all(Radius.circular(30))),
           child: Row(
             children: [
               Container(
@@ -461,7 +464,8 @@ class MapSampleState extends State<home> {
                                   //     icon: BitmapDescriptor.defaultMarker,
                                   //   ),
                                   // );
-                                  //final trackingController =Get.find<TrackingController>();
+                                  final trackingController =
+                                      Get.find<TrackingController>();
                                   sourceController.text = "Current Location";
                                   showListsrc = false;
                                   trackingController.getCurrentLocation();
@@ -763,7 +767,9 @@ class MapSampleState extends State<home> {
                       _placesList.removeAt(index);
                       setState(() {
                         showListdst = false;
-                        buildRideConfirmationSheet();
+                        if (showconfbox == true) {
+                          buildRideConfirmationSheet();
+                        } else {}
                       });
                     },
                     title: Text(_placesList[index]['description']),
@@ -779,241 +785,6 @@ class MapSampleState extends State<home> {
 
   bool isBottomSheetOpen = false;
 
-  /*Widget buildTextFieldForSource(sourceController, List sourcePlacesList) {
-    double srclong;
-    double srclati;
-    return Positioned(
-      top: 110,
-      left: 20,
-      right: 20,
-      child: Container(
-        width: Get.width,
-        height: 50,
-        padding: EdgeInsets.only(left: 15),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  spreadRadius: 4,
-                  blurRadius: 10)
-            ],
-            borderRadius: BorderRadius.circular(8)),
-        child: TextFormField(
-          controller: sourceController,
-          readOnly: isBottomSheetOpen,
-          onChanged: (value) {
-            sourceController.text = value;
-            getSuggestionDest(sourceController.text);
-          },
-          onTap: () async {
-            Get.bottomSheet(SingleChildScrollView(
-              child: Container(
-                width: Get.width,
-                height: Get.height * 0.5,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8)),
-                    color: Colors.white),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 10),
-                    Text(
-                      "Select Your Location:",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      "Home Address",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    //SizedBox(height: 10),
-                    Container(
-                      width: Get.width,
-                      height: 50,
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.03),
-                            spreadRadius: 4,
-                            blurRadius: 10,
-                          ),
-                        ],
-                      ),
-                      child: const Row(
-                        children: [
-                          Text(
-                            "My Home",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.start,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      "University Address",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    //SizedBox(height: 10),
-                    Container(
-                      width: Get.width,
-                      height: 50,
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.03),
-                            spreadRadius: 4,
-                            blurRadius: 10,
-                          ),
-                        ],
-                      ),
-                      child: const Row(
-                        children: [
-                          Text(
-                            "My University",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.start,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    InkWell(
-                      onTap: () {
-                        Get.back();
-                        isBottomSheetOpen = false;
-                        //getSuggestion(sourceController.text);
-                        Expanded(
-                            child: ListView.builder(
-                                //shrinkWrap: true,
-                                itemCount: sourcePlacesList.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    onTap: () async {
-                                      String selectplacesrc =
-                                          sourcePlacesList[index]
-                                              ['description'];
-                                      sourceController.text =
-                                          sourcePlacesList[index]
-                                              ['description'];
-                                      controller.clear();
-                                      List<geoCoding.Location> locations =
-                                          await geoCoding.locationFromAddress(
-                                              sourcePlacesList[index]
-                                                  ['description']);
-                                      srclong = locations.last.longitude;
-                                      srclati = locations.last.latitude;
-                                      source = LatLng(locations.first.latitude,
-                                          locations.first.longitude);
-                                      marks.add(Marker(
-                                          markerId: MarkerId(
-                                              sourcePlacesList[index]
-                                                  ['description']),
-                                          infoWindow: InfoWindow(
-                                            title: 'Source: $selectplacesrc',
-                                            snippet:
-                                                'Latitude: $srclati, Longitude: $srclong',
-                                          ),
-                                          position: destination));
-                                      mymapcontroller!.animateCamera(
-                                          CameraUpdate.newCameraPosition(
-                                              CameraPosition(
-                                                  target: source, zoom: 15)));
-                                    },
-                                    title: Text(
-                                        sourcePlacesList[index]['description']),
-                                  );
-                                }));
-                      },
-                      child: Container(
-                        width: Get.width,
-                        height: 50,
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.03),
-                              spreadRadius: 4,
-                              blurRadius: 10,
-                            ),
-                          ],
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Search For Address",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.start,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ));
-          },
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-          decoration: InputDecoration(
-            hintText: 'From:',
-            hintStyle: GoogleFonts.poppins(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-            suffixIcon: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Icon(
-                Icons.search,
-              ),
-            ),
-            border: InputBorder.none,
-          ),
-        ),
-      ),
-    );
-  }*/
   double? myPosLatitude;
   double? myPoslongitude;
   Future<void> getCurrentLocationIcon() async {
@@ -1193,7 +964,15 @@ class MapSampleState extends State<home> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Get.to(commentpage());
+                              Get.off(commentpage());
+                              /*Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => commentpage()))
+                                  .then((value) {
+                                // This callback is executed when the commentpage is popped
+                                // You can update the state of your home page here if needed
+                              });*/
                             },
                             child: const Text('OK'),
                           ),
