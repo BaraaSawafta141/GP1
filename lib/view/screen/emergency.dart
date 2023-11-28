@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ecommercebig/view/screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SOSPage extends StatefulWidget {
   @override
@@ -117,8 +118,7 @@ class _SOSPageState extends State<SOSPage> {
               height: 60,
               child: ElevatedButton(
                 onPressed: () {
-                  // Add logic for emergency contact button
-                  
+                  launchUrl(Uri.parse("tel:+970595180806"));      
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.white,

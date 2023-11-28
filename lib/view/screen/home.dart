@@ -39,6 +39,7 @@ Set<Marker> marks = Set<Marker>();
 GoogleMapController? mymapcontroller;
 String? _mapStyle;
 final homePageMarkers = <Marker>{}.obs;
+bool showdialograting = true;
 
 class MapSampleState extends State<home> {
   //final Completer<GoogleMapController> _controllergoogle =
@@ -900,6 +901,8 @@ class MapSampleState extends State<home> {
     );
   }
 
+  //bool afterrating = true;
+  //String buttonText = 'Check';
   buildRideConfirmationSheet() {
     Get.bottomSheet(Container(
       width: Get.width,
@@ -949,46 +952,73 @@ class MapSampleState extends State<home> {
               children: [
                 Expanded(child: buildPaymentCardWidget()),
                 MaterialButton(
-                  onPressed: () {
-                    showNotification();
-                    showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Driver Rating'),
-                        content:
-                            const Text('Do You Want To See The Driver Rating '),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Cancel'),
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Get.off(commentpage());
-                              /*Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => commentpage()))
-                                  .then((value) {
-                                // This callback is executed when the commentpage is popped
-                                // You can update the state of your home page here if needed
-                              });*/
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                    //Get.to(() => commentpage());
-                    //Get.back();
+                  onPressed: () async {
+                    if (showdialograting) {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Driver Rating'),
+                          content: const Text(
+                              'Do You Want To See The Driver Rating '),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context, 'Cancel');
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.pop(context, 'OK');
+                                var result = await Get.to(commentpage());
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   },
-                  child: Text(
-                    'Confirm',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: Text("Check"),
                   color: Colors.green,
                   shape: StadiumBorder(),
-                )
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                MaterialButton(
+                  onPressed: () async {
+                    if (showdialograting) {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Confirm Ride'),
+                          content:
+                              const Text('Confirm The Ride With The Driver ?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context, 'No');
+                              },
+                              child: const Text('No'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                showNotification();
+                                Navigator.pop(context, 'Yes');
+                                Get.back();
+                              },
+                              child: const Text('Yes'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                  child: Text("Confirm"),
+                  color: Colors.green,
+                  shape: StadiumBorder(),
+                ),
               ],
             ),
           )

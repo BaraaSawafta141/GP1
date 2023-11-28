@@ -200,11 +200,15 @@ class _TestMeState extends State<commentpage> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(
             onTap: () {
-              Get.to(home());
+              
+                //showdialograting = false;
+                Get.back(result: showdialograting);
+              
             },
             child: Icon(Icons.arrow_back)),
         title: Text("Comment Page"),
