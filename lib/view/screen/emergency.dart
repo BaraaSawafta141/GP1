@@ -118,7 +118,7 @@ class _SOSPageState extends State<SOSPage> {
               height: 60,
               child: ElevatedButton(
                 onPressed: () {
-                  launchUrl(Uri.parse("tel:+970595180806"));      
+                  launchUrl(Uri.parse("tel:+970123456789"));
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.white,

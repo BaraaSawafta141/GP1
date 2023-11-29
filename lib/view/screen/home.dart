@@ -69,6 +69,7 @@ class MapSampleState extends State<home> {
     LatLng(32.22117751845855, 35.24213979128875),
     LatLng(32.22074576133657, 35.2327620677686),
   ];
+
   Future<Uint8List> getBytesFromAssets(String path, int width) async {
     ByteData data = await rootBundle.load(path);
     ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
@@ -901,8 +902,6 @@ class MapSampleState extends State<home> {
     );
   }
 
-  //bool afterrating = true;
-  //String buttonText = 'Check';
   buildRideConfirmationSheet() {
     Get.bottomSheet(Container(
       width: Get.width,
@@ -1238,7 +1237,50 @@ class MapSampleState extends State<home> {
       );
 
   int selectedRide = 0;
+  Future<void> updateLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    myPosLatitude = position.latitude;
+    myPoslongitude = position.longitude;
+  }
+
+  Future<double> calculateDistance(
+      double lat1, double lon1, double lat2, double lon2) async {
+    return await Geolocator.distanceBetween(lat1, lon1, lat2, lon2);
+  }
+
+  Future<void> sortDriversByDistance(List<LatLng> drivers) async {
+    await updateLocation();
+
+    // Use Future.wait to wait for all distance calculations to complete
+    List<double> distances = await Future.wait(drivers.map((driver) async {
+      return await calculateDistance(
+          myPosLatitude!, myPoslongitude!, driver.latitude, driver.longitude);
+    }));
+
+    // Pair each driver with its distance and sort based on distance
+    List<Map<String, dynamic>> driverDistancePairs = [];
+    for (int i = 0; i < drivers.length; i++) {
+      driverDistancePairs.add({'driver': drivers[i], 'distance': distances[i]});
+      
+    }
+
+    driverDistancePairs.sort((a, b) => a['distance'].compareTo(b['distance']));
+    
+    // Update the order of drivers based on the sorted distances
+    drivers.clear();
+    for (var pair in driverDistancePairs) {
+      drivers.add(pair['driver']);
+      
+    }
+    //print("==================${driverDistancePairs}=====================");
+  }
+
   buildDriversList() {
+    // Call sortDriversByDistance to update the order of drivers based on distance
+    sortDriversByDistance(_latlng);
     return Container(
       height: 120,
       width: Get.width,
@@ -1246,7 +1288,31 @@ class MapSampleState extends State<home> {
         return ListView.builder(
           itemBuilder: (ctx, i) {
             return InkWell(
-              onTap: () {
+              onTap: () async {
+                set(() {
+                  selectedRide = i;
+                });
+              },
+              child: buildDriverCard(
+                selectedRide == i,
+              ),
+            );
+          },
+          itemCount: _latlng.length,
+          scrollDirection: Axis.horizontal,
+        );
+      }),
+    );
+  }
+  /*buildDriversList() {
+    return Container(
+      height: 120,
+      width: Get.width,
+      child: StatefulBuilder(builder: (context, set) {
+        return ListView.builder(
+          itemBuilder: (ctx, i) {
+            return InkWell(
+              onTap: () async {
                 set(() {
                   selectedRide = i;
                 });
@@ -1259,7 +1325,7 @@ class MapSampleState extends State<home> {
         );
       }),
     );
-  }
+  }*/
 
   buildDriverCard(bool selected) {
     return Container(
