@@ -1,60 +1,75 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_places_flutter/model/prediction.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
+import 'package:permission_handler/permission_handler.dart';
 
-class ProfileSettingScreen extends StatefulWidget {
-  const ProfileSettingScreen({Key? key}) : super(key: key);
+class DriverProfileSetup extends StatefulWidget {
+  const DriverProfileSetup({Key? key}) : super(key: key);
 
   @override
-  State<ProfileSettingScreen> createState() => _ProfileSettingScreenState();
+  State<DriverProfileSetup> createState() => _DriverProfileSetupState();
 }
 
-class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
+class _DriverProfileSetupState extends State<DriverProfileSetup> {
   TextEditingController nameController = TextEditingController();
-  TextEditingController homeController = TextEditingController();
-  TextEditingController businessController = TextEditingController();
-  TextEditingController shopController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  //AuthController authController = Get.find<AuthController>();
 
   final ImagePicker _picker = ImagePicker();
   File? selectedImage;
+  Future<void> requestCameraPermission() async {
+    var status = await Permission.camera.status;
+    print('Camera Permission Status: $status');
+    if (status.isDenied) {
+      // The user has denied camera permission.
+      // You can show a custom message or UI to inform the user.
 
-  late LatLng homeAddress;
-  late LatLng businessAddress;
-  late LatLng shoppingAddress;
+      // Request camera permission again.
+      await Permission.camera.request();
+    } else if (status.isGranted) {
+      // Camera permission is already granted. Open the camera.
+      await getImage(ImageSource.camera);
+    }
+  }
+
   getImage(ImageSource source) async {
-    final XFile? image = await _picker.pickImage(source: source);
-    if (image != null) {
-      selectedImage = File(image.path);
-      setState(() {});
+    try {
+      final XFile? image = await _picker.pickImage(source: source);
+      if (image != null) {
+        selectedImage = File(image.path);
+        setState(() {});
+      }
+    } catch (e) {
+      // Handle the exception when permission is denied
+      print("Permission denied to access the camera");
+      // You can show a custom message or perform any other action here
+
+      // Request camera permission again.
+      await requestCameraPermission();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text("My Profile"),
-        leading: Icon(Icons.arrow_back),
-      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: Get.height * 0.3,
+              height: Get.height * 0.4,
               child: Stack(
                 children: [
+                  greenIntroWidgetWithoutLogos(
+                      title: 'Let’s Get Started!',
+                      subtitle: 'Complete the profile Details'),
                   Align(
-                    alignment: Alignment.center,
+                    alignment: Alignment.bottomCenter,
                     child: InkWell(
                       onTap: () {
                         getImage(ImageSource.camera);
@@ -64,14 +79,17 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                               width: 120,
                               height: 120,
                               margin: EdgeInsets.only(bottom: 20),
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color(0xffD6D6D6)),
+                              decoration: BoxDecoration(boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    spreadRadius: 1,
+                                    blurRadius: 2)
+                              ], shape: BoxShape.circle, color: Colors.white),
                               child: Center(
                                 child: Icon(
                                   Icons.camera_alt_outlined,
                                   size: 40,
-                                  color: Colors.white,
+                                  color: Colors.black,
                                 ),
                               ),
                             )
@@ -84,12 +102,15 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                                       image: FileImage(selectedImage!),
                                       fit: BoxFit.fill),
                                   shape: BoxShape.circle,
-                                  color: Color(0xffD6D6D6)),
+                                  color: Colors.white),
                             ),
                     ),
                   ),
                 ],
               ),
+            ),
+            const SizedBox(
+              height: 80,
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 23),
@@ -103,76 +124,28 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                           hintText: "enter your name",
                           prefixIcon: Icon(
                             Icons.person_outlined,
-                            color: Colors.blue,
+                            color: Colors.green,
                           )),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
                     TextFormField(
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: "Home Address",
+                          hintText: "enter your email",
                           prefixIcon: Icon(
-                            Icons.home_outlined,
-                            color: Colors.blue,
-                          )),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Business Address",
-                          prefixIcon: Icon(
-                            Icons.card_travel_outlined,
-                            color: Colors.blue,
-                          )),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Shopping Center",
-                          prefixIcon: Icon(
-                            Icons.shopping_bag_outlined,
-                            color: Colors.blue,
+                            Icons.email,
+                            color: Colors.green,
                           )),
                     ),
                     const SizedBox(
                       height: 30,
                     ),
-                    /*Obx(() => authController.isProfileUploading.value
-                        ? Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : greenButton('Submit', () {
-
-
-                            if(!formKey.currentState!.validate()){
-                              return;
-                            }
-
-                            if (selectedImage == null) {
-                              Get.snackbar('Warning', 'Please add your image');
-                              return;
-                            }
-                            /*authController.isProfileUploading(true);
-                            authController.storeUserInfo(
-                                selectedImage!,
-                                nameController.text,
-                                homeController.text,
-                                businessController.text,
-                                shopController.text,
-                                businessLatLng: businessAddress,
-                              homeLatLng: homeAddress,
-                              shoppingLatLng: shoppingAddress
-                              );*/
-                          })),*/
-                    greenButton("Submit", () {})
+                    greenButton(
+                      'Submit',
+                      () {},
+                    ),
                   ],
                 ),
               ),
@@ -203,7 +176,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
           width: Get.width,
           // height: 50,
           decoration: BoxDecoration(
-              color: Colors.grey,
+              color: Colors.white,
               boxShadow: [
                 BoxShadow(
                     color: Colors.black.withOpacity(0.05),
@@ -213,7 +186,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
               borderRadius: BorderRadius.circular(8)),
           child: TextFormField(
             readOnly: readOnly,
-            onTap: () => onTap!(),
+            //onTap: () => onTap!(),
             validator: (input) => validator(input),
             controller: controller,
             style: GoogleFonts.poppins(
@@ -225,7 +198,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                 padding: const EdgeInsets.only(left: 10),
                 child: Icon(
                   iconData,
-                  color: Colors.blue,
+                  color: Colors.green,
                 ),
               ),
               border: InputBorder.none,
@@ -241,13 +214,49 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
       minWidth: Get.width,
       height: 50,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-      color: Colors.blue,
+      color: Colors.green,
       onPressed: () => onPressed(),
       child: Text(
         title,
         style: GoogleFonts.poppins(
             fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
       ),
+    );
+  }
+
+  Widget greenIntroWidgetWithoutLogos(
+      {String title = "Profile Settings", String? subtitle}) {
+    return Container(
+      width: Get.width,
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/images/mask.png'), fit: BoxFit.fill)),
+      height: Get.height * 0.3,
+      child: Container(
+          height: Get.height * 0.1,
+          width: Get.width,
+          margin: EdgeInsets.only(bottom: Get.height * 0.05),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.poppins(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+              if (subtitle != null)
+                Text(
+                  subtitle,
+                  style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white),
+                ),
+            ],
+          )),
     );
   }
 }

@@ -20,7 +20,7 @@ class CustomDrawer extends StatelessWidget {
       child: Column(children: [
         InkWell(
           onTap: () {
-            Get.to(() => MyProfile());
+            Get.to(() => ProfileSettingScreen());
           },
           child: SizedBox(
             height: 150,
@@ -77,7 +77,7 @@ class CustomDrawer extends StatelessWidget {
               buildDrawerItem(
                   title: 'Payment History',
                   onPressed: () {
-                     Get.off(() => PaymentScreen());
+                    Get.off(() => PaymentScreen());
                   }),
               buildDrawerItem(
                   title: 'Ride History', onPressed: () {}, isVisible: true),
@@ -89,6 +89,7 @@ class CustomDrawer extends StatelessWidget {
               buildDrawerItem(
                   title: 'Custom map',
                   onPressed: () {
+                    //Navigator.of(context).push(MaterialPageRoute(builder: (context)=>maptheme()));
                     Get.to(() => maptheme());
                   }),
               buildDrawerItem(title: 'Settings', onPressed: () {}),

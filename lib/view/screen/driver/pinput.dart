@@ -1,3 +1,4 @@
+import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -55,6 +56,8 @@ class _RoundedWithShadowState extends State<RoundedWithShadow> {
       onCompleted: (String input) {
         //authController.isDecided = false;
         //authController.verifyOtp(input);
+        //what i want to do after enter the otp code
+        Get.to(DriverProfileSetup());
       },
       defaultPinTheme: defaultPinTheme.copyWith(
         decoration: BoxDecoration(

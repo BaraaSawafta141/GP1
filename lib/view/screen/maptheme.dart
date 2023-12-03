@@ -3,17 +3,18 @@ import 'package:ecommercebig/view/screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class maptheme extends StatefulWidget {
   const maptheme({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<maptheme> createState() => _nameState();
 }
 
-String? mapTheme = "assets/maptheme/night.json";
+String? mapTheme = "assets/maptheme/night.txt";
 
 class _nameState extends State<maptheme> {
   final Completer<GoogleMapController> _controller = Completer();
@@ -22,78 +23,35 @@ class _nameState extends State<maptheme> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    /*DefaultAssetBundle.of(context)
-        .loadString('assets/maptheme/night.json')
-        .then((value) {
-      mapTheme = value;
-    });*/
-    updateMapStyle(mapTheme!);
-  }
+    // updateMapStyle(mapTheme!);
 
-  void updateMapStyle(String mapTheme) {
-    _controller.future.then((value) {
-      DefaultAssetBundle.of(context).loadString(mapTheme).then((string) {
-        value.setMapStyle(string);
-      });
+    rootBundle.loadString('assets/maptheme/night.txt').then((string) {
+      mapTheme = string;
     });
   }
+
+  // void updateMapStyle(String mapTheme) {
+  //   _controller.future.then((value) {
+  //     DefaultAssetBundle.of(context).loadString(mapTheme).then((string) {
+  //       value.setMapStyle(string);
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("map style"),
-        actions: [
-          PopupMenuButton(
-              itemBuilder: (context) => [
-                    PopupMenuItem(
-                        onTap: (() {
-                          _controller.future.then((value) {
-                            DefaultAssetBundle.of(context)
-                                .loadString('assets/maptheme/silver.json')
-                                .then((string) {
-                              value.setMapStyle(string);
-                            });
-                          });
-                        }),
-                        child: Text("Silver")),
-                    PopupMenuItem(
-                        onTap: (() {
-                          _controller.future.then((value) {
-                            DefaultAssetBundle.of(context)
-                                .loadString('assets/maptheme/retro.json')
-                                .then((string) {
-                              value.setMapStyle(string);
-                            });
-                          });
-                        }),
-                        child: Text("Retro")),
-                    PopupMenuItem(
-                        onTap: (() {
-                          _controller.future.then((value) {
-                            DefaultAssetBundle.of(context)
-                                .loadString('assets/maptheme/night.json')
-                                .then((string) {
-                              value.setMapStyle(string);
-                            });
-                          });
-                        }),
-                        child: Text("Night")),
-                  ])
-        ],
-      ),
       body: SafeArea(
         child: GoogleMap(
-            initialCameraPosition: _kGooglePlex,
-            //mapType: MapType.normal,
-            myLocationButtonEnabled: true,
-            myLocationEnabled: true,
-            onMapCreated: (GoogleMapController controller) {
-              controller.setMapStyle(mapTheme);
-              _controller.complete(controller);
-            }),
+          initialCameraPosition: _kGooglePlex,
+          myLocationButtonEnabled: true,
+          myLocationEnabled: true,
+          onMapCreated: (GoogleMapController controller) {
+            mymapcontroller = (controller);
+            mymapcontroller?.setMapStyle(mapTheme);
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -106,25 +64,40 @@ class _nameState extends State<maptheme> {
                   ListTile(
                     title: Text('Silver'),
                     onTap: () {
-                      mymapcontroller?.setMapStyle(mapTheme);
-                      updateMapStyle('assets/maptheme/silver.json');
-                      Get.to(home());
+                      _controller.future.then((value) {
+                        rootBundle
+                            .loadString('assets/maptheme/silver.txt')
+                            .then((string) {
+                          value.setMapStyle(string);
+                        });
+                      });
+                      Get.back();
                     },
                   ),
                   ListTile(
                     title: Text('Retro'),
                     onTap: () {
-                      mymapcontroller?.setMapStyle(mapTheme);
-                      updateMapStyle('assets/maptheme/silver.json');
-                      Get.to(home());
+                      _controller.future.then((value) {
+                        rootBundle
+                            .loadString('assets/maptheme/retro.txt')
+                            .then((string) {
+                          value.setMapStyle(string);
+                        });
+                      });
+                      Get.back();
                     },
                   ),
                   ListTile(
                     title: Text('Night'),
                     onTap: () {
-                      mymapcontroller?.setMapStyle(mapTheme);
-                      updateMapStyle('assets/maptheme/silver.json');
-                      Get.to(home());
+                      _controller.future.then((value) {
+                        rootBundle
+                            .loadString('assets/maptheme/night.txt')
+                            .then((string) {
+                          value.setMapStyle(string);
+                        });
+                      });
+                      Get.back();
                     },
                   ),
                 ],

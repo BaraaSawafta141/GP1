@@ -7,7 +7,9 @@ import 'package:ecommercebig/view/screen/auth/login.dart';
 import 'package:ecommercebig/view/screen/auth/signup.dart';
 import 'package:ecommercebig/view/screen/auth/success_signup.dart';
 import 'package:ecommercebig/view/screen/auth/verifycodesignup.dart';
+import 'package:ecommercebig/view/screen/driver/carinforegister/carinfotemplate.dart';
 import 'package:ecommercebig/view/screen/driver/choosingscreen.dart';
+import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
 import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
 import 'package:ecommercebig/view/screen/driver/mobileverify.dart';
 import 'package:ecommercebig/view/screen/home.dart';
@@ -20,7 +22,7 @@ List<GetPage<dynamic>>? routes = [
   //GetPage(name: "/", page: () => const Language() , middlewares: [
   //MyMiddleWare()
   //]),
-  GetPage(name: "/", page: () => MyProfile()),    
+  GetPage(name: "/", page: () => home()),
   //Auth
   GetPage(name: AppRoute.login, page: () => const Login()),
   GetPage(name: AppRoute.signUp, page: () => const SignUp()),
