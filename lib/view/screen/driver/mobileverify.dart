@@ -1,4 +1,5 @@
 import 'package:ecommercebig/view/screen/driver/constants.dart';
+import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
 import 'package:ecommercebig/view/screen/driver/pinput.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -19,6 +20,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    phoneverify();
     super.initState();
     //authController.phoneAuth(widget.phoneNumber);
   }
@@ -60,6 +62,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               height: 50,
             ),
             otpVerificationWidget(),
+            ElevatedButton(
+                onPressed: () {
+                  codeSent();
+                },
+                child: Text("confirm"))
           ],
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:ecommercebig/bindiing/initialbinding.dart';
 import 'package:ecommercebig/core/localization/translation.dart';
 import 'package:ecommercebig/core/services/services.dart';
 import 'package:ecommercebig/routes.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'core/localization/changelocal.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       locale: controller.language,
-      theme: controller.appTheme, 
+      theme: controller.appTheme,
       initialBinding: initialbinding(),
       // routes: routes,
       getPages: routes,

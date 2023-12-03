@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "195865025194",
+    "project_id": "phoneverify-cbcf1",
+    "storage_bucket": "phoneverify-cbcf1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195865025194:android:dc2e6e81a15cbce7b00ed3",
+        "android_client_info": {
+          "package_name": "com.example.ecommercebig"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAL7ys5KeFJ_hF5UgHjRdnfcEkxd1m7o88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
