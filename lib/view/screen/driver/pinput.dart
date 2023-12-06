@@ -1,4 +1,5 @@
 import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
+import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,15 +11,17 @@ class RoundedWithShadow extends StatefulWidget {
   _RoundedWithShadowState createState() => _RoundedWithShadowState();
 }
 
+final controllerpinput = TextEditingController();
+
 class _RoundedWithShadowState extends State<RoundedWithShadow> {
-  final controller = TextEditingController();
   final focusNode = FocusNode();
 
   //AuthController authController = Get.find<AuthController>();
+  
 
   @override
   void dispose() {
-    controller.dispose();
+    controllerpinput.dispose();
     focusNode.dispose();
     super.dispose();
   }
@@ -51,13 +54,15 @@ class _RoundedWithShadowState extends State<RoundedWithShadow> {
 
     return Pinput(
       length: 6,
-      controller: controller,
+      controller: controllerpinput,
       focusNode: focusNode,
       onCompleted: (String input) {
+        codeSent();
         //authController.isDecided = false;
         //authController.verifyOtp(input);
         //what i want to do after enter the otp code
-        Get.to(DriverProfileSetup());
+        //print("==================${controller.text}===================");
+        //Get.to(DriverProfileSetup());
       },
       defaultPinTheme: defaultPinTheme.copyWith(
         decoration: BoxDecoration(

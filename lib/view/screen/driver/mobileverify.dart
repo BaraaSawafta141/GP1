@@ -20,7 +20,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    phoneverify();
+    phoneauth();
     super.initState();
     //authController.phoneAuth(widget.phoneNumber);
   }
@@ -65,6 +65,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
             ElevatedButton(
                 onPressed: () {
                   codeSent();
+                  //phoneauth();
+                  //phoneverify();
+                  //print("=============================$phonenum============================");
                 },
                 child: Text("confirm"))
           ],

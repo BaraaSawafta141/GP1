@@ -1,6 +1,8 @@
 import 'package:ecommercebig/main.dart';
 import 'package:ecommercebig/view/screen/driver/driverloginphone.dart';
+import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
 import 'package:ecommercebig/view/screen/driver/mobileverify.dart';
+import 'package:ecommercebig/view/screen/driver/pinput.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
@@ -14,25 +16,31 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+String? verify;
+String? phonenum;
 FirebaseAuth auth = FirebaseAuth.instance;
-void phoneverify() async {
+void phoneauth() async {
   await FirebaseAuth.instance.verifyPhoneNumber(
-    phoneNumber: '+44 7123 123 456',
+    phoneNumber: phonenum,
     verificationCompleted: (PhoneAuthCredential credential) {},
     verificationFailed: (FirebaseAuthException e) {},
-    codeSent: (String verificationId, int? resendToken) {},
+    codeSent: (String verificationId, int? resendToken) {
+      verify = verificationId;
+    },
     codeAutoRetrievalTimeout: (String verificationId) {},
   );
 }
 
 void verificationcompleted() async {
   await auth.verifyPhoneNumber(
-    phoneNumber: '+44 7123 123 456',
+    phoneNumber: phonenum,
     verificationCompleted: (PhoneAuthCredential credential) async {
       // ANDROID ONLY!
 
       // Sign the user in (or link) with the auto-generated credential
       await auth.signInWithCredential(credential);
+
+      Get.to(DriverProfileSetup());
     },
     verificationFailed: (FirebaseAuthException error) {},
     codeSent: (String verificationId, int? forceResendingToken) {},
@@ -42,7 +50,7 @@ void verificationcompleted() async {
 
 void verificationFailed() async {
   await auth.verifyPhoneNumber(
-    phoneNumber: '+44 7123 123 456',
+    phoneNumber: phonenum,
     verificationFailed: (FirebaseAuthException e) {
       if (e.code == 'invalid-phone-number') {
         print('The provided phone number is not valid.');
@@ -58,17 +66,25 @@ void verificationFailed() async {
 
 void codeSent() async {
   await auth.verifyPhoneNumber(
-    phoneNumber: '+44 7123 123 456',
+    phoneNumber: phonenum,
     codeSent: (String verificationId, int? resendToken) async {
-      // Update the UI - wait for the user to enter the SMS code
-      String smsCode = 'xxxx';
+      try {
+        // Update the UI - wait for the user to enter the SMS code
+        String smsCode = controllerpinput as String;
 
-      // Create a PhoneAuthCredential with the code
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verificationId, smsCode: smsCode);
+        // Create a PhoneAuthCredential with the code
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(
+            verificationId: verify!, smsCode: smsCode);
 
-      // Sign the user in (or link) with the credential
-      await auth.signInWithCredential(credential);
+        // Sign the user in (or link) with the credential
+        await auth.signInWithCredential(credential).then((value) {
+          if (value.user != null) {
+            Get.to(DriverProfileSetup());
+          }
+        });
+      } catch (e) {
+        print("=================code not correct================");
+      }
     },
     verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {},
     verificationFailed: (FirebaseAuthException error) {},
@@ -78,8 +94,8 @@ void codeSent() async {
 
 void codeAutoRetrievalTimeout() async {
   await auth.verifyPhoneNumber(
-    phoneNumber: '+44 7123 123 456',
-    timeout: const Duration(seconds: 60),
+    phoneNumber: phonenum,
+    //timeout: const Duration(seconds: 60),
     codeAutoRetrievalTimeout: (String verificationId) {
       // Auto-resolution timed out...
     },
@@ -98,6 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   onSubmit(String? input) {
     Get.to(() => OtpVerificationScreen(countryCode.dialCode + input!));
+    phonenum = countryCode.dialCode + input!;
+    //print("====================${countryCode.dialCode + input!}");
   }
 
   @override
