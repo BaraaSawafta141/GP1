@@ -23,7 +23,7 @@ List<GetPage<dynamic>>? routes = [
   //GetPage(name: "/", page: () => const Language() , middlewares: [
   //MyMiddleWare()
   //]),
-  GetPage(name: "/", page: () => home()),
+  GetPage(name: "/", page: () => carRegistertemplate()),
   //Auth
   GetPage(name: AppRoute.login, page: () => const Login()),
   GetPage(name: AppRoute.signUp, page: () => const SignUp()),

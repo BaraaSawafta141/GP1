@@ -1,3 +1,9 @@
+import 'package:ecommercebig/view/screen/driver/carinforegister/pages/location.dart';
+import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehiclecolor.dart';
+import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehicleplatenumber.dart';
+import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehicletype.dart';
+import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehicleyear.dart';
+import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vericletype.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -11,11 +17,19 @@ class carRegistertemplate extends StatefulWidget {
 }
 
 class _nameState extends State<carRegistertemplate> {
+  PageController pageController = PageController();
+  int currentpage = 0;
+  String selectedLocations = '';
+  String selectedVehicalType = '';
+  String selectedVehicalMake = '';
+  String selectModelYear = '';
+  TextEditingController vehicalNumberController = TextEditingController();
+  String vehicalColor = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.arrow_back),
+        //leading: Icon(Icons.arrow_back),
         backgroundColor: Colors.green,
         title: Text(
           "Car Registration",
@@ -27,19 +41,102 @@ class _nameState extends State<carRegistertemplate> {
           textIntroForPages(
               title: 'Car Registration',
               subtitle: 'Complete the process detail'),
-          Expanded(child: Container()),
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: Align(
-                alignment: Alignment.bottomRight,
-                child: FloatingActionButton(
-                  onPressed: () {},
-                  child: Text(
-                    "Next",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                  backgroundColor: Colors.green,
-                )),
+          Expanded(
+              child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 28,
+            ),
+            child: PageView(
+              onPageChanged: (int page) {
+                currentpage = page;
+              },
+              controller: pageController,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                locationPage(
+                  selectedLocations: selectedLocations,
+                  onSelect: (String location) {
+                    setState(() {
+                      selectedLocations = location;
+                    });
+                  },
+                ),
+                VehicalTypePage(
+                  selectedVehical: selectedVehicalType,
+                  onSelect: (String vehicalType) {
+                    setState(() {
+                      selectedVehicalType = vehicalType;
+                    });
+                  },
+                ),
+                VehicalMakePage(
+                  selectedVehical: selectedVehicalMake,
+                  onSelect: (String vehicalMake) {
+                    setState(() {
+                      selectedVehicalMake = vehicalMake;
+                    });
+                  },
+                ),
+                VehicalModelYearPage(
+                  onSelect: (int year) {
+                    setState(() {
+                      selectModelYear = year.toString();
+                    });
+                  },
+                ),
+                VehicalNumberPage(
+                  controller: vehicalNumberController,
+                ),
+                VehicalColorPage(
+                  onColorSelected: (String selectedColor) {
+                    vehicalColor = selectedColor;
+                  },
+                ),
+              ],
+            ),
+          )),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        pageController.animateToPage(currentpage - 1,
+                            duration: Duration(seconds: 1),
+                            curve: Curves.easeIn);
+                      },
+                      child: Text(
+                        "Prev",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      backgroundColor: Colors.green,
+                    )),
+              ),
+              SizedBox(
+                width: 235,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        pageController.animateToPage(currentpage + 1,
+                            duration: Duration(seconds: 1),
+                            curve: Curves.easeIn);
+                      },
+                      child: Text(
+                        "Next",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      backgroundColor: Colors.green,
+                    )),
+              ),
+            ],
           )
         ],
       ),
@@ -49,13 +146,23 @@ class _nameState extends State<carRegistertemplate> {
   Widget textIntroForPages(
       {String title = "Profile Settings", String? subtitle}) {
     return Container(
+      //color: Colors.green[150],
       width: Get.width,
       decoration: BoxDecoration(
-          /*image: DecorationImage(
+        boxShadow: [
+          BoxShadow(
+            //blurStyle: BlurStyle.,
+            color: Colors.green.withOpacity(0.3),
+            spreadRadius: 5,
+            blurRadius: 17,
+            offset: Offset(0, 3),
+          ),
+        ],
+        /*image: DecorationImage(
             image: AssetImage('assets/images/mask.png'),
             fit: BoxFit.fill
         )*/
-          ),
+      ),
       height: Get.height * 0.3,
       child: Container(
           height: Get.height * 0.1,

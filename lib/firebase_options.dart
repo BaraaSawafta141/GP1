@@ -57,6 +57,6 @@ class DefaultFirebaseOptions {
     appId: "1:195865025194:android:dc2e6e81a15cbce7b00ed3",
     messagingSenderId: "195865025194",
     projectId: "phoneverify-cbcf1",
-    //storageBucket: 'phone-auth-15bdb.appspot.com',
+    storageBucket: "phoneverify-cbcf1.appspot.com",
   );
 }
