@@ -4,10 +4,13 @@ import 'package:ecommercebig/view/screen/maptheme.dart';
 import 'package:ecommercebig/view/screen/myprofile.dart';
 import 'package:ecommercebig/view/screen/payment/payment.dart';
 import 'package:ecommercebig/view/widget/testfolder/test.dart';
-
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:responsive_builder/responsive_builder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key? key});
@@ -15,7 +18,7 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 250,
+      width: Get.width / 1.6,
       color: Colors.white,
       child: Column(children: [
         InkWell(
@@ -90,7 +93,48 @@ class CustomDrawer extends StatelessWidget {
                   title: 'Custom map',
                   onPressed: () {
                     //Navigator.of(context).push(MaterialPageRoute(builder: (context)=>maptheme()));
-                    Get.to(() => maptheme());
+                    // Get.to(() => maptheme());
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Change Map Theme'),
+                            content: const Text(
+                              'Choose your preferred map theme:',
+                            ),
+                            actions: <Widget>[
+                              ListTile(
+                                  title: Text('Silver'),
+                                  onTap: () async {
+                                    await setMapTheme('silver');
+                                    mymapcontroller?.setMapStyle(
+                                      await rootBundle.loadString(
+                                          'assets/maptheme/silver.txt'),
+                                    );
+                                  }),
+                              ListTile(
+                                  title: Text('Retro'),
+                                  onTap: () async {
+                                    await setMapTheme('retro');
+
+                                    mymapcontroller?.setMapStyle(
+                                      await rootBundle.loadString(
+                                          'assets/maptheme/retro.txt'),
+                                    );
+                                  }),
+                              ListTile(
+                                  title: Text('Night'),
+                                  onTap: () async {
+                                    await setMapTheme('night');
+                                    mymapcontroller?.setMapStyle(
+                                      await rootBundle.loadString(
+                                          'assets/maptheme/night.txt'),
+                                    );
+                                  }),
+                            ],
+                          );
+                          Get.back();
+                        });
                   }),
               buildDrawerItem(title: 'Settings', onPressed: () {}),
               buildDrawerItem(title: 'Support', onPressed: () {}),
@@ -149,6 +193,12 @@ class CustomDrawer extends StatelessWidget {
       ]),
     );
   }
+}
+
+// Function to save the chosen map theme to shared preferences
+Future<void> setMapTheme(String theme) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('map_theme', theme);
 }
 
 buildDrawerItem(
