@@ -21,6 +21,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:location/location.dart' as lo;
 import 'package:uuid/uuid.dart';
 import 'dart:ui' as ui;
@@ -111,6 +112,7 @@ class MapSampleState extends State<home> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    applyStoredMapTheme();
     destinationController.addListener(() {
       onChangedest();
     });
@@ -127,6 +129,13 @@ class MapSampleState extends State<home> {
         //iOS: IOSInitializationSettings(),
       ),
     );
+  }
+
+  String? storedTheme;
+  Future<void> applyStoredMapTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    storedTheme = prefs.getString('map_theme');
+    print("$storedTheme<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
   }
 
   loadData() async {
@@ -224,9 +233,16 @@ class MapSampleState extends State<home> {
                 initialCameraPosition: _kGooglePlex,
                 markers: Set<Marker>.from(allMarkers),
                 //markers: Set<Marker>.of(_markers),
-                onMapCreated: (GoogleMapController controller) {
+                onMapCreated: (GoogleMapController controller) async {
                   mymapcontroller = controller;
-                  //mymapcontroller!.setMapStyle(mapTheme);
+                  if (storedTheme != null) {
+                    // Apply the stored theme using your mymapcontroller.setMapStyle method
+                    String themePath = 'assets/maptheme/$storedTheme.txt';
+                    mymapcontroller
+                        ?.setMapStyle(await rootBundle.loadString(themePath));
+                  }
+                  // storedTheme!=Null?  mymapcontroller!.setMapStyle(storedTheme): //notyhi
+                  //      mymapcontroller!.setMapStyle('assets/maptheme/silver.txt') ;
                 },
               );
             }),
@@ -1264,16 +1280,14 @@ class MapSampleState extends State<home> {
     List<Map<String, dynamic>> driverDistancePairs = [];
     for (int i = 0; i < drivers.length; i++) {
       driverDistancePairs.add({'driver': drivers[i], 'distance': distances[i]});
-      
     }
 
     driverDistancePairs.sort((a, b) => a['distance'].compareTo(b['distance']));
-    
+
     // Update the order of drivers based on the sorted distances
     drivers.clear();
     for (var pair in driverDistancePairs) {
       drivers.add(pair['driver']);
-      
     }
     //print("==================${driverDistancePairs}=====================");
   }
