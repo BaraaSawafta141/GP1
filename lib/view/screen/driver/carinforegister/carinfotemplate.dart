@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/location.dart';
+import 'package:ecommercebig/view/screen/driver/carinforegister/pages/uploaddoc.dart';
+import 'package:ecommercebig/view/screen/driver/carinforegister/pages/uploaddocument.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehiclecolor.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehicleplatenumber.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehicletype.dart';
@@ -25,6 +29,7 @@ class _nameState extends State<carRegistertemplate> {
   String selectModelYear = '';
   TextEditingController vehicalNumberController = TextEditingController();
   String vehicalColor = '';
+  File? document;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,6 +97,10 @@ class _nameState extends State<carRegistertemplate> {
                     vehicalColor = selectedColor;
                   },
                 ),
+                  UploadDocumentPage(onImageSelected: (File image){
+                  document = image;
+                },),
+                DocumentUploadedPage()
               ],
             ),
           )),
@@ -118,7 +127,7 @@ class _nameState extends State<carRegistertemplate> {
               SizedBox(
                 width: 235,
               ),
-              Padding(
+              Padding( 
                 padding: const EdgeInsets.all(15),
                 child: Align(
                     alignment: Alignment.bottomRight,
@@ -142,7 +151,7 @@ class _nameState extends State<carRegistertemplate> {
       ),
     );
   }
-
+  
   Widget textIntroForPages(
       {String title = "Profile Settings", String? subtitle}) {
     return Container(

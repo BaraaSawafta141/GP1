@@ -18,20 +18,20 @@ class DecisionScreen extends StatelessWidget {
             taxiIntroWidget(),
             Center(
                 child: Text(
-              "Choose Your Login Way: ",
+              "39".tr,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             )),
             SizedBox(
               height: 30,
             ),
-            DecisionButton('assets/images/driver.png', 'Login As Driver', () {
+            DecisionButton('assets/images/driver.png', '40'.tr, () {
               //authController.isLoginAsDriver = true;
               Get.to(() => LoginScreen());
             }, Get.width * 0.8),
             const SizedBox(
               height: 20,
             ),
-            DecisionButton('assets/images/user.png', 'Login As User', () {
+            DecisionButton('assets/images/user.png', '41'.tr, () {
               //authController.isLoginAsDriver = false;
               Get.to(() => Login());
             }, Get.width * 0.8),

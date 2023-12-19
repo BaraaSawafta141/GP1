@@ -14,7 +14,7 @@ import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
 import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
 import 'package:ecommercebig/view/screen/driver/mobileverify.dart';
 import 'package:ecommercebig/view/screen/home.dart';
-import 'package:ecommercebig/view/screen/maptheme.dart';
+import 'package:ecommercebig/view/screen/language.dart';
 import 'package:ecommercebig/view/screen/myprofile.dart';
 
 import 'package:ecommercebig/view/screen/onboarding.dart';
@@ -24,7 +24,7 @@ List<GetPage<dynamic>>? routes = [
   //GetPage(name: "/", page: () => const Language() , middlewares: [
   //MyMiddleWare()
   //]),
-  GetPage(name: "/", page: () => home()),
+  GetPage(name: "/", page: () => Language()),
   //Auth
   GetPage(name: AppRoute.login, page: () => const Login()),
   GetPage(name: AppRoute.signUp, page: () => const SignUp()),

@@ -1,7 +1,10 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/constant/routes.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
+import 'package:ecommercebig/core/services/services.dart';
 import 'package:ecommercebig/data/datasource/remote/auth/login.dart';
+import 'package:ecommercebig/view/screen/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -12,13 +15,14 @@ abstract class LoginController extends GetxController {
 }
 
 class LoginControllerImp extends LoginController {
+  MyServices myServices = Get.find();
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
   logindata loginData = logindata(Get.find());
   late TextEditingController email;
   late TextEditingController password;
 
   bool isshowpassword = true;
-
+  List data = [];
   statusrequest statusreq = statusrequest.none;
 
   showPassword() {
@@ -29,19 +33,30 @@ class LoginControllerImp extends LoginController {
   @override
   login() async {
     if (formstate.currentState!.validate()) {
-      statusreq = statusrequest.loading;
-      update();
+      //statusreq = statusrequest.loading;
+      //update();
       var response = await loginData.postdata(password.text, email.text);
       print("============================ Controller $response ");
       statusreq = handlingdata(response);
 
       if (statusrequest.success == statusreq) {
-        if (response['success'] == "success") {
+        if (response['status'] == "Success") {
           //data.addAll(response['data']);
-          Get.offNamed(AppRoute.homepage, arguments: {"email": email.text});
+          myServices.sharedPreferences.setString("Login", "1");
+          Get.to(home());
+          //Get.offNamed(AppRoute.homepage);
         } else {
-          Get.defaultDialog(
-              title: "Warning", middleText: "Email Or Password Not Correct");
+          AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.warning,
+            animType: AnimType.rightSlide,
+            title: 'Warning',
+            desc: 'Email Or Password Not Correct',
+            //btnCancelOnPress: () {},
+            btnOkOnPress: () {},
+          ).show();
+          // Get.defaultDialog(
+          //     title: "Warning", middleText: "Email Or Password Not Correct");
           statusreq = statusrequest.failure;
         }
       }

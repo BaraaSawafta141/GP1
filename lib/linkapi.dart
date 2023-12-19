@@ -1,5 +1,5 @@
 class applink {
-  static const String server = "http://localhost/taxiapp";
+  static const String server = "http://10.0.2.2/taxiapp";
   static const String test = "$server/test.php";
 
   //auth

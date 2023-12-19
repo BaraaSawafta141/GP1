@@ -15,5 +15,8 @@ class MyMiddleWare extends GetMiddleware {
      if(myServices.sharedPreferences.getString("onboarding") == "1"){
       return const RouteSettings(name: AppRoute.login) ; 
      }
+     if(myServices.sharedPreferences.getString("Login") == "1"){
+      return const RouteSettings(name: AppRoute.homepage) ; 
+     }
   }
 }
