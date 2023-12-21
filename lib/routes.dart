@@ -1,4 +1,5 @@
 import 'package:ecommercebig/core/constant/routes.dart';
+import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/view/screen/auth/forgetpassword/forgetpassword.dart';
 import 'package:ecommercebig/view/screen/auth/forgetpassword/resetpassword.dart';
 import 'package:ecommercebig/view/screen/auth/forgetpassword/success_resetpassword.dart';
@@ -21,10 +22,9 @@ import 'package:ecommercebig/view/screen/onboarding.dart';
 import 'package:get/get.dart';
 
 List<GetPage<dynamic>>? routes = [
-  //GetPage(name: "/", page: () => const Language() , middlewares: [
-  //MyMiddleWare()
-  //]),
-  GetPage(name: "/", page: () => Language()),
+  GetPage(
+      name: "/", page: () => const Language(), middlewares: [MyMiddleWare()]),
+  // GetPage(name: "/", page: () => Language()),
   //Auth
   GetPage(name: AppRoute.login, page: () => const Login()),
   GetPage(name: AppRoute.signUp, page: () => const SignUp()),

@@ -43,6 +43,7 @@ class LoginControllerImp extends LoginController {
         if (response['status'] == "Success") {
           //data.addAll(response['data']);
           myServices.sharedPreferences.setString("Login", "1");
+          myServices.sharedPreferences.setString("email", email.text);
           Get.to(home());
           //Get.offNamed(AppRoute.homepage);
         } else {

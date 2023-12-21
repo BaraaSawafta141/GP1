@@ -1,3 +1,5 @@
+import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/view/screen/auth/login.dart';
 import 'package:ecommercebig/view/screen/emergency.dart';
 import 'package:ecommercebig/view/screen/home.dart';
 import 'package:ecommercebig/view/screen/maptheme.dart';
@@ -11,6 +13,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+int RideCount = 0;
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key? key});
@@ -83,7 +87,7 @@ class CustomDrawer extends StatelessWidget {
                     Get.off(() => PaymentScreen());
                   }),
               buildDrawerItem(
-                  title: 'Ride History', onPressed: () {}, isVisible: true),
+                  title: 'Ride History $RideCount', onPressed: () {}),
               buildDrawerItem(
                   title: 'Emergency',
                   onPressed: () {
@@ -141,6 +145,9 @@ class CustomDrawer extends StatelessWidget {
               buildDrawerItem(
                   title: 'Log Out',
                   onPressed: () {
+                  myServices.sharedPreferences.setString("Login", "0");
+                    Get.offAll(() => const Login(),
+                        transition: Transition.rightToLeft);
                     //FirebaseAuth.instance.signOut();
                   }),
             ],

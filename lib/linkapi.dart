@@ -12,6 +12,9 @@ class applink {
   static const String resetpassword = "$server/forgetpassword/resetpassword.php";
   static const String verifycodeforgetpassword = "$server/forgetpassword/verifycode.php";
 
+  //home
+  static const String history = "$server/ride_history.php";  //ride history
+
 
 
 

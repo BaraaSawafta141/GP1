@@ -39,7 +39,7 @@ class SignUpControllerImp extends SignUpController {
       statusreq = handlingdata(response);
       if (statusrequest.success == statusreq) {
         if (response['status'] == "success") {
-          data.addAll(response['data']);
+          // data.addAll(response['data']);
           Get.offNamed(AppRoute.verfiyCodeSignUp,
               arguments: {"email": email.text});
         } else {
@@ -51,7 +51,7 @@ class SignUpControllerImp extends SignUpController {
             desc: 'Phone Number Or Email Already Exist',
             btnCancelOnPress: () {},
             btnOkOnPress: () {},
-            ).show();
+          ).show();
           // Get.defaultDialog(
           //     title: "Warning",
           //     middleText: "Phone Number Or Email Already Exist");

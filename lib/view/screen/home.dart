@@ -8,6 +8,7 @@ import 'package:ecommercebig/view/screen/commentpage.dart';
 import 'package:ecommercebig/view/screen/drawer.dart';
 import 'package:ecommercebig/view/screen/maptheme.dart';
 import 'package:ecommercebig/view/screen/rating_driver.dart';
+import 'package:ecommercebig/view/screen/ridehistory.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:flutter_google_maps_webservices/directions.dart'
@@ -28,6 +29,8 @@ import 'dart:ui' as ui;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:google_maps_flutter_platform_interface/src/types/polyline.dart'
     as google_maps;
+
+String UserEmail = myServices.sharedPreferences.getString("email")!;
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -1019,6 +1022,11 @@ class MapSampleState extends State<home> {
                             ),
                             TextButton(
                               onPressed: () async {
+                                setState(() {
+                                  RideCount++;
+                                });
+                                saveRideHistory(sourceController.text,
+                                    destinationController.text);
                                 showNotification();
                                 Navigator.pop(context, 'Yes');
                                 Get.back();
