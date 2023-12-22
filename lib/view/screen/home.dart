@@ -1022,11 +1022,13 @@ class MapSampleState extends State<home> {
                             ),
                             TextButton(
                               onPressed: () async {
-                                setState(() {
-                                  RideCount++;
-                                });
+                                // setState(() {
+                                //   RideCount++;
+                                // });
                                 saveRideHistory(sourceController.text,
-                                    destinationController.text);
+                                    destinationController.text,
+                                    DateTime.now().toString()
+                                    );
                                 showNotification();
                                 Navigator.pop(context, 'Yes');
                                 Get.back();

@@ -42,7 +42,11 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text("My Profile"),
-        leading: Icon(Icons.arrow_back),
+        leading:  InkWell(child: Icon(Icons.arrow_back),
+        onTap: (){
+          Get.back();
+        },
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(

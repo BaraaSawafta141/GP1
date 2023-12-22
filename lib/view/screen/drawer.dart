@@ -1,10 +1,11 @@
-import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/core/middleware/mymiddleware.dart' as prefix0;
 import 'package:ecommercebig/view/screen/auth/login.dart';
 import 'package:ecommercebig/view/screen/emergency.dart';
 import 'package:ecommercebig/view/screen/home.dart';
 import 'package:ecommercebig/view/screen/maptheme.dart';
 import 'package:ecommercebig/view/screen/myprofile.dart';
 import 'package:ecommercebig/view/screen/payment/payment.dart';
+import 'package:ecommercebig/view/screen/ridehistory.dart';
 import 'package:ecommercebig/view/widget/testfolder/test.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-int RideCount = 0;
+// int RideCount = 0;
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key? key});
@@ -87,7 +88,10 @@ class CustomDrawer extends StatelessWidget {
                     Get.off(() => PaymentScreen());
                   }),
               buildDrawerItem(
-                  title: 'Ride History $RideCount', onPressed: () {}),
+                  title: 'Ride History',
+                  onPressed: () {
+                    Get.to(() => rideHistory());
+                  }),
               buildDrawerItem(
                   title: 'Emergency',
                   onPressed: () {
@@ -96,8 +100,6 @@ class CustomDrawer extends StatelessWidget {
               buildDrawerItem(
                   title: 'Custom map',
                   onPressed: () {
-                    //Navigator.of(context).push(MaterialPageRoute(builder: (context)=>maptheme()));
-                    // Get.to(() => maptheme());
                     showDialog(
                         context: context,
                         builder: (context) {
@@ -115,6 +117,7 @@ class CustomDrawer extends StatelessWidget {
                                       await rootBundle.loadString(
                                           'assets/maptheme/silver.txt'),
                                     );
+                                    Get.back();
                                   }),
                               ListTile(
                                   title: Text('Retro'),
@@ -125,6 +128,7 @@ class CustomDrawer extends StatelessWidget {
                                       await rootBundle.loadString(
                                           'assets/maptheme/retro.txt'),
                                     );
+                                    Get.back();
                                   }),
                               ListTile(
                                   title: Text('Night'),
@@ -134,10 +138,10 @@ class CustomDrawer extends StatelessWidget {
                                       await rootBundle.loadString(
                                           'assets/maptheme/night.txt'),
                                     );
+                                    Get.back();
                                   }),
                             ],
                           );
-                          Get.back();
                         });
                   }),
               buildDrawerItem(title: 'Settings', onPressed: () {}),
@@ -145,7 +149,8 @@ class CustomDrawer extends StatelessWidget {
               buildDrawerItem(
                   title: 'Log Out',
                   onPressed: () {
-                  myServices.sharedPreferences.setString("Login", "0");
+                    prefix0.myServices.sharedPreferences
+                        .setString("Login", "0");
                     Get.offAll(() => const Login(),
                         transition: Transition.rightToLeft);
                     //FirebaseAuth.instance.signOut();

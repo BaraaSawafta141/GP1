@@ -15,6 +15,7 @@ class applink {
   //home
   static const String history = "$server/ride_history.php";  //ride history
 
+  static const String viewHistory = "$server/view_history.php";  //view history
 
 
 
