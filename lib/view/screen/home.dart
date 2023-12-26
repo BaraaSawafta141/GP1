@@ -31,6 +31,10 @@ import 'package:google_maps_flutter_platform_interface/src/types/polyline.dart'
     as google_maps;
 
 String UserEmail = myServices.sharedPreferences.getString("email")!;
+String Username = myServices.sharedPreferences.getString("name")!;
+String Userphone = myServices.sharedPreferences.getString("phone")!;
+String Userid = myServices.sharedPreferences.getString("id")!;
+String Userpass = myServices.sharedPreferences.getString("password")!;
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -324,7 +328,7 @@ class MapSampleState extends State<home> {
                         text: "Hello, ",
                         style: TextStyle(color: Colors.black, fontSize: 20)),
                     TextSpan(
-                        text: "Mark",
+                        text: Username,
                         style: TextStyle(
                             color: Colors.blue,
                             fontSize: 20,

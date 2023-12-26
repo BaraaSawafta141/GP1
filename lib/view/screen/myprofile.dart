@@ -1,10 +1,21 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:crypto/crypto.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:ecommercebig/core/class/statusrequest.dart';
+import 'package:ecommercebig/core/functions/handlingdata.dart';
 
+import 'package:ecommercebig/core/functions/validinput.dart';
+import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/core/services/services.dart';
+import 'package:ecommercebig/data/datasource/remote/auth/profileupdate.dart';
+
+import 'package:ecommercebig/view/screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_places_flutter/model/prediction.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
 
@@ -16,12 +27,16 @@ class ProfileSettingScreen extends StatefulWidget {
 }
 
 class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
+  updateprofile updateprof = updateprofile(Get.find());
+  MyServices myServices = Get.find();
   TextEditingController nameController = TextEditingController();
-  TextEditingController homeController = TextEditingController();
-  TextEditingController businessController = TextEditingController();
-  TextEditingController shopController = TextEditingController();
+  TextEditingController emailcontroller = TextEditingController();
+  TextEditingController phonecontroller = TextEditingController();
+  TextEditingController passController = TextEditingController();
+  TextEditingController confirmpassController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
+  GlobalKey<FormState> formstate = GlobalKey<FormState>();
+  statusrequest statusreq = statusrequest.none;
   final ImagePicker _picker = ImagePicker();
   File? selectedImage;
 
@@ -42,10 +57,11 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text("My Profile"),
-        leading:  InkWell(child: Icon(Icons.arrow_back),
-        onTap: (){
-          Get.back();
-        },
+        leading: InkWell(
+          child: Icon(Icons.arrow_back),
+          onTap: () {
+            Get.back();
+          },
         ),
       ),
       body: SingleChildScrollView(
@@ -61,7 +77,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                     alignment: Alignment.center,
                     child: InkWell(
                       onTap: () {
-                        getImage(ImageSource.camera);
+                        getImage(ImageSource.gallery);
                       },
                       child: selectedImage == null
                           ? Container(
@@ -98,13 +114,22 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 23),
               child: Form(
-                key: formKey,
+                key: formstate,
                 child: Column(
                   children: [
+                    Text(
+                      "Change your data",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
                     TextFormField(
+                      controller: nameController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: "enter your name",
+                          hintText: Username,
                           prefixIcon: Icon(
                             Icons.person_outlined,
                             color: Colors.blue,
@@ -114,11 +139,15 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                       height: 10,
                     ),
                     TextFormField(
+                      validator: (val) {
+                        return validInput(val!, 3, 30, "password");
+                      },
+                      controller: passController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: "Home Address",
+                          hintText: "Enter a new password",
                           prefixIcon: Icon(
-                            Icons.home_outlined,
+                            Icons.password,
                             color: Colors.blue,
                           )),
                     ),
@@ -126,57 +155,68 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                       height: 10,
                     ),
                     TextFormField(
+                      validator: (val) {
+                        return validInput(val!, 3, 30, "password");
+                      },
+                      controller: confirmpassController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: "Business Address",
+                          hintText: "Confirm your password",
                           prefixIcon: Icon(
-                            Icons.card_travel_outlined,
-                            color: Colors.blue,
-                          )),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Shopping Center",
-                          prefixIcon: Icon(
-                            Icons.shopping_bag_outlined,
+                            Icons.password,
                             color: Colors.blue,
                           )),
                     ),
                     const SizedBox(
                       height: 30,
                     ),
-                    /*Obx(() => authController.isProfileUploading.value
-                        ? Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : greenButton('Submit', () {
+                    greenButton("Submit", () async {
+                      if (passController.text != "" &&
+                          confirmpassController.text == passController.text) {
+                        if (formstate.currentState!.validate()) {
+                          //statusreq = statusrequest.loading;
+                          //update();
+                          var response =await updateprof.postdata(nameController.text, passController.text);
+                          print("============================ Controller $response ");
 
+                          statusreq = handlingdata(response);
 
-                            if(!formKey.currentState!.validate()){
-                              return;
+                          if (statusrequest.success == statusreq) {
+                            if (response['status'] == "Success") {
+                              myServices.sharedPreferences.setString(
+                                  "name", response['message']['users_name']);
+                              myServices.sharedPreferences.setString("password",
+                                  response['message']['users_password']);
+                            } else {
+                              AwesomeDialog(
+                                context: Get.context!,
+                                dialogType: DialogType.warning,
+                                animType: AnimType.rightSlide,
+                                title: 'Warning',
+                                desc: 'Email Or Password Not Correct',
+                                //btnCancelOnPress: () {},
+                                btnOkOnPress: () {},
+                              ).show();
+                              // Get.defaultDialog(
+                              //     title: "Warning", middleText: "Email Or Password Not Correct");
+                              statusreq = statusrequest.failure;
                             }
-
-                            if (selectedImage == null) {
-                              Get.snackbar('Warning', 'Please add your image');
-                              return;
-                            }
-                            /*authController.isProfileUploading(true);
-                            authController.storeUserInfo(
-                                selectedImage!,
-                                nameController.text,
-                                homeController.text,
-                                businessController.text,
-                                shopController.text,
-                                businessLatLng: businessAddress,
-                              homeLatLng: homeAddress,
-                              shoppingLatLng: shoppingAddress
-                              );*/
-                          })),*/
-                    greenButton("Submit", () {})
+                          }
+                          setState(() {});
+                        } else {}
+                      } else if (confirmpassController.text !=
+                          passController.text) {
+                        AwesomeDialog(
+                          context: Get.context!,
+                          dialogType: DialogType.warning,
+                          animType: AnimType.rightSlide,
+                          title: 'Warning',
+                          desc: 'The Entered Paswwords Are Not Equal',
+                          //btnCancelOnPress: () {},
+                          btnOkOnPress: () {},
+                        ).show();
+                      }
+                    })
                   ],
                 ),
               ),

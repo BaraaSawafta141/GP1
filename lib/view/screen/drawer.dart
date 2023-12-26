@@ -23,7 +23,7 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: Get.width / 1.6,
+      width: Get.width / 1.5,
       color: Colors.white,
       child: Column(children: [
         InkWell(
@@ -53,16 +53,16 @@ class CustomDrawer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Hello , ',
+                      Text('Hello ,',
                           style: GoogleFonts.poppins(
                               color: Colors.black, fontSize: 20)),
                       Text(
                         /*authController.myUser.value.name == null
                                 ? "Mark"
                                 : authController.myUser.value.name!,*/
-                        "Mark",
+                        Username,
                         style: GoogleFonts.poppins(
-                            fontSize: 24,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.black),
                         overflow: TextOverflow.ellipsis,
@@ -149,8 +149,9 @@ class CustomDrawer extends StatelessWidget {
               buildDrawerItem(
                   title: 'Log Out',
                   onPressed: () {
-                    prefix0.myServices.sharedPreferences
-                        .setString("Login", "0");
+                    prefix0.myServices.sharedPreferences.setString("Login", "0");
+                    prefix0.myServices.sharedPreferences.setString("name", "");
+                    prefix0.myServices.sharedPreferences.setString("password", "");
                     Get.offAll(() => const Login(),
                         transition: Transition.rightToLeft);
                     //FirebaseAuth.instance.signOut();
