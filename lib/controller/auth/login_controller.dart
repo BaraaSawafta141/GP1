@@ -2,11 +2,14 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/constant/routes.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
+import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/core/services/services.dart';
 import 'package:ecommercebig/data/datasource/remote/auth/login.dart';
 import 'package:ecommercebig/view/screen/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+
+MyServices userServices = Get.find();
 
 abstract class LoginController extends GetxController {
   login();
@@ -15,12 +18,10 @@ abstract class LoginController extends GetxController {
 }
 
 class LoginControllerImp extends LoginController {
-  MyServices myServices = Get.find();
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
   logindata loginData = logindata(Get.find());
   late TextEditingController email;
   late TextEditingController password;
-
   bool isshowpassword = true;
   List data = [];
   statusrequest statusreq = statusrequest.none;
@@ -43,12 +44,19 @@ class LoginControllerImp extends LoginController {
         if (response['status'] == "Success") {
           //data.addAll(response['data']);
           myServices.sharedPreferences.setString("Login", "1");
-          myServices.sharedPreferences.setString("id", response['message']['users_id'].toString());
-          myServices.sharedPreferences.setString("email", response['message']['users_email']);
-          myServices.sharedPreferences.setString("name", response['message']['users_name']);
-          myServices.sharedPreferences.setString("phone", response['message']['users_phone']);
-          myServices.sharedPreferences.setString("password", password.text);
-          Get.to(home());
+          userServices.sharedPreferences
+              .setString("id", response['message']['users_id'].toString());
+          userServices.sharedPreferences
+              .setString("email", response['message']['users_email']);
+          userServices.sharedPreferences
+              .setString("name", response['message']['users_name']);
+          userServices.sharedPreferences
+              .setString("phone", response['message']['users_phone']);
+          userServices.sharedPreferences.setString("password", password.text);
+          userServices.sharedPreferences
+              .setString("image", response['message']['users_photo']);
+          update();
+          Get.off(home());
           //Get.offNamed(AppRoute.homepage);
         } else {
           AwesomeDialog(

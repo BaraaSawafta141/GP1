@@ -1,5 +1,7 @@
 class applink {
   static const String server = "http://10.0.2.2/taxiapp";
+  static const String linkImageRoot = "http://10.0.2.2/taxiapp/upload";
+  
   static const String test = "$server/test.php";
 
   //auth
@@ -16,7 +18,9 @@ class applink {
   static const String history = "$server/ride_history.php";  //ride history
 
   static const String viewHistory = "$server/view_history.php";  //view history
-  static const String profile = "$server/update_profile.php";  //view history
+  static const String profile = "$server/update_profile.php";  //profile
+  static const String UploadImage = "$server/updateImage.php";  //upload image
+
 
 
 

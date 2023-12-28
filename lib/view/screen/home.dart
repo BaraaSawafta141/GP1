@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 //import 'dart:html';
+import 'package:ecommercebig/controller/auth/login_controller.dart';
 import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
 import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
+import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/linkapi.dart';
 import 'package:ecommercebig/view/screen/commentpage.dart';
 import 'package:ecommercebig/view/screen/drawer.dart';
 import 'package:ecommercebig/view/screen/maptheme.dart';
@@ -27,14 +30,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:ui' as ui;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:google_maps_flutter_platform_interface/src/types/polyline.dart'
-    as google_maps;
 
-String UserEmail = myServices.sharedPreferences.getString("email")!;
-String Username = myServices.sharedPreferences.getString("name")!;
-String Userphone = myServices.sharedPreferences.getString("phone")!;
-String Userid = myServices.sharedPreferences.getString("id")!;
-String Userpass = myServices.sharedPreferences.getString("password")!;
+String? UserEmail;
+String? Username;
+String? Userphone;
+String? Userid;
+String? Userpass;
+String? UserPhoto;
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -120,6 +122,12 @@ class MapSampleState extends State<home> {
     // TODO: implement initState
     super.initState();
     applyStoredMapTheme();
+    UserEmail = userServices.sharedPreferences.getString("email")!;
+    Username = userServices.sharedPreferences.getString("name")!;
+    Userphone = userServices.sharedPreferences.getString("phone")!;
+    Userid = userServices.sharedPreferences.getString("id")!;
+    Userpass = userServices.sharedPreferences.getString("password")!;
+    UserPhoto = userServices.sharedPreferences.getString("image");
     destinationController.addListener(() {
       onChangedest();
     });
@@ -308,11 +316,13 @@ class MapSampleState extends State<home> {
               Container(
                 width: 60,
                 height: 60,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   //color: Colors.red,
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: AssetImage('assets/images/profile.png'),
+                      image: UserPhoto == ""
+                          ? AssetImage('assets/images/profile.png') as ImageProvider<Object>
+                          : NetworkImage(applink.linkImageRoot + '/$UserPhoto'),
                       fit: BoxFit.fill),
                 ),
               ),
@@ -1029,10 +1039,10 @@ class MapSampleState extends State<home> {
                                 // setState(() {
                                 //   RideCount++;
                                 // });
-                                saveRideHistory(sourceController.text,
+                                saveRideHistory(
+                                    sourceController.text,
                                     destinationController.text,
-                                    DateTime.now().toString()
-                                    );
+                                    DateTime.now().toString());
                                 showNotification();
                                 Navigator.pop(context, 'Yes');
                                 Get.back();

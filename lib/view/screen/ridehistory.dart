@@ -11,7 +11,6 @@ import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
 import 'package:ecommercebig/core/services/services.dart';
 
-MyServices myServices = Get.find();
 statusrequest statusreq = statusrequest.none;
 rideHistorydata ridehistory = rideHistorydata(Get.find());
 
@@ -71,8 +70,6 @@ saveRideHistory(String source, String destination, String currentTime) async {
       ).show();
     }
   }
-  setState() {}
-  ;
 }
 
 getRides() async {
@@ -106,13 +103,13 @@ class rideHistorytemp extends StatelessWidget {
       child: FutureBuilder(
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            if(snapshot.data.length == 0){
+            if (snapshot.data.length == 0) {
               return const Center(child: Text("No rides yet"));
             }
             return ListView.builder(
               // itemCount: 3,
               itemCount: snapshot.data.length,
-              shrinkWrap: true, 
+              shrinkWrap: true,
               // physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
                 return CardRideHistory(

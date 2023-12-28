@@ -1,20 +1,17 @@
-import 'package:ecommercebig/core/middleware/mymiddleware.dart' as prefix0;
+import 'package:ecommercebig/controller/auth/login_controller.dart';
+import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/view/screen/auth/login.dart';
 import 'package:ecommercebig/view/screen/emergency.dart';
 import 'package:ecommercebig/view/screen/home.dart';
-import 'package:ecommercebig/view/screen/maptheme.dart';
 import 'package:ecommercebig/view/screen/myprofile.dart';
 import 'package:ecommercebig/view/screen/payment/payment.dart';
 import 'package:ecommercebig/view/screen/ridehistory.dart';
-import 'package:ecommercebig/view/widget/testfolder/test.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:ecommercebig/linkapi.dart';
 // int RideCount = 0;
 
 class CustomDrawer extends StatelessWidget {
@@ -40,10 +37,15 @@ class CustomDrawer extends StatelessWidget {
                 Container(
                   width: 80,
                   height: 80,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: AssetImage('assets/images/profile.png'))),
+                  decoration:  BoxDecoration(
+                  //color: Colors.red,
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                      image: UserPhoto == ""
+                          ? AssetImage('assets/images/profile.png') as ImageProvider<Object>
+                          : NetworkImage(applink.linkImageRoot + '/$UserPhoto'),
+                      fit: BoxFit.fill),
+                ),
                 ),
                 const SizedBox(
                   width: 10,
@@ -56,11 +58,11 @@ class CustomDrawer extends StatelessWidget {
                       Text('Hello ,',
                           style: GoogleFonts.poppins(
                               color: Colors.black, fontSize: 20)),
-                      Text(
+                       Text(
                         /*authController.myUser.value.name == null
                                 ? "Mark"
                                 : authController.myUser.value.name!,*/
-                        Username,
+                         Username!,
                         style: GoogleFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -149,9 +151,10 @@ class CustomDrawer extends StatelessWidget {
               buildDrawerItem(
                   title: 'Log Out',
                   onPressed: () {
-                    prefix0.myServices.sharedPreferences.setString("Login", "0");
-                    prefix0.myServices.sharedPreferences.setString("name", "");
-                    prefix0.myServices.sharedPreferences.setString("password", "");
+                    myServices.sharedPreferences.setString("Login", "0");
+                    userServices.sharedPreferences.setString("name", "");
+                    userServices.sharedPreferences.setString("password", "");
+                     userServices.sharedPreferences.setString("image", ""); 
                     Get.offAll(() => const Login(),
                         transition: Transition.rightToLeft);
                     //FirebaseAuth.instance.signOut();

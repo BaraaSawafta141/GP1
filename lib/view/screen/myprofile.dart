@@ -1,23 +1,16 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:crypto/crypto.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:ecommercebig/controller/auth/login_controller.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
-
 import 'package:ecommercebig/core/functions/validinput.dart';
-import 'package:ecommercebig/core/middleware/mymiddleware.dart';
-import 'package:ecommercebig/core/services/services.dart';
 import 'package:ecommercebig/data/datasource/remote/auth/profileupdate.dart';
-
 import 'package:ecommercebig/view/screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as Path;
 
 class ProfileSettingScreen extends StatefulWidget {
   const ProfileSettingScreen({Key? key}) : super(key: key);
@@ -28,7 +21,6 @@ class ProfileSettingScreen extends StatefulWidget {
 
 class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
   updateprofile updateprof = updateprofile(Get.find());
-  MyServices myServices = Get.find();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController phonecontroller = TextEditingController();
@@ -47,6 +39,18 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
     final XFile? image = await _picker.pickImage(source: source);
     if (image != null) {
       selectedImage = File(image.path);
+      await updateprof.postRequestWithFile(selectedImage!);
+      userServices.sharedPreferences.setString(
+          "image", "${userServices.sharedPreferences.getString("image")}");
+      AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.success,
+        animType: AnimType.rightSlide,
+        title: 'Success',
+        desc: 'Your profile picture has been updated successfully',
+        //btnCancelOnPress: () {},
+        btnOkOnPress: () {},
+      ).show();
       setState(() {});
     }
   }
@@ -60,6 +64,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
         leading: InkWell(
           child: Icon(Icons.arrow_back),
           onTap: () {
+            setState(() {});
             Get.back();
           },
         ),
@@ -176,16 +181,19 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                         if (formstate.currentState!.validate()) {
                           //statusreq = statusrequest.loading;
                           //update();
-                          var response =await updateprof.postdata(nameController.text, passController.text);
-                          print("============================ Controller $response ");
+                          var response = await updateprof.postdata(
+                              nameController.text, passController.text);
+                          print(
+                              "============================ Controller $response ");
 
                           statusreq = handlingdata(response);
 
                           if (statusrequest.success == statusreq) {
                             if (response['status'] == "Success") {
-                              myServices.sharedPreferences.setString(
+                              userServices.sharedPreferences.setString(
                                   "name", response['message']['users_name']);
-                              myServices.sharedPreferences.setString("password",
+                              userServices.sharedPreferences.setString(
+                                  "password",
                                   response['message']['users_password']);
                             } else {
                               AwesomeDialog(
