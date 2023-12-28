@@ -4,8 +4,11 @@ import 'dart:typed_data';
 //import 'dart:html';
 import 'package:ecommercebig/controller/auth/login_controller.dart';
 import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
+import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
+import 'package:ecommercebig/core/functions/handlingdata.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
 import 'package:ecommercebig/linkapi.dart';
 import 'package:ecommercebig/view/screen/commentpage.dart';
 import 'package:ecommercebig/view/screen/drawer.dart';
@@ -37,6 +40,8 @@ String? Userphone;
 String? Userid;
 String? Userpass;
 String? UserPhoto;
+cardData cardDetails = cardData(Get.find());
+List<String> cardsList = <String>[];
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -321,7 +326,8 @@ class MapSampleState extends State<home> {
                   shape: BoxShape.circle,
                   image: DecorationImage(
                       image: UserPhoto == ""
-                          ? AssetImage('assets/images/profile.png') as ImageProvider<Object>
+                          ? AssetImage('assets/images/profile.png')
+                              as ImageProvider<Object>
                           : NetworkImage(applink.linkImageRoot + '/$UserPhoto'),
                       fit: BoxFit.fill),
                 ),
@@ -763,6 +769,24 @@ class MapSampleState extends State<home> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () async {
+                      var cards = await cardDetails.getdata();
+                      print(
+                          "===========================yyyyyyyyyyyyyyyyyyyy= 00000000000000000000000 $cards ");
+                      statusrequest statusreq = handlingdata(cards);
+                      print("\n$statusreq\n");
+                      if (statusrequest.success == statusreq) {
+                        if (cards['status'] == "success") {
+                          setState(() {
+                            for (int i = 0; i < cards['data'].length; i++) {
+                              cardsList.add(cards['data'][i]['card_number']);
+                            }
+                          });
+                          print(
+                              "============================ cccccctttttttttttttttttttttttttttttttttttttttcccccc $cardsList ");
+                        }
+                      } else {
+                        print("error in getting cards");
+                      }
                       String selectplacedest =
                           _placesList[index]['description'];
                       destinationController.text =
@@ -1342,6 +1366,7 @@ class MapSampleState extends State<home> {
       }),
     );
   }
+
   /*buildDriversList() {
     return Container(
       height: 120,
@@ -1364,7 +1389,6 @@ class MapSampleState extends State<home> {
       }),
     );
   }*/
-
   buildDriverCard(bool selected) {
     return Container(
       margin: EdgeInsets.only(right: 8, left: 8, top: 4, bottom: 4),
@@ -1423,14 +1447,9 @@ class MapSampleState extends State<home> {
     );
   }
 
-  String dropdownValue = '**** **** **** 8789';
-  List<String> list = <String>[
-    '**** **** **** 8789',
-    '**** **** **** 8921',
-    '**** **** **** 1233',
-    '**** **** **** 4352'
-  ];
   buildPaymentCardWidget() {
+    String dropdownValue =
+        cardsList.length != 0 ? cardsList.first : "No Cards Found";
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1443,23 +1462,39 @@ class MapSampleState extends State<home> {
           SizedBox(
             width: 10,
           ),
-          DropdownButton<String>(
-            value: dropdownValue,
-            icon: const Icon(Icons.keyboard_arrow_down),
-            elevation: 16,
-            style: const TextStyle(color: Colors.deepPurple),
-            underline: Container(),
-            onChanged: (String? value) {
-              // This is called when the user selects an item.
+          // DropdownButton<String>(
+          //   value: dropdownValue,
+          //   icon: const Icon(Icons.keyboard_arrow_down),
+          //   elevation: 16,
+          //   style:  TextStyle(color: Colors.deepPurple),
+          //   underline: Container(),
+          //   onChanged: (String? value) {
+          //     // This is called when the user selects an item.
+          //     setState(() {
+          //       dropdownValue = value!;
+          //     });
+          //   },
+          //   items: cardsList.map<DropdownMenuItem<String>>((String value) {
+          //     return DropdownMenuItem<String>(
+          //       value: value,
+          //       child: Text(value,
+          //           style: TextStyle(
+          //             fontSize: 11,
+          //           )),
+          //     );
+          //   }).toList(),
+          // ),
+          DropdownMenu<String>(
+            width: Get.width * 0.3,
+            initialSelection: dropdownValue,
+            onSelected: (String? value) {
               setState(() {
                 dropdownValue = value!;
               });
             },
-            items: list.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
+            dropdownMenuEntries:
+                cardsList.map<DropdownMenuEntry<String>>((String value) {
+              return DropdownMenuEntry<String>(value: value, label: value);
             }).toList(),
           )
         ],

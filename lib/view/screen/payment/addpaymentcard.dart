@@ -1,3 +1,6 @@
+import 'package:ecommercebig/core/class/statusrequest.dart';
+import 'package:ecommercebig/core/functions/handlingdata.dart';
+import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
 import 'package:ecommercebig/view/screen/payment/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
@@ -12,6 +15,7 @@ class AddPaymentCardScreen extends StatefulWidget {
 }
 
 class AddPaymentCardScreenState extends State<AddPaymentCardScreen> {
+  cardData cardDetails = cardData(Get.find());
   String cardNumber = '';
   String expiryDate = '';
   String cardHolderName = '';
@@ -49,18 +53,6 @@ class AddPaymentCardScreenState extends State<AddPaymentCardScreen> {
         resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
-            /*FloatingActionButton(
-              onPressed: () {
-                // Navigate to AddPaymentCardScreen
-                
-              },
-              child: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              ),
-              backgroundColor: Colors.green,
-            ),*/
-            //greenIntroWidgetWithoutLogos(title: 'Add Card'),
             Column(
               children: <Widget>[
                 SizedBox(
@@ -70,8 +62,8 @@ class AddPaymentCardScreenState extends State<AddPaymentCardScreen> {
                   cardNumber: cardNumber,
                   expiryDate: expiryDate,
                   cardHolderName: cardHolderName,
-                  cvvCode: cvvCode,
-                  bankName: 'Axis Bank',
+                  cvvCode: cvvCode.toString(),
+                  // bankName: 'Axis Bank',
                   showBackView: isCvvFocused,
                   obscureCardNumber: true,
                   obscureCardCvv: true,
@@ -97,39 +89,6 @@ class AddPaymentCardScreenState extends State<AddPaymentCardScreen> {
                           isExpiryDateVisible: true,
                           cardHolderName: cardHolderName,
                           expiryDate: expiryDate,
-                          //themeColor: Colors.blue,
-                          //textColor: Colors.black,
-                          /*cardNumberDecoration: InputDecoration(
-                          labelText: 'Number',
-                          hintText: 'XXXX XXXX XXXX XXXX',
-                          hintStyle: const TextStyle(color: Colors.black),
-                          labelStyle: const TextStyle(color: Colors.black),
-                          focusedBorder: border,
-                          enabledBorder: border,
-                        ),
-                        expiryDateDecoration: InputDecoration(
-                          hintStyle: const TextStyle(color: Colors.black),
-                          labelStyle: const TextStyle(color: Colors.black),
-                          focusedBorder: border,
-                          enabledBorder: border,
-                          labelText: 'Expired Date',
-                          hintText: 'XX/XX',
-                        ),
-                        cvvCodeDecoration: InputDecoration(
-                          hintStyle: const TextStyle(color: Colors.black),
-                          labelStyle: const TextStyle(color: Colors.black),
-                          focusedBorder: border,
-                          enabledBorder: border,
-                          labelText: 'CVV',
-                          hintText: 'XXX',
-                        ),
-                        cardHolderDecoration: InputDecoration(
-                          hintStyle: const TextStyle(color: Colors.black),
-                          labelStyle: const TextStyle(color: Colors.black),
-                          focusedBorder: border,
-                          enabledBorder: border,
-                          labelText: 'Card Holder',
-                        ),*/
                           onCreditCardModelChange: onCreditCardModelChange,
                         ),
                         const SizedBox(
@@ -158,11 +117,22 @@ class AddPaymentCardScreenState extends State<AddPaymentCardScreen> {
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               print('valid!');
+                              var response = await cardDetails.postdata(
+                                  cardHolderName,
+                                  cvvCode,
+                                  expiryDate,
+                                  cardNumber);
+                              print(
+                                  "============================ Controller $response ");
+                              statusrequest statusreq = handlingdata(response);
 
-                              //await Get.find<AuthController>().storeUserCard(cardNumber, expiryDate, cvvCode, cardHolderName);
-
-                              Get.snackbar('Success',
-                                  'Your card is stored successfully');
+                              if (statusrequest.success == statusreq) {
+                                Get.snackbar('Success',
+                                    'Your card is stored successfully');
+                               
+                              } else {
+                                Get.snackbar('Error', 'Something went wrong');
+                              }
                             } else {
                               print('invalid!');
                             }

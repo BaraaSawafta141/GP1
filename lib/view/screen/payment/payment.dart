@@ -1,9 +1,14 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:ecommercebig/core/class/statusrequest.dart';
+import 'package:ecommercebig/core/functions/handlingdata.dart';
+import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
 import 'package:ecommercebig/view/screen/home.dart';
 import 'package:ecommercebig/view/screen/payment/addpaymentcard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PaymentScreen extends StatefulWidget {
   @override
@@ -21,6 +26,28 @@ class PaymentScreenState extends State<PaymentScreen> {
   bool useGlassMorphism = false;
   bool useBackgroundImage = false;
   OutlineInputBorder? border;
+  statusrequest statusreq = statusrequest.none;
+  cardData cardDetails = cardData(Get.find());
+
+  getCards() async {
+    var response = await cardDetails.getdata();
+    statusreq = handlingdata(response);
+    if (statusrequest.success == statusreq) {
+      if (response['status'] == "success") {
+        return response['data'];
+      } else {
+        return AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.warning,
+          animType: AnimType.rightSlide,
+          title: 'Warning',
+          desc: 'error in getting ride history',
+          //btnCancelOnPress: () {},
+          btnOkOnPress: () {},
+        ).show();
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -57,55 +84,66 @@ class PaymentScreenState extends State<PaymentScreen> {
               left: 0,
               right: 0,
               bottom: 80,
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemBuilder: (context, i) {
-                  String cardNumber = '';
-                  String expiryDate = '';
-                  String cardHolderName = '';
-                  String cvvCode = '';
+              child: FutureBuilder(
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemBuilder: (context, i) {
+                        String cardNumber = '';
+                        String expiryDate = '';
+                        String cardHolderName = '';
+                        String cvvCode = '';
 
-                  try {
-                    cardNumber = '1234 1234 1234 1234';
-                  } catch (e) {
-                    cardNumber = '';
+                        try {
+                          cardNumber = snapshot.data[i]['card_number'];
+                        } catch (e) {
+                          cardNumber = '';
+                        }
+
+                        try {
+                          expiryDate = snapshot.data[i]['card_exp'];
+                        } catch (e) {
+                          expiryDate = '';
+                        }
+
+                        try {
+                          cardHolderName = snapshot.data[i]['card_holder'];
+                        } catch (e) {
+                          cardHolderName = '';
+                        }
+
+                        try {
+                          cvvCode = snapshot.data[i]['card_cvv'];
+                        } catch (e) {
+                          cvvCode = '';
+                        }
+
+                        return CreditCardWidget(
+                          cardBgColor: Colors.black,
+                          cardNumber: cardNumber,
+                          expiryDate: expiryDate,
+                          cardHolderName: cardHolderName,
+                          cvvCode: cvvCode,
+                          bankName: '',
+                          showBackView: isCvvFocused,
+                          obscureCardNumber: true,
+                          obscureCardCvv: true,
+                          isHolderNameVisible: true,
+                          isSwipeGestureEnabled: true,
+                          onCreditCardWidgetChange:
+                              (CreditCardBrand creditCardBrand) {},
+                        );
+                      },
+                      itemCount: snapshot.data.length,
+                    );
                   }
-
-                  try {
-                    expiryDate = '28/04';
-                  } catch (e) {
-                    expiryDate = '';
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
                   }
-
-                  try {
-                    cardHolderName = 'James Charles';
-                  } catch (e) {
-                    cardHolderName = '';
-                  }
-
-                  try {
-                    cvvCode = '697';
-                  } catch (e) {
-                    cvvCode = '';
-                  }
-
-                  return CreditCardWidget(
-                    cardBgColor: Colors.black,
-                    cardNumber: cardNumber,
-                    expiryDate: expiryDate,
-                    cardHolderName: cardHolderName,
-                    cvvCode: cvvCode,
-                    bankName: '',
-                    showBackView: isCvvFocused,
-                    obscureCardNumber: true,
-                    obscureCardCvv: true,
-                    isHolderNameVisible: true,
-                    isSwipeGestureEnabled: true,
-                    onCreditCardWidgetChange:
-                        (CreditCardBrand creditCardBrand) {},
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 },
-                itemCount: 4,
+                future: getCards(),
               ),
             ),
             Column(

@@ -21,6 +21,8 @@ class applink {
   static const String profile = "$server/update_profile.php";  //profile
   static const String UploadImage = "$server/updateImage.php";  //upload image
 
+  static const String Card = "$server/card.php";  //card
+  static const String viewCard = "$server/view_cards.php";  //view Cards
 
 
 
