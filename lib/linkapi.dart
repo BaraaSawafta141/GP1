@@ -37,6 +37,8 @@ class applink {
       "$server/comments/addingComment.php"; //adding comments api
   static const String viewComments =
       "$server/comments/view_comments.php"; //view comments api
+  static const String imgName =
+      "$server/comments/get_users_data.php"; //get Image & name  api
 }
 /*
 i have a problem when i do hot reload and the problem because iam working on the localhost i should put it on the server 

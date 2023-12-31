@@ -2,6 +2,7 @@ import 'package:comment_box/comment/comment.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
 import 'package:ecommercebig/data/datasource/remote/comments/addingComments.dart';
+import 'package:ecommercebig/data/datasource/remote/comments/getImgName.dart';
 import 'package:ecommercebig/data/datasource/remote/comments/viewComments.dart';
 import 'package:ecommercebig/view/screen/home.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class _TestMeState extends State<commentpage> {
   statusrequest statusreq = statusrequest.none;
   addingComments commentData = addingComments(Get.find());
   viewComments viewcommentData = viewComments(Get.find());
+  userImgName imgNameData = userImgName(Get.find());
   double _userRating = 3.0;
   int _ratingBarMode = 1;
   double _initialRating = 2.0;
@@ -30,6 +32,7 @@ class _TestMeState extends State<commentpage> {
   IconData? _selectedIcon;
   @override
   void initState() {
+    getAllComments();
     _rating = _initialRating;
     super.initState();
   }
@@ -37,43 +40,62 @@ class _TestMeState extends State<commentpage> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController commentController = TextEditingController();
   List filedata = [
-    {
-      'name': 'Chuks Okwuenu',
-      'pic': 'assets/images/profile.png',
-      'message': 'I love to code',
-      'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
-      'rating': 4.0,
-    },
-    {
-      'name': 'Biggi Man',
-      'pic': 'assets/images/profile.png',
-      'message': 'Very cool',
-      'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
-      'rating': 4.0,
-    },
-    {
-      'name': 'Tunde Martins',
-      'pic': 'assets/images/profile.png',
-      'message': 'Very cool',
-      'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
-      'rating': 4.0,
-    },
-    {
-      'name': 'Biggi Man',
-      'pic': 'assets/images/profile.png',
-      'message': 'Very cool',
-      'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
-      'rating': 4.0,
-    },
+    // {
+    //   'name': 'Chuks Okwuenu',
+    //   'pic': 'assets/images/profile.png',
+    //   'message': 'I love to code',
+    //   'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+    //   'rating': 4.0,
+    // },
+    // {
+    //   'name': 'Biggi Man',
+    //   'pic': 'assets/images/profile.png',
+    //   'message': 'Very cool',
+    //   'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+    //   'rating': 4.0,
+    // },
+    // {
+    //   'name': 'Tunde Martins',
+    //   'pic': 'assets/images/profile.png',
+    //   'message': 'Very cool',
+    //   'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+    //   'rating': 4.0,
+    // },
+    // {
+    //   'name': 'Biggi Man',
+    //   'pic': 'assets/images/profile.png',
+    //   'message': 'Very cool',
+    //   'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+    //   'rating': 4.0,
+    // },
   ];
 
   getAllComments() async {
     var response = await viewcommentData.postdata(selectedDriver);
     print(response);
+
+    for (int i = 0; i < response['data'].length; i++) {
+      var imgName =
+          await imgNameData.postdata(response['data'][i]['comment_user_id'].toString());
+      var value = {
+        'name': imgName['data'][0]['users_name'],
+        'pic': NetworkImage(
+            applink.linkImageRoot + '/' + imgName['data'][0]['users_photo']),
+        'message': response['data'][i]['comment_info'],
+        'date': response['data'][i]['comment_date'],
+        'rating': response['data'][i]['comment_rating'],
+      };
+      print(value);
+      filedata.insert(0, value);
+    }
+    // response['data'][]['comment_user_id']
+
     setState(() {
       // filedata = response['data'];
     });
   }
+
+
 
   Widget commentChild(data) {
     return ListView(

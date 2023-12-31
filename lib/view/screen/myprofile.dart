@@ -39,18 +39,9 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
     final XFile? image = await _picker.pickImage(source: source);
     if (image != null) {
       selectedImage = File(image.path);
-      await updateprof.postRequestWithFile(selectedImage!);
-      userServices.sharedPreferences.setString(
-          "image", "${userServices.sharedPreferences.getString("image")}");
-      AwesomeDialog(
-        context: Get.context!,
-        dialogType: DialogType.success,
-        animType: AnimType.rightSlide,
-        title: 'Success',
-        desc: 'Your profile picture has been updated successfully',
-        //btnCancelOnPress: () {},
-        btnOkOnPress: () {},
-      ).show();
+      var response = await updateprof.postRequestWithFile(selectedImage!);
+      userServices.sharedPreferences
+          .setString("image", response['data']['users_photo']);
       setState(() {});
     }
   }
@@ -64,8 +55,9 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
         leading: InkWell(
           child: Icon(Icons.arrow_back),
           onTap: () {
-            setState(() {});
-            Get.back();
+            setState(() {
+              Get.offAll(() => home());
+            });
           },
         ),
       ),
@@ -179,10 +171,9 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                       if (passController.text != "" &&
                           confirmpassController.text == passController.text) {
                         if (formstate.currentState!.validate()) {
-                          //statusreq = statusrequest.loading;
-                          //update();
+                      
                           var response = await updateprof.postdata(
-                              nameController.text, passController.text);
+                              nameController.text, passController.text, Userid!);
                           print(
                               "============================ Controller $response ");
 
@@ -195,6 +186,16 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                               userServices.sharedPreferences.setString(
                                   "password",
                                   response['message']['users_password']);
+                              AwesomeDialog(
+                                context: Get.context!,
+                                dialogType: DialogType.success,
+                                animType: AnimType.rightSlide,
+                                title: 'Success',
+                                desc:
+                                    'Your profile has been updated successfully',
+                                //btnCancelOnPress: () {},
+                                btnOkOnPress: () {},
+                              ).show();
                             } else {
                               AwesomeDialog(
                                 context: Get.context!,

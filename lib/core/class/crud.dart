@@ -41,7 +41,8 @@ class crud {
     var myrequest = await request.send();
     var response = await http.Response.fromStream(myrequest);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return print("Uploaded");
+       Map responsebody = jsonDecode(response.body);
+      return responsebody;
     } else {
       return print("Error ${response.statusCode}");
     }

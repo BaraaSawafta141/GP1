@@ -8,11 +8,11 @@ class updateprofile {
 
   updateprofile(this.Crud);
 
-  postdata(String username,String password) async {
+  postdata(String username,String password, String uid) async {
     var response = await Crud.postData(applink.profile, {
       "username": username ,
       "password": password ,
-      "id":Userid,
+      "id":uid,
           });
     return response.fold((l) => l, (r) => r);
   }
