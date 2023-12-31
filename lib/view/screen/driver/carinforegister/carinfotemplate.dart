@@ -116,6 +116,7 @@ class _nameState extends State<carRegistertemplate> {
                             duration: Duration(seconds: 1),
                             curve: Curves.easeIn);
                       },
+                      heroTag: 'prevButton',
                       child: Text(
                         "Prev",
                         style: TextStyle(
@@ -137,6 +138,7 @@ class _nameState extends State<carRegistertemplate> {
                             duration: Duration(seconds: 1),
                             curve: Curves.easeIn);
                       },
+                      heroTag: 'nextButton',
                       child: Text(
                         "Next",
                         style: TextStyle(

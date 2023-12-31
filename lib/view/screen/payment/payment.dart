@@ -38,10 +38,10 @@ class PaymentScreenState extends State<PaymentScreen> {
       } else {
         return AwesomeDialog(
           context: Get.context!,
-          dialogType: DialogType.warning,
+          dialogType: DialogType.info,
           animType: AnimType.rightSlide,
-          title: 'Warning',
-          desc: 'error in getting ride history',
+          title: 'Info',
+          desc: 'Add your card first',
           //btnCancelOnPress: () {},
           btnOkOnPress: () {},
         ).show();

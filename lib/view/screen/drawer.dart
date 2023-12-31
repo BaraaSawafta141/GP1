@@ -6,6 +6,7 @@ import 'package:ecommercebig/view/screen/home.dart';
 import 'package:ecommercebig/view/screen/myprofile.dart';
 import 'package:ecommercebig/view/screen/payment/payment.dart';
 import 'package:ecommercebig/view/screen/ridehistory.dart';
+import 'package:ecommercebig/view/screen/settings_page.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -146,7 +147,9 @@ class CustomDrawer extends StatelessWidget {
                           );
                         });
                   }),
-              buildDrawerItem(title: 'Settings', onPressed: () {}),
+              buildDrawerItem(title: 'Settings', onPressed: () {
+                Get.to(() => SettingsPage());
+              }),
               buildDrawerItem(title: 'Support', onPressed: () {}),
               buildDrawerItem(
                   title: 'Log Out',

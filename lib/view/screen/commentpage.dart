@@ -1,9 +1,14 @@
 import 'package:comment_box/comment/comment.dart';
+import 'package:ecommercebig/core/class/statusrequest.dart';
+import 'package:ecommercebig/core/functions/handlingdata.dart';
+import 'package:ecommercebig/data/datasource/remote/comments/addingComments.dart';
+import 'package:ecommercebig/data/datasource/remote/comments/viewComments.dart';
 import 'package:ecommercebig/view/screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:ecommercebig/linkapi.dart';
 
 class commentpage extends StatefulWidget {
   @override
@@ -13,7 +18,9 @@ class commentpage extends StatefulWidget {
 class _TestMeState extends State<commentpage> {
   late final _ratingController;
   late double _rating;
-
+  statusrequest statusreq = statusrequest.none;
+  addingComments commentData = addingComments(Get.find());
+  viewComments viewcommentData = viewComments(Get.find());
   double _userRating = 3.0;
   int _ratingBarMode = 1;
   double _initialRating = 2.0;
@@ -59,6 +66,14 @@ class _TestMeState extends State<commentpage> {
       'rating': 4.0,
     },
   ];
+
+  getAllComments() async {
+    var response = await viewcommentData.postdata(selectedDriver);
+    print(response);
+    setState(() {
+      // filedata = response['data'];
+    });
+  }
 
   Widget commentChild(data) {
     return ListView(
@@ -200,15 +215,12 @@ class _TestMeState extends State<commentpage> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(
             onTap: () {
-              
-                //showdialograting = false;
-                Get.back(result: showdialograting);
-                
+              //showdialograting = false;
+              Get.back(result: showdialograting);
             },
             child: Icon(Icons.arrow_back)),
         title: Text("Comment Page"),
@@ -230,19 +242,21 @@ class _TestMeState extends State<commentpage> {
             Expanded(
               child: CommentBox(
                 userImage: CommentBox.commentImageParser(
-                    imageURLorPath: "assets/images/profile.png"),
+                  imageURLorPath:
+                      NetworkImage(applink.linkImageRoot + '/$UserPhoto'),
+                ),
                 child: commentChild(filedata),
                 labelText: 'Write a comment...',
                 errorText: 'Comment cannot be blank',
                 withBorder: false,
-                sendButtonMethod: () {
+                sendButtonMethod: () async {
                   if (formKey.currentState!.validate()) {
                     //print(commentController.text);
                     setState(() {
                       var value = {
-                        'name': 'New User',
+                        'name': Username,
                         'pic':
-                            'https://lh3.googleusercontent.com/a-/AOh14GjRHcaendrf6gU5fPIVd8GIl1OgblrMMvGUoCBj4g=s400',
+                            NetworkImage(applink.linkImageRoot + '/$UserPhoto'),
                         'message': commentController.text,
                         'date': DateFormat('yyyy-MM-dd HH:mm:ss')
                             .format(DateTime.now()),
@@ -250,6 +264,16 @@ class _TestMeState extends State<commentpage> {
                       };
                       filedata.insert(0, value);
                     });
+                    var response = await commentData.postdata(
+                        Userid!,
+                        commentController.text,
+                        _rating,
+                        DateFormat('yyyy-MM-dd HH:mm:ss')
+                            .format(DateTime.now())
+                            .toString(),
+                        selectedDriver);
+                    statusreq = handlingdata(response);
+                    print(response);
                     commentController.clear();
                     FocusScope.of(context).unfocus();
                   } else {

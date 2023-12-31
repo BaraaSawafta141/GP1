@@ -8,6 +8,7 @@ import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/data/datasource/remote/driver/viewDrivers.dart';
 import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
 import 'package:ecommercebig/linkapi.dart';
 import 'package:ecommercebig/view/screen/commentpage.dart';
@@ -41,7 +42,9 @@ String? Userid;
 String? Userpass;
 String? UserPhoto;
 cardData cardDetails = cardData(Get.find());
+viewDriversData driversData = viewDriversData(Get.find());
 List<String> cardsList = <String>[];
+String selectedDriver = "";
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -84,6 +87,7 @@ class MapSampleState extends State<home> {
     LatLng(32.22117751845855, 35.24213979128875),
     LatLng(32.22074576133657, 35.2327620677686),
   ];
+  List<Map<String, dynamic>> driversList = [];
 
   Future<Uint8List> getBytesFromAssets(String path, int width) async {
     ByteData data = await rootBundle.load(path);
@@ -769,9 +773,29 @@ class MapSampleState extends State<home> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () async {
+                      var response = await driversData.getData();
+                      statusrequest driversReq = handlingdata(response);
+                      List<dynamic> dataList = response['data'];
+                      if (statusrequest.success == driversReq) {
+                        if (response['status'] == "success") {
+                          for (var driver in dataList) {
+                            int driversId = driver['drivers_id'];
+                            String driversName = driver['drivers_name'];
+                            // Create a map with the extracted information and add it to the list
+                            Map<String, dynamic> driverInfo = {
+                              'drivers_id': driversId,
+                              'drivers_name': driversName
+                            };
+                            driversList.add(driverInfo);
+                          }
+                          print(driversList);
+                        }
+                      } else {
+                        print("error in getting drivers Data");
+                      }
+
                       var cards = await cardDetails.getdata();
-                      print(
-                          "===========================yyyyyyyyyyyyyyyyyyyy= 00000000000000000000000 $cards ");
+                      print("===================== $cards ");
                       statusrequest statusreq = handlingdata(cards);
                       print("\n$statusreq\n");
                       if (statusrequest.success == statusreq) {
@@ -787,6 +811,7 @@ class MapSampleState extends State<home> {
                       } else {
                         print("error in getting cards");
                       }
+
                       String selectplacedest =
                           _placesList[index]['description'];
                       destinationController.text =
@@ -1342,7 +1367,7 @@ class MapSampleState extends State<home> {
 
   buildDriversList() {
     // Call sortDriversByDistance to update the order of drivers based on distance
-    sortDriversByDistance(_latlng);
+    // sortDriversByDistance(_latlng); //we have to implement a function to get the drivers lat and long
     return Container(
       height: 120,
       width: Get.width,
@@ -1353,14 +1378,13 @@ class MapSampleState extends State<home> {
               onTap: () async {
                 set(() {
                   selectedRide = i;
+                  selectedDriver = driversList[i]['drivers_id'].toString();
                 });
               },
-              child: buildDriverCard(
-                selectedRide == i,
-              ),
+              child: buildDriverCard(selectedRide == i, i),
             );
           },
-          itemCount: _latlng.length,
+          itemCount: driversList.length,
           scrollDirection: Axis.horizontal,
         );
       }),
@@ -1389,7 +1413,7 @@ class MapSampleState extends State<home> {
       }),
     );
   }*/
-  buildDriverCard(bool selected) {
+  buildDriverCard(bool selected, int i) {
     return Container(
       margin: EdgeInsets.only(right: 8, left: 8, top: 4, bottom: 4),
       height: 85,
@@ -1414,7 +1438,7 @@ class MapSampleState extends State<home> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Standard',
+                  driversList[i]['drivers_name'],
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.w700),
                 ),

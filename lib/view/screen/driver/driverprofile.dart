@@ -1,4 +1,10 @@
 import 'dart:io';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:ecommercebig/core/class/statusrequest.dart';
+import 'package:ecommercebig/core/functions/handlingdata.dart';
+import 'package:ecommercebig/data/datasource/remote/driver/driverSignUp.dart';
+import 'package:ecommercebig/view/screen/driver/carinforegister/carinfotemplate.dart';
+import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,7 +24,8 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
   TextEditingController emailController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   //AuthController authController = Get.find<AuthController>();
-
+  statusrequest statusreq = statusrequest.none;
+  signupdataDriver signupdata = signupdataDriver(Get.find());
   final ImagePicker _picker = ImagePicker();
   File? selectedImage;
   Future<void> requestCameraPermission() async {
@@ -36,6 +43,42 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
     }
   }
 
+  signUp() async {
+    if (nameController.text != "" &&
+        emailController.text != "" &&
+        selectedImage != null) {
+      var response = await signupdata.postdata(
+          nameController.text, emailController.text, phonenum!, selectedImage!);
+      statusreq = handlingdata(response);
+      if (statusrequest.success == statusreq) {
+        if (response['status'] == "success") {
+          Get.off(() => carRegistertemplate());
+        } else {
+          AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.warning,
+            animType: AnimType.rightSlide,
+            title: 'Warning',
+            desc: 'Phone Number Or Email Already Exist',
+            btnCancelOnPress: () {},
+            btnOkOnPress: () {},
+          ).show();
+          statusreq = statusrequest.failure;
+        }
+      }
+    } else {
+      AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Warning',
+        desc: 'Please Enter Your Name And Email and add your image',
+        btnCancelOnPress: () {},
+        btnOkOnPress: () {},
+      ).show();
+    }
+  }
+
   getImage(ImageSource source) async {
     try {
       final XFile? image = await _picker.pickImage(source: source);
@@ -47,7 +90,6 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
       // Handle the exception when permission is denied
       print("Permission denied to access the camera");
       // You can show a custom message or perform any other action here
-
       // Request camera permission again.
       await requestCameraPermission();
     }
@@ -119,6 +161,7 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
                 child: Column(
                   children: [
                     TextFormField(
+                      controller: nameController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: "enter your name",
@@ -131,6 +174,7 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
                       height: 15,
                     ),
                     TextFormField(
+                      controller: emailController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: "enter your email",
@@ -144,7 +188,15 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
                     ),
                     greenButton(
                       'Submit',
-                      () {},
+                      () {
+                        print(phonenum);
+                        print(nameController.text);
+                        print(emailController.text);
+                        print(selectedImage != null
+                            ? selectedImage!.path
+                            : "equals Null <<<<<<<<");
+                        signUp();
+                      },
                     ),
                   ],
                 ),
