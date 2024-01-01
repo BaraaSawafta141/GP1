@@ -19,6 +19,8 @@ class DriverProfileSetup extends StatefulWidget {
   State<DriverProfileSetup> createState() => _DriverProfileSetupState();
 }
 
+late String driverId;
+
 class _DriverProfileSetupState extends State<DriverProfileSetup> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -52,6 +54,7 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
       statusreq = handlingdata(response);
       if (statusrequest.success == statusreq) {
         if (response['status'] == "success") {
+           driverId =  response['id'];
           Get.off(() => carRegistertemplate());
         } else {
           AwesomeDialog(

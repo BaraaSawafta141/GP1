@@ -41,7 +41,7 @@ class crud {
     var myrequest = await request.send();
     var response = await http.Response.fromStream(myrequest);
     if (response.statusCode == 200 || response.statusCode == 201) {
-       Map responsebody = jsonDecode(response.body);
+      Map responsebody = jsonDecode(response.body);
       return responsebody;
     } else {
       return print("Error ${response.statusCode}");
@@ -74,7 +74,49 @@ class crud {
     }
   }
 
- getData(String linkurl) async {
+  postRequestWithFileCar(
+      String linkurl,
+      String location,
+      String type,
+      String company,
+      String model,
+      String number,
+      String color,
+      String driverid,
+      File file) async {
+    print(linkurl);
+    print(file.path);
+    var request = http.MultipartRequest('POST', Uri.parse(linkurl));
+    var length = await file.length();
+    var stream = http.ByteStream(file.openRead());
+    var multipartFile = http.MultipartFile('cardoc', stream, length,
+        filename: basename(file.path));
+    request.files.add(multipartFile);
+    request.fields.addAll({
+      "dId": driverid,
+      "carlocation": location,
+      "cartype": type,
+      "carcompany": company,
+      "carmodel": model,
+      "carnumber": number,
+      "carcolor": color
+    });
+
+    try {
+      var myrequest = await request.send();
+      var response = await http.Response.fromStream(myrequest);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonDecode(response.body);
+      } else {
+        return "Error ${response.statusCode}";
+      }
+    } catch (error) {
+      return "Error: $error";
+    }
+  }
+
+  getData(String linkurl) async {
     try {
       if (await checkinternet()) {
         var response = await http.get(Uri.parse(linkurl));

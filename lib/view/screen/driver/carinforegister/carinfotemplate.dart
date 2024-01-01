@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:ecommercebig/core/class/statusrequest.dart';
+import 'package:ecommercebig/data/datasource/remote/driver/car_info.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/location.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/uploaddoc.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/uploaddocument.dart';
@@ -8,9 +11,9 @@ import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehiclepla
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehicletype.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehicleyear.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vericletype.dart';
+import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class carRegistertemplate extends StatefulWidget {
@@ -22,6 +25,8 @@ class carRegistertemplate extends StatefulWidget {
 
 class _nameState extends State<carRegistertemplate> {
   PageController pageController = PageController();
+  carInfoData carInfodata = carInfoData(Get.find());
+  statusrequest statusreq = statusrequest.none;
   int currentpage = 0;
   String selectedLocations = '';
   String selectedVehicalType = '';
@@ -97,10 +102,12 @@ class _nameState extends State<carRegistertemplate> {
                     vehicalColor = selectedColor;
                   },
                 ),
-                  UploadDocumentPage(onImageSelected: (File image){
-                  document = image;
-                },),
-                DocumentUploadedPage()
+                UploadDocumentPage(
+                  onImageSelected: (File image) {
+                    document = image;
+                  },
+                ),
+                // DocumentUploadedPage()
               ],
             ),
           )),
@@ -128,15 +135,41 @@ class _nameState extends State<carRegistertemplate> {
               SizedBox(
                 width: 235,
               ),
-              Padding( 
+              Padding(
                 padding: const EdgeInsets.all(15),
                 child: Align(
                     alignment: Alignment.bottomRight,
                     child: FloatingActionButton(
-                      onPressed: () {
+                      onPressed: () async {
                         pageController.animateToPage(currentpage + 1,
                             duration: Duration(seconds: 1),
                             curve: Curves.easeIn);
+
+                        if (currentpage == 6) {
+                          var response = await carInfodata.postdata(
+                              selectedLocations,
+                              selectedVehicalType,
+                              selectedVehicalMake,
+                              selectModelYear,
+                              vehicalNumberController.text,
+                              vehicalColor,
+                              driverId,
+                              document!);
+                          
+                          AwesomeDialog(
+                            context: Get.context!,
+                            dialogType: DialogType.success,
+                            animType: AnimType.rightSlide,
+                            title: 'Car Registration',
+                            desc: 'Your request has been registered successfully',
+                            btnOkOnPress: () {
+                              Get.to(() =>DocumentUploadedPage() );
+                            },
+                          ).show();
+
+                          // We need to go to waiting for approval page
+                          // Get.to( () =>DocumentUploadedPage() );
+                        }
                       },
                       heroTag: 'nextButton',
                       child: Text(
@@ -153,7 +186,7 @@ class _nameState extends State<carRegistertemplate> {
       ),
     );
   }
-  
+
   Widget textIntroForPages(
       {String title = "Profile Settings", String? subtitle}) {
     return Container(
