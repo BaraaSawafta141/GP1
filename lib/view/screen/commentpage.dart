@@ -5,6 +5,7 @@ import 'package:ecommercebig/data/datasource/remote/comments/addingComments.dart
 import 'package:ecommercebig/data/datasource/remote/comments/getImgName.dart';
 import 'package:ecommercebig/data/datasource/remote/comments/viewComments.dart';
 import 'package:ecommercebig/view/screen/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
@@ -73,20 +74,26 @@ class _TestMeState extends State<commentpage> {
   getAllComments() async {
     var response = await viewcommentData.postdata(selectedDriver);
     print(response);
-
-    for (int i = 0; i < response['data'].length; i++) {
-      var imgName =
-          await imgNameData.postdata(response['data'][i]['comment_user_id'].toString());
-      var value = {
-        'name': imgName['data'][0]['users_name'],
-        'pic': NetworkImage(
-            applink.linkImageRoot + '/' + imgName['data'][0]['users_photo']),
-        'message': response['data'][i]['comment_info'],
-        'date': response['data'][i]['comment_date'],
-        'rating': response['data'][i]['comment_rating'],
-      };
-      print(value);
-      filedata.insert(0, value);
+    print("=====================================");
+    print(UserPhoto);
+    if (response['status'] != "failure") {
+      for (int i = 0; i < response['data'].length; i++) {
+        var imgName = await imgNameData
+            .postdata(response['data'][i]['comment_user_id'].toString());
+        var value = {
+          'name': imgName['data'][0]['users_name'],
+          'pic': response['data'][i]['users_photo'] == ""
+              ? AssetImage('assets/images/profile.png') as ImageProvider<Object>
+              : NetworkImage(applink.linkImageRoot +
+                  '/' +
+                  imgName['data'][0]['users_photo']),
+          'message': response['data'][i]['comment_info'],
+          'date': response['data'][i]['comment_date'],
+          'rating': response['data'][i]['comment_rating'],
+        };
+        print(value);
+        filedata.insert(0, value);
+      }
     }
     // response['data'][]['comment_user_id']
 
@@ -94,8 +101,6 @@ class _TestMeState extends State<commentpage> {
       // filedata = response['data'];
     });
   }
-
-
 
   Widget commentChild(data) {
     return ListView(
@@ -265,6 +270,7 @@ class _TestMeState extends State<commentpage> {
               child: CommentBox(
                 userImage: CommentBox.commentImageParser(
                   imageURLorPath:
+                      UserPhoto == "" ? AssetImage('assets/images/profile.png') as ImageProvider<Object>:
                       NetworkImage(applink.linkImageRoot + '/$UserPhoto'),
                 ),
                 child: commentChild(filedata),
@@ -277,7 +283,8 @@ class _TestMeState extends State<commentpage> {
                     setState(() {
                       var value = {
                         'name': Username,
-                        'pic':
+                        'pic': UserPhoto == ""?
+                        AssetImage('assets/images/profile.png') as ImageProvider<Object>:
                             NetworkImage(applink.linkImageRoot + '/$UserPhoto'),
                         'message': commentController.text,
                         'date': DateFormat('yyyy-MM-dd HH:mm:ss')
