@@ -82,7 +82,7 @@ class _TestMeState extends State<commentpage> {
             .postdata(response['data'][i]['comment_user_id'].toString());
         var value = {
           'name': imgName['data'][0]['users_name'],
-          'pic': response['data'][i]['users_photo'] == ""
+          'pic': imgName['data'][0]['users_photo'] == ""
               ? AssetImage('assets/images/profile.png') as ImageProvider<Object>
               : NetworkImage(applink.linkImageRoot +
                   '/' +
