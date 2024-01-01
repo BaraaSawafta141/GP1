@@ -5,12 +5,13 @@ class MyTranslation extends Translations {
   Map<String, Map<String, String>> get keys => {
         "ar": {
           "1": "اختر اللغة",
-          "2": "اختر المنتجة",
-          "3": "نحن لدينا 100 الف منتج  , اختر \n  منتجك  من  متجرنا",
-          "4": "سهل وامن للشراء",
-          "5": "يمكنك الدفع كاش او \n من خلال بوابات الدفع الالكترونية",
-          "6": "تتبع طلبك",
-          "7": "يمكنك تتبع طلبك في كل مرحلة \n وايضا التتبع من خلال الخريطة",
+          "2": "توفير يصل الى 5 دولار",
+          "3": "شبكة من السائقين من اجل رحلة أمنة ومريحة",
+          "4": "سهل وامن ",
+          "5":
+              "طريقة جديدة تمكنك \n من ايجاد رحلة رخيصة\n ومزيد من الربح للسائق",
+          "6": "ربح يصل الى 35\n دولار في الساعة",
+          "7": "جني مزيد من المال \n في ساعات الذروة",
           "8": "متابعه",
           "9": "تسجيل الدخول",
           "10": "اهلا بك",
@@ -43,18 +44,24 @@ class MyTranslation extends Translations {
           "35": "الكلمة الجديدة",
           "36": "تم اعادة تعيين كلمة المرور بنجاح",
           "37": "تهانينا",
-          "38": "تم التسجيل بنجاح"
+          "38": "تم التسجيل بنجاح",
+          "39": "اختر طريقة تسجيل الدخول:",
+          "40": "الدخول كسائق",
+          "41": "الدخول كمستخدم",
+          "42": "العربية",
+          "43": "الانجليزية",
         },
         "en": {
           "1": "Choose Language",
-          "2": "Choose Product",
+          "2": "Save Up to \$5",
           "3":
-              "We Have a 100k Product , Choose \n Your Product From  Our \n E-commerce Shop",
+              "Drivers network \n helps you find comfortable,\n safe and cheap ride.  ",
           "4": "Easy And Safe Paymnet",
-          "5": "You can pay in cash \n or through payment gateways",
-          "6": "Track Your Order",
+          "5":
+              "A new way for\n people to find the cheap ride or\n make more for drivers",
+          "6": "Make up to \$35/hr",
           "7":
-              "The order can be tracked at every stage \n until it reaches you",
+              "With increased prime time\n pricing during peak hours ,you \nmake more with us ",
           "8": "Continue",
           "9": "Sign In",
           "10": "Welcome Back",
@@ -87,7 +94,12 @@ class MyTranslation extends Translations {
           "35": "New Password",
           "36": "Password has been reset successfully",
           "37": "congratulations",
-          "38": "successfully registered"
+          "38": "successfully registered",
+          "39": "Choose Your Login Way:",
+          "40": "Login As Driver",
+          "41": "Login As User ",
+          "42": "Ar",
+          "43": "En",
         }
       };
 }

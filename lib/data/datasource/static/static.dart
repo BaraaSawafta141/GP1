@@ -2,7 +2,7 @@ import 'package:ecommercebig/core/constant/imageasset.dart';
 import 'package:ecommercebig/data/model/onboardingmodel.dart';
 import 'package:get/get_utils/get_utils.dart';
 
-List<OnBoardingModel> onBoardingList = [
+List<OnBoardingModel> onBoardingList = [   
   OnBoardingModel(
       title: "2".tr, body: "3".tr, image: AppImageAsset.onBoardingImageOne),
   OnBoardingModel(

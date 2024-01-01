@@ -1,7 +1,6 @@
 
 import 'package:ecommercebig/controller/auth/signup_controller.dart';
 import 'package:ecommercebig/core/class/handlingdataview.dart';
-import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/constant/color.dart';
 import 'package:ecommercebig/core/functions/alertexitapp.dart';
 import 'package:ecommercebig/core/functions/validinput.dart';
