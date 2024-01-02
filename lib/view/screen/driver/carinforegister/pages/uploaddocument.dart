@@ -13,13 +13,21 @@ class _DocumentUploadedPageState extends State<DocumentUploadedPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          //leading: Icon(Icons.arrow_back),
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.green,
           title: Text(
             "Car Registration",
             textAlign: TextAlign.center,
           ),
         ),
+        // appBar: AppBar(
+        //   //leading: Icon(Icons.arrow_back),
+        //   backgroundColor: Colors.green,
+        //   title: Text(
+        //     "Car Registration",
+        //     textAlign: TextAlign.center,
+        //   ),
+        // ),
         body: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
@@ -29,7 +37,6 @@ class _DocumentUploadedPageState extends State<DocumentUploadedPage> {
               textIntroForPages(
                   title: 'Car Registration',
                   subtitle: 'Waiting for approval from admin'),
-          
               SizedBox(
                 height: 30,
               ),

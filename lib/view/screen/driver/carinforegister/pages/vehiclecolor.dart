@@ -2,29 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class VehicalColorPage extends StatefulWidget {
-  const VehicalColorPage({Key? key,required this.onColorSelected}) : super(key: key);
+  const VehicalColorPage({Key? key, required this.onColorSelected})
+      : super(key: key);
 
-   final Function onColorSelected;
+  final Function onColorSelected;
 
   @override
   State<VehicalColorPage> createState() => _VehicalColorPageState();
 }
 
+TextEditingController colorcontroller = new TextEditingController();
+
 class _VehicalColorPageState extends State<VehicalColorPage> {
-
-
-
   String dropdownvalue = 'Pick a color';
 
-  List<String> colors = [
-    'Pick a color',
-    'White',
-    "Red",
-    "Black"
-  ];
+  List<String> colors = ['Pick a color', 'White', "Red", "Black"];
 
-  buildDropDown(
-      ) {
+  buildDropDown() {
     return Container(
       width: Get.width,
       margin: EdgeInsets.symmetric(horizontal: 2),
@@ -40,7 +34,6 @@ class _VehicalColorPageState extends State<VehicalColorPage> {
           ],
           borderRadius: BorderRadius.circular(8)),
       child: DropdownButton(
-
         // Initial Value
         value: dropdownvalue,
 
@@ -69,22 +62,24 @@ class _VehicalColorPageState extends State<VehicalColorPage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-
-        Text('What Is Your Vehicle Color ?',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w600,color: Colors.black),),
-
-        SizedBox(height: 30,),
-
+        Text(
+          'What Is Your Vehicle Color ?',
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black),
+        ),
+        SizedBox(
+          height: 30,
+        ),
+        // TextFormField(
+        //   controller: colorcontroller,
+        // ),
         buildDropDown(),
-
-
-
       ],
     );
   }

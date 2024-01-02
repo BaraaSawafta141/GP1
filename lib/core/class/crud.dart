@@ -73,6 +73,31 @@ class crud {
       return "Error: $error";
     }
   }
+    postRequestWithFileDriverupdate(String linkurl, File file, String name,
+      String email,String did) async {
+    print(linkurl);
+    print(file.path);
+    var request = http.MultipartRequest('POST', Uri.parse(linkurl));
+    var length = await file.length();
+    var stream = http.ByteStream(file.openRead());
+    var multipartFile = http.MultipartFile('dphoto', stream, length,
+        filename: basename(file.path));
+    request.files.add(multipartFile);
+    request.fields.addAll({"dname": name, "demail": email, "id": did});
+
+    try {
+      var myrequest = await request.send();
+      var response = await http.Response.fromStream(myrequest);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonDecode(response.body);
+      } else {
+        return "Error ${response.statusCode}";
+      }
+    } catch (error) {
+      return "Error: $error";
+    }
+  }
 
   postRequestWithFileCar(
       String linkurl,

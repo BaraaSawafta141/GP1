@@ -161,7 +161,7 @@ class MapSampleState extends State<home> {
     storedTheme = prefs.getString('map_theme');
     print("$storedTheme<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
   }
-
+  
   loadData() async {
     for (int i = 0; i < images.length; i++) {
       final Uint8List markericon = await getBytesFromAssets(images[i], 140);

@@ -31,6 +31,8 @@ class applink {
       "$server/driver/driver_signup.php"; //driver signUp
   static const String viewDrivers =
       "$server/driver/view_drivers.php"; //Get all drivers data
+  static const String updateDrivers =
+      "$server/driver/update_profile_driver.php"; //Get all drivers data    
 
   //comment
   static const String addingComment =

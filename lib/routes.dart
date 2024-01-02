@@ -12,6 +12,7 @@ import 'package:ecommercebig/view/screen/commentpage.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/carinfotemplate.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/uploaddocument.dart';
 import 'package:ecommercebig/view/screen/driver/choosingscreen.dart';
+import 'package:ecommercebig/view/screen/driver/driverhome.dart';
 import 'package:ecommercebig/view/screen/driver/driverphonesectry.dart';
 import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
 import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
@@ -26,7 +27,7 @@ import 'package:get/get.dart';
 List<GetPage<dynamic>>? routes = [
   GetPage(
       // name: "/", page: () => const Language(), middlewares: [MyMiddleWare()]),
-      name: "/", page: () => DocumentUploadedPage()),
+      name: "/", page: () => homedriver()),
       // name: "/",
       // page: () =>  Login()),
 
@@ -44,5 +45,6 @@ List<GetPage<dynamic>>? routes = [
   GetPage(
       name: AppRoute.verfiyCodeSignUp, page: () => const VerfiyCodeSignUp()),
   GetPage(name: AppRoute.homepage, page: () => const home()),
+   GetPage(name: AppRoute.waitingpage, page: () => const DocumentUploadedPage()),
   //Home
 ];

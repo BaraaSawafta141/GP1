@@ -2,9 +2,11 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
-import 'package:ecommercebig/core/services/services.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/driverSignUp.dart';
+import 'package:ecommercebig/data/datasource/remote/driver/driver_update.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/carinfotemplate.dart';
+import 'package:ecommercebig/view/screen/driver/driverhome.dart';
+import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
 import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,68 +15,67 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
 import 'package:permission_handler/permission_handler.dart';
 
-class DriverProfileSetup extends StatefulWidget {
-  const DriverProfileSetup({Key? key}) : super(key: key);
+class DriverProfileupdate extends StatefulWidget {
+  const DriverProfileupdate({Key? key}) : super(key: key);
 
   @override
-  State<DriverProfileSetup> createState() => _DriverProfileSetupState();
+  State<DriverProfileupdate> createState() => _DriverProfileupdateState();
 }
-MyServices driverServices = Get.find(); 
 
-class _DriverProfileSetupState extends State<DriverProfileSetup> {
+String? driverId = driverServices.sharedPreferences.getString("id");
+
+class _DriverProfileupdateState extends State<DriverProfileupdate> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  //AuthController authController = Get.find<AuthController>();
   statusrequest statusreq = statusrequest.none;
-  signupdataDriver signupdata = signupdataDriver(Get.find());
+  udpadedriver updateprofile = udpadedriver(Get.find());
   final ImagePicker _picker = ImagePicker();
   File? selectedImage;
   Future<void> requestCameraPermission() async {
     var status = await Permission.camera.status;
     print('Camera Permission Status: $status');
     if (status.isDenied) {
-      // The user has denied camera permission.
-      // You can show a custom message or UI to inform the user.
-
-      // Request camera permission again.
       await Permission.camera.request();
     } else if (status.isGranted) {
-      // Camera permission is already granted. Open the camera.
       await getImage(ImageSource.camera);
     }
   }
 
-  signUp() async {
+  updateData() async {
     if (nameController.text != "" &&
         emailController.text != "" &&
         selectedImage != null) {
-      var response = await signupdata.postdata(
-          nameController.text, emailController.text, phonenum!, selectedImage!);
+      var response = await updateprofile.postdata(
+          nameController.text, emailController.text, driverId!, selectedImage!);
+      print(response);
       statusreq = handlingdata(response);
       if (statusrequest.success == statusreq) {
-        if (response['status'] == "success") {
-         driverServices.sharedPreferences
-              .setString("id", response['id'].toString());
-         driverServices.sharedPreferences
-              .setString("name", response['data']['drivers_name'].toString());
-         driverServices.sharedPreferences
-              .setString("email", response['data']['drivers_email'].toString());     
-         driverServices.sharedPreferences
-              .setString("img", response['data']['drivers_photo']);          
-           
-          Get.off(() => carRegistertemplate());
+        if (response['status'] == "Success") {
+          // driverId = response['id'];
+          // } else {
+          AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.success,
+            animType: AnimType.rightSlide,
+            title: 'Success',
+            desc: 'You have successfully updated your account',
+            btnCancelOnPress: () {},
+            btnOkOnPress: () {
+              Get.to(homedriver());
+            },
+          ).show();
         } else {
           AwesomeDialog(
             context: Get.context!,
             dialogType: DialogType.warning,
             animType: AnimType.rightSlide,
-            title: 'Warning',
-            desc: 'Phone Number Or Email Already Exist',
+            title: 'warning',
+            desc: 'You have not updated your account',
             btnCancelOnPress: () {},
             btnOkOnPress: () {},
           ).show();
-          statusreq = statusrequest.failure;
         }
       }
     } else {
@@ -83,7 +84,7 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
         dialogType: DialogType.warning,
         animType: AnimType.rightSlide,
         title: 'Warning',
-        desc: 'Please Enter Your Name And Email and add your image',
+        desc: 'Please Enter Your Informations',
         btnCancelOnPress: () {},
         btnOkOnPress: () {},
       ).show();
@@ -119,8 +120,7 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
               child: Stack(
                 children: [
                   greenIntroWidgetWithoutLogos(
-                      title: 'Let’s Get Started!',
-                      subtitle: 'Complete the profile Details'),
+                      title: '', subtitle: 'Update Your Profile'),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: InkWell(
@@ -194,19 +194,14 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
                             color: Colors.green,
                           )),
                     ),
-                    const SizedBox(
-                      height: 30,
+                    SizedBox(
+                      height: 50,
                     ),
                     greenButton(
                       'Submit',
                       () {
-                        print(phonenum);
-                        print(nameController.text);
-                        print(emailController.text);
-                        print(selectedImage != null
-                            ? selectedImage!.path
-                            : "equals Null <<<<<<<<");
-                        signUp();
+                        updateData();
+                        //signUp();
                       },
                     ),
                   ],
@@ -303,6 +298,25 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: CircleAvatar(
+                        radius: 28,
+                        child: FloatingActionButton(
+                          backgroundColor:
+                              const Color.fromARGB(255, 61, 156, 64),
+                          onPressed: () {
+                            Get.to(driverHome());
+                          },
+                          child: Icon(Icons.arrow_back),
+                        )),
+                  ),
+                ],
+              ),
               Text(
                 title,
                 style: GoogleFonts.poppins(
@@ -314,7 +328,7 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
                 Text(
                   subtitle,
                   style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: 24,
                       fontWeight: FontWeight.w400,
                       color: Colors.white),
                 ),

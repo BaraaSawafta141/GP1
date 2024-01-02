@@ -10,4 +10,6 @@ class AppRoute {
   static const String checkemail = "/checkemail";
   static const String verfiyCodeSignUp = "/verfiycodesignup";
   static const String homepage = "/home";
+  static const String waitingpage = "/DocumentUploadedPage";
+  static const String driverhome = "/homedriver";
 }
