@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommercebig/controller/test_controller.dart';
 import 'package:ecommercebig/core/class/handlingdataview.dart';
 import 'package:ecommercebig/core/constant/color.dart';
+import 'package:ecommercebig/view/screen/chat_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,23 +11,49 @@ class testview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(testcontroller());
+    // Get.put(testcontroller());
     return Scaffold(
       appBar: AppBar(
         title: Text("Title"),
         backgroundColor: AppColor.primaryColor,
       ),
-      body: GetBuilder<testcontroller>(builder: (controller) {
-        return handlingdataview(
-          statusreq:controller.statusreq, widget: ListView.builder(
-              itemCount: controller.data.length,
-              itemBuilder: (context, index) {
-                return Text("${controller.data}");
-              }),);
-
-        
-        
-      }),
+      body: usersList(),
     );
   }
+
+  Widget usersList() {
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('users').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Its Error!');
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          return ListView(
+              children: snapshot.data!.docs
+                  .map<Widget>((doc) => _buildUserListItem(doc))
+                  .toList());
+        });
+  }
+
+Widget _buildUserListItem(DocumentSnapshot document) {
+  Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+
+  return ListTile(
+    title: Text(data['name']),
+    subtitle: Text(data['uid']),
+    onTap: () {
+      Get.to(() => chatUser(
+            receiverId: data['uid'],
+            name: data['name'],
+      ));
+    },
+  );
+
 }
+
+}
+
+

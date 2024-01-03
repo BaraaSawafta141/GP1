@@ -1,5 +1,6 @@
 import 'package:ecommercebig/controller/auth/login_controller.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/test_view.dart';
 import 'package:ecommercebig/view/screen/auth/login.dart';
 import 'package:ecommercebig/view/screen/driver/choosingscreen.dart';
 import 'package:ecommercebig/view/screen/emergency.dart';
@@ -34,49 +35,49 @@ class CustomDrawer extends StatelessWidget {
               height: 150,
               child: DrawerHeader(
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          //color: Colors.red,
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: UserPhoto == ""
-                                  ? AssetImage('assets/images/profile.png')
-                                      as ImageProvider<Object>
-                                  : NetworkImage(
-                                      applink.linkImageRoot + '/$UserPhoto'),
-                              fit: BoxFit.fill),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Hello ,',
-                                style: GoogleFonts.poppins(
-                                    color: Colors.black, fontSize: 20)),
-                            Text(
-                              Username!,
-                              style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  )),
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      //color: Colors.red,
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: UserPhoto == ""
+                              ? AssetImage('assets/images/profile.png')
+                                  as ImageProvider<Object>
+                              : NetworkImage(
+                                  applink.linkImageRoot + '/$UserPhoto'),
+                          fit: BoxFit.fill),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Hello ,',
+                            style: GoogleFonts.poppins(
+                                color: Colors.black, fontSize: 20)),
+                        Text(
+                          Username!,
+                          style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              )),
             ),
           ),
           const SizedBox(
@@ -127,7 +128,7 @@ class CustomDrawer extends StatelessWidget {
                                     title: Text('Retro'),
                                     onTap: () async {
                                       await setMapTheme('retro');
-      
+
                                       mymapcontroller?.setMapStyle(
                                         await rootBundle.loadString(
                                             'assets/maptheme/retro.txt'),
@@ -153,6 +154,11 @@ class CustomDrawer extends StatelessWidget {
                     onPressed: () {
                       Get.to(() => SettingsPage());
                     }),
+                buildDrawerItem(
+                    title: 'Chat',
+                    onPressed: () {
+                      Get.to(() => testview());
+                    }),
                 buildDrawerItem(title: 'Support', onPressed: () {}),
                 buildDrawerItem(
                     title: 'Log Out',
@@ -161,7 +167,7 @@ class CustomDrawer extends StatelessWidget {
                       userServices.sharedPreferences.setString("name", "");
                       userServices.sharedPreferences.setString("password", "");
                       userServices.sharedPreferences.setString("image", "");
-                      Get.offAll(() =>  DecisionScreen(),
+                      Get.offAll(() => DecisionScreen(),
                           transition: Transition.rightToLeft);
                       //FirebaseAuth.instance.signOut();
                     }),

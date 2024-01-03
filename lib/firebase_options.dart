@@ -17,19 +17,13 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -52,11 +46,29 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyA_ZGqiChXiwaeJuGJ08ccS1uoG1eCDQh0',
+    appId: '1:111878878990:web:79720066ccf1654b9b495f',
+    messagingSenderId: '111878878990',
+    projectId: 'ecommercebig',
+    authDomain: 'ecommercebig.firebaseapp.com',
+    storageBucket: 'ecommercebig.appspot.com',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: "AIzaSyAL7ys5KeFJ_hF5UgHjRdnfcEkxd1m7o88",
-    appId: "1:195865025194:android:dc2e6e81a15cbce7b00ed3",
-    messagingSenderId: "195865025194",
-    projectId: "phoneverify-cbcf1",
-    //storageBucket: 'phone-auth-15bdb.appspot.com',
+    apiKey: 'AIzaSyBxnub0C_RIxdWUKMW1V1SN9IwlIw-sNZ0',
+    appId: '1:111878878990:android:acdb15dcb34783d49b495f',
+    messagingSenderId: '111878878990',
+    projectId: 'ecommercebig',
+    storageBucket: 'ecommercebig.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyD0qrVn3yJkKGCbd3GRUJaUTVbQZbPMZ0s',
+    appId: '1:111878878990:ios:a0ea57b2dfc808d99b495f',
+    messagingSenderId: '111878878990',
+    projectId: 'ecommercebig',
+    storageBucket: 'ecommercebig.appspot.com',
+    iosBundleId: 'com.example.ecommercebig',
   );
 }

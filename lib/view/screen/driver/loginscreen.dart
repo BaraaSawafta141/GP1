@@ -112,8 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
       CountryCode(name: 'Palestine', code: "PS", dialCode: "+970");
 
   onSubmit(String? input) {
-    // Get.to(() => OtpVerificationScreen(countryCode.dialCode + input!));
-    Get.to(() => DriverProfileSetup());
+    Get.to(() => OtpVerificationScreen(countryCode.dialCode + input!));
+    // Get.to(() => DriverProfileSetup());
     phonenum = countryCode.dialCode + input!;
     //print("====================${countryCode.dialCode + input!}");
   }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 //import 'dart:html';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommercebig/controller/auth/login_controller.dart';
 import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
@@ -41,6 +42,8 @@ String? Userphone;
 String? Userid;
 String? Userpass;
 String? UserPhoto;
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+
 cardData cardDetails = cardData(Get.find());
 viewDriversData driversData = viewDriversData(Get.find());
 List<String> cardsList = <String>[];
@@ -99,13 +102,22 @@ class MapSampleState extends State<home> {
         .asUint8List();
   }
 
+
+  void chat() async {
+  firestore.collection('users').doc(Userid!).set({
+    'uid': Userid,
+    'name': Username,
+  }, SetOptions(merge: true));
+}
+
+
   /*void updateMapStyle(String mapTheme) {
     if (mymapcontroller != null) {
       mymapcontroller!.setMapStyle(mapTheme);
     }
   }*/
 
-  @override
+
   /*void initState() {
     super.initState();
     rootBundle.loadString('assets/map_style.txt').then((string) {
@@ -128,6 +140,7 @@ class MapSampleState extends State<home> {
 
   @override
   void initState() {
+
     // TODO: implement initState
     super.initState();
     applyStoredMapTheme();
@@ -137,6 +150,7 @@ class MapSampleState extends State<home> {
     Userid = userServices.sharedPreferences.getString("id")!;
     Userpass = userServices.sharedPreferences.getString("password")!;
     UserPhoto = userServices.sharedPreferences.getString("image");
+    chat();
     destinationController.addListener(() {
       onChangedest();
     });
@@ -161,7 +175,7 @@ class MapSampleState extends State<home> {
     storedTheme = prefs.getString('map_theme');
     print("$storedTheme<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
   }
-  
+
   loadData() async {
     for (int i = 0; i < images.length; i++) {
       final Uint8List markericon = await getBytesFromAssets(images[i], 140);

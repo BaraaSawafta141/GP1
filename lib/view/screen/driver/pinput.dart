@@ -16,7 +16,7 @@ final controllerpinput = TextEditingController();
 class _RoundedWithShadowState extends State<RoundedWithShadow> {
   final focusNode = FocusNode();
 
-  //AuthController authController = Get.find<AuthController>();
+  // AuthController authController = Get.find<AuthController>();
   
 
   @override
@@ -58,11 +58,11 @@ class _RoundedWithShadowState extends State<RoundedWithShadow> {
       focusNode: focusNode,
       onCompleted: (String input) {
         codeSent();
-        //authController.isDecided = false;
-        //authController.verifyOtp(input);
-        //what i want to do after enter the otp code
-        //print("==================${controller.text}===================");
-        //Get.to(DriverProfileSetup());
+        // authController.isDecided = false;
+        // authController.verifyOtp(input);
+        // // what i want to do after enter the otp code
+        // print("==================${controller.text}===================");
+        // Get.to(DriverProfileSetup());
       },
       defaultPinTheme: defaultPinTheme.copyWith(
         decoration: BoxDecoration(

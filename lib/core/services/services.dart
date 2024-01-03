@@ -11,10 +11,10 @@ class MyServices extends GetxService {
     Platform.isAndroid?
     await Firebase.initializeApp(
     options: FirebaseOptions(
-      apiKey: "AIzaSyAL7ys5KeFJ_hF5UgHjRdnfcEkxd1m7o88",
-      appId: "1:195865025194:android:dc2e6e81a15cbce7b00ed3",
-      messagingSenderId: "195865025194",
-      projectId: "phoneverify-cbcf1",
+      apiKey: "AIzaSyBxnub0C_RIxdWUKMW1V1SN9IwlIw-sNZ0",
+      appId:"1:111878878990:android:acdb15dcb34783d49b495f",
+      messagingSenderId: "111878878990",
+      projectId:"ecommercebig",
     ),
   )
     :await Firebase.initializeApp();

@@ -18,6 +18,7 @@ abstract class LoginController extends GetxController {
   goToForgetPassword();
 }
 
+
 class LoginControllerImp extends LoginController {
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
   logindata loginData = logindata(Get.find());
@@ -56,6 +57,7 @@ class LoginControllerImp extends LoginController {
           userServices.sharedPreferences.setString("password", password.text);
           userServices.sharedPreferences
               .setString("image", response['message']['users_photo']);
+
           update();
           Get.off(home());
           //Get.offNamed(AppRoute.homepage);

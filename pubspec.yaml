@@ -49,7 +49,7 @@ dependencies:
   # location: ^4.4.0
   # Firebase And Notification 
   firebase_messaging: ^14.3.0
-  firebase_core: ^2.8.0
+  firebase_core: ^2.24.2
   flutter_local_notifications: ^15.1.1
   cloud_firestore: ^4.4.5
   # Local Data Cache
@@ -91,7 +91,7 @@ dependencies:
   comment_box: ^0.0.18
   pinput: ^3.0.1
   fl_country_code_picker: ^0.1.7+1
-  firebase_auth: ^4.3.0
+  firebase_auth: ^4.15.3
   firebase_storage: ^11.0.16
   awesome_dialog: ^3.1.0
   crypto: ^3.0.3

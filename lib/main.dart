@@ -5,13 +5,18 @@ import 'package:ecommercebig/core/services/services.dart';
 import 'package:ecommercebig/routes.dart';
 import 'package:ecommercebig/view/screen/driver/driverphonesectry.dart';
 import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'core/localization/changelocal.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   await initialServices();
   runApp(const MyApp());
 }
@@ -33,6 +38,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class CheckUserLoggedInOrNot extends StatefulWidget {
   const CheckUserLoggedInOrNot({super.key});
 
@@ -45,8 +51,8 @@ class _CheckUserLoggedInOrNotState extends State<CheckUserLoggedInOrNot> {
   void initState() {
     AuthService.isLoggedIn().then((value) {
       if (value) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => DriverProfileSetup()));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => DriverProfileSetup()));
       } else {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => LoginPagesec()));
