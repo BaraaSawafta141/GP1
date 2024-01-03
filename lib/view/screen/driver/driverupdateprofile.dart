@@ -310,7 +310,8 @@ class _DriverProfileupdateState extends State<DriverProfileupdate> {
                           backgroundColor:
                               const Color.fromARGB(255, 61, 156, 64),
                           onPressed: () {
-                            Get.to(driverHome());
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => homedriver()));
                           },
                           child: Icon(Icons.arrow_back),
                         )),
