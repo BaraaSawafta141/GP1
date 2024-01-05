@@ -9,18 +9,17 @@ import 'package:google_fonts/google_fonts.dart';
 class OtpVerificationScreen extends StatefulWidget {
   String phoneNumber;
   OtpVerificationScreen(this.phoneNumber);
-
   @override
   State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
 }
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   //AuthController authController = Get.find<AuthController>();
-
   @override
   void initState() {
     // TODO: implement initState
     phoneauth();
+    // codeSent();
     super.initState();
     //authController.phoneAuth(widget.phoneNumber);
   }
@@ -63,7 +62,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
             ),
             otpVerificationWidget(),
             ElevatedButton(
-                onPressed: () {
+                onPressed: ()  {
                   codeSent();
                   //phoneauth();
                   //phoneverify();

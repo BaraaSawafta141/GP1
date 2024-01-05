@@ -1,6 +1,6 @@
 import 'package:ecommercebig/controller/auth/login_controller.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
-import 'package:ecommercebig/test_view.dart';
+import 'package:ecommercebig/view/screen/chat/test_view.dart';
 import 'package:ecommercebig/view/screen/auth/login.dart';
 import 'package:ecommercebig/view/screen/driver/choosingscreen.dart';
 import 'package:ecommercebig/view/screen/emergency.dart';

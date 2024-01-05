@@ -1,4 +1,9 @@
+import 'package:ecommercebig/core/class/statusrequest.dart';
+import 'package:ecommercebig/core/functions/handlingdata.dart';
+import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/data/datasource/remote/driver/check_driver.dart';
 import 'package:ecommercebig/main.dart';
+import 'package:ecommercebig/view/screen/driver/driverhome.dart';
 import 'package:ecommercebig/view/screen/driver/driverloginphone.dart';
 import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
 import 'package:ecommercebig/view/screen/driver/mobileverify.dart';
@@ -19,6 +24,9 @@ class LoginScreen extends StatefulWidget {
 String? verify;
 String? phonenum;
 FirebaseAuth auth = FirebaseAuth.instance;
+checkDriver check = checkDriver(Get.find());
+statusrequest statusreq = statusrequest.none;
+
 void phoneauth() async {
   await FirebaseAuth.instance.verifyPhoneNumber(
     phoneNumber: phonenum,
@@ -70,7 +78,7 @@ void codeSent() async {
       try {
         // Update the UI - wait for the user to enter the SMS code
         String smsCode = controllerpinput as String;
-
+        print(">>>>>>>>>>>>>>>>>>> the sms code is $smsCode");
         // Create a PhoneAuthCredential with the code
         PhoneAuthCredential credential = PhoneAuthProvider.credential(
             verificationId: verify!, smsCode: smsCode);
@@ -85,9 +93,15 @@ void codeSent() async {
         print("=================code not correct================");
       }
     },
-    verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {},
-    verificationFailed: (FirebaseAuthException error) {},
-    codeAutoRetrievalTimeout: (String verificationId) {},
+    verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {
+      print("=================code correct================");
+    },
+    verificationFailed: (FirebaseAuthException error) {
+      print("=================code not correct================");
+    },
+    codeAutoRetrievalTimeout: (String verificationId) {
+      print("=================code TimedOut ================");
+    },
   );
 }
 
@@ -111,11 +125,32 @@ class _LoginScreenState extends State<LoginScreen> {
   CountryCode countryCode =
       CountryCode(name: 'Palestine', code: "PS", dialCode: "+970");
 
-  onSubmit(String? input) {
-    Get.to(() => OtpVerificationScreen(countryCode.dialCode + input!));
-    // Get.to(() => DriverProfileSetup());
+  onSubmit(String? input) async {
     phonenum = countryCode.dialCode + input!;
-    //print("====================${countryCode.dialCode + input!}");
+    var response = await check.postdata(phonenum!);
+    statusreq = handlingdata(response);
+
+    if (statusrequest.success == statusreq) {
+      if (response['status'] == "Success") {
+        myServices.sharedPreferences.setString("homedriver", "1");
+        driverServices.sharedPreferences
+            .setString("id", response['message']['drivers_id'].toString());
+        driverServices.sharedPreferences
+            .setString("name", response['message']['drivers_name']);
+        driverServices.sharedPreferences
+            .setString("email", response['message']['drivers_email']);
+        driverServices.sharedPreferences
+            .setString("img", response['message']['drivers_photo']);
+        print('========this is a old number====================');
+        Get.off(homedriver());
+      } else {
+        print("========this is a new number====================");
+      }
+    }
+    print("========This is phoneNum============$phonenum====================");
+    //codeSent();
+    Get.to(() => OtpVerificationScreen(phonenum!));
+    // Get.to(() => DriverProfileSetup());
   }
 
   @override

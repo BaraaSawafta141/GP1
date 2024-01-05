@@ -39,7 +39,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 String? driverEmail;
 String? drivername = "";
-
+String? driverId;
 String? Userpass;
 String? driverPhoto = "";
 cardData cardDetails = cardData(Get.find());
@@ -83,11 +83,10 @@ class driverHome extends State<homedriver> {
   void initState() {
     super.initState();
     applyStoredMapTheme();
-    // driverId = driverServices.sharedPreferences.getString("id")!;
+    driverId = driverServices.sharedPreferences.getString("id")!;
     driverEmail = driverServices.sharedPreferences.getString("email")!;
     drivername = driverServices.sharedPreferences.getString("name")!;
     driverPhoto = driverServices.sharedPreferences.getString("img")!;
-    myServices.sharedPreferences.setString("homedriver", "1");
   }
 
   String? storedTheme;

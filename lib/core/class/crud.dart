@@ -27,6 +27,23 @@ class crud {
     }
   }
 
+  postDataCheckDriver(String linkurl, Map data) async {
+    try {
+      if (await checkinternet()) {
+        var response = await http.post(Uri.parse(linkurl), body: data);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          return jsonDecode(response.body);
+        } else {
+          return left(statusrequest.serverFailure);
+        }
+      } else {
+        return left(statusrequest.offlineFailure);
+      }
+    } catch (_) {
+      return left(statusrequest.serverexception);
+    }
+  }
+
   postRequestWithFile(String linkurl, File file, String uid) async {
     print(linkurl);
     print(uid);
@@ -73,8 +90,9 @@ class crud {
       return "Error: $error";
     }
   }
-    postRequestWithFileDriverupdate(String linkurl, File file, String name,
-      String email,String did) async {
+
+  postRequestWithFileDriverupdate(
+      String linkurl, File file, String name, String email, String did) async {
     print(linkurl);
     print(file.path);
     var request = http.MultipartRequest('POST', Uri.parse(linkurl));

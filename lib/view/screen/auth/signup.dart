@@ -70,7 +70,7 @@ class SignUp extends StatelessWidget {
                 CustomTextFormAuth(
                   isNumber: true,
                   valid: (val) {
-                    return validInput(val!, 7, 11, "phone");
+                    return validInput(val!, 7, 13, "phone");
                   },
                   mycontroller: controller.phone,
                   hinttext: "22".tr,

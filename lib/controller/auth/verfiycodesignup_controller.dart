@@ -22,12 +22,16 @@ class VerifyCodeSignUpControllerImp extends VerifyCodeSignUpController {
   goToSuccessSignUp(String verifycodesignup) async {
     statusreq = statusrequest.loading;
     update();
+ 
     var response = await verifycodesign.postdata(email!, verifycodesignup);
-    print("============================ Controller $response ");
-    statusreq = handlingdata(response);
+    print(email);
+    print(verifycodesignup);
+    print("============================ Controller $response");
 
-    if (statusrequest.success == statusreq) {
-      if (response['success'] == "success") {
+    statusreq = handlingdata(response);
+    print(statusreq);
+   
+      if (response['status'] == "success") {
         Get.offNamed(AppRoute.successSignUp);
       } else {
         Get.defaultDialog(
@@ -35,7 +39,7 @@ class VerifyCodeSignUpControllerImp extends VerifyCodeSignUpController {
             middleText: "Please Enter Valid Verify Code");
         statusreq = statusrequest.failure;
       }
-    }
+    
     update();
   }
 

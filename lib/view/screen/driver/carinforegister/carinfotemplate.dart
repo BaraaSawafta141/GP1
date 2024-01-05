@@ -6,15 +6,13 @@ import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/car_info.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/location.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/uploaddoc.dart';
-import 'package:ecommercebig/view/screen/driver/carinforegister/pages/uploaddocument.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehiclecolor.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehicleplatenumber.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehicletype.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehicleyear.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vericletype.dart';
 import 'package:ecommercebig/view/screen/driver/driverhome.dart';
-import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
-import 'package:ecommercebig/view/screen/driver/driverupdateprofile.dart';
+import 'package:ecommercebig/view/screen/driver/driverupdateprofile.dart' as update;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -175,7 +173,7 @@ class _nameState extends State<carRegistertemplate> {
                                 selectModelYear,
                                 vehicalNumberController.text,
                                 vehicalColor,
-                                driverId!,
+                                update.driverId!,
                                 document!);
 
                             AwesomeDialog(
@@ -186,12 +184,15 @@ class _nameState extends State<carRegistertemplate> {
                               desc:
                                   'Your request has been registered successfully',
                               btnOkOnPress: () {
-                                myServices.sharedPreferences.setString("DocumentUploadedPage","1");
+                                // myServices.sharedPreferences
+                                //     .setString("DocumentUploadedPage", "1");
+                                myServices.sharedPreferences
+                                    .setString("homedriver", "1");
                                 Get.off(() => homedriver());
                               },
                             ).show();
                           }
-
+                          
                           // We need to go to waiting for approval page
                           // Get.to( () =>DocumentUploadedPage() );
                         }

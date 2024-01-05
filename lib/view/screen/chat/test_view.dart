@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommercebig/controller/test_controller.dart';
 import 'package:ecommercebig/core/class/handlingdataview.dart';
 import 'package:ecommercebig/core/constant/color.dart';
-import 'package:ecommercebig/view/screen/chat_user.dart';
+import 'package:ecommercebig/view/screen/chat/chat_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/constant/routes.dart';
@@ -17,7 +19,6 @@ abstract class LoginController extends GetxController {
   goToSignUp();
   goToForgetPassword();
 }
-
 
 class LoginControllerImp extends LoginController {
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
@@ -57,20 +58,32 @@ class LoginControllerImp extends LoginController {
           userServices.sharedPreferences.setString("password", password.text);
           userServices.sharedPreferences
               .setString("image", response['message']['users_photo']);
-
           update();
           Get.off(home());
           //Get.offNamed(AppRoute.homepage);
         } else {
-          AwesomeDialog(
-            context: Get.context!,
-            dialogType: DialogType.warning,
-            animType: AnimType.rightSlide,
-            title: 'Warning',
-            desc: 'Email Or Password Not Correct',
-            //btnCancelOnPress: () {},
-            btnOkOnPress: () {},
-          ).show();
+          if (response['message'] == "not approved") {
+            AwesomeDialog(
+              context: Get.context!,
+              dialogType: DialogType.warning,
+              animType: AnimType.rightSlide,
+              title: 'Warning',
+              desc: 'Verify Your Email, Please',
+              //btnCancelOnPress: () {},
+              btnOkOnPress: () {},
+            ).show();
+          } else {
+            AwesomeDialog(
+              context: Get.context!,
+              dialogType: DialogType.warning,
+              animType: AnimType.rightSlide,
+              title: 'Warning',
+              desc: 'Email Or Password Not Correct',
+              //btnCancelOnPress: () {},
+              btnOkOnPress: () {},
+            ).show();
+          }
+
           // Get.defaultDialog(
           //     title: "Warning", middleText: "Email Or Password Not Correct");
           statusreq = statusrequest.failure;

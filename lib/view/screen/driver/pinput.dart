@@ -19,12 +19,12 @@ class _RoundedWithShadowState extends State<RoundedWithShadow> {
   // AuthController authController = Get.find<AuthController>();
   
 
-  @override
-  void dispose() {
-    controllerpinput.dispose();
-    focusNode.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   controllerpinput.dispose();
+  //   focusNode.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

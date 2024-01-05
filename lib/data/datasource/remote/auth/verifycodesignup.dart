@@ -8,11 +8,8 @@ class verifycodesignup {
 
   postdata(String email,String verifycode) async {
     var response = await Crud.postData(applink.verifycodesignup, {
-      
       "email": email ,
       "verifycode": verifycode ,
-
-      
           });
     return response.fold((l) => l, (r) => r);
   }

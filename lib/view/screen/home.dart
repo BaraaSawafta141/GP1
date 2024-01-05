@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:typed_data';
 //import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -1102,6 +1103,8 @@ class MapSampleState extends State<home> {
                                 // setState(() {
                                 //   RideCount++;
                                 // });
+                                getCurrentLocationIcon();
+                                
                                 saveRideHistory(
                                     sourceController.text,
                                     destinationController.text,

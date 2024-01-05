@@ -30,8 +30,8 @@ class SignUpControllerImp extends SignUpController {
   @override
   signUp() async {
     if (formstate.currentState!.validate()) {
-      //statusreq = statusrequest.loading;
-      //update();
+      // statusreq = statusrequest.loading;
+      // update();
       var response = await testdata.postdata(
           username.text, password.text, email.text, phone.text);
       //print("============================ Controller $response ");

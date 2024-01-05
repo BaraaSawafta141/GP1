@@ -1,6 +1,6 @@
 import 'package:ecommercebig/core/constant/routes.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
-import 'package:ecommercebig/test_view.dart';
+import 'package:ecommercebig/view/screen/chat/test_view.dart';
 import 'package:ecommercebig/view/screen/auth/forgetpassword/forgetpassword.dart';
 import 'package:ecommercebig/view/screen/auth/forgetpassword/resetpassword.dart';
 import 'package:ecommercebig/view/screen/auth/forgetpassword/success_resetpassword.dart';
@@ -26,11 +26,11 @@ import 'package:ecommercebig/view/screen/onboarding.dart';
 import 'package:get/get.dart';
 
 List<GetPage<dynamic>>? routes = [
-  GetPage(
-      // name: "/", page: () =>  Login(), middlewares: [MyMiddleWare()]),
-      name: "/", page: () => Login()),
-      // name: "/",
-      // page: () =>  Login()),
+  // GetPage(name: "/", page: () => DriverProfileSetup(), middlewares: [MyMiddleWare()]),
+      GetPage( name: "/", page: () => Login()),
+
+  // name: "/",
+  // page: () =>  Login()),
 
   //Auth
   GetPage(name: AppRoute.login, page: () => const Login()),
@@ -46,6 +46,6 @@ List<GetPage<dynamic>>? routes = [
   GetPage(
       name: AppRoute.verfiyCodeSignUp, page: () => const VerfiyCodeSignUp()),
   GetPage(name: AppRoute.homepage, page: () => const home()),
-   GetPage(name: AppRoute.waitingpage, page: () => const DocumentUploadedPage()),
+  GetPage(name: AppRoute.waitingpage, page: () => const DocumentUploadedPage()),
   //Home
 ];

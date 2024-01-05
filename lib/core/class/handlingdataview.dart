@@ -15,7 +15,7 @@ class handlingdataview extends StatelessWidget {
   Widget build(BuildContext context) {
     return statusreq == statusrequest.loading
         ?  Center(
-            child: Lottie.asset(AppImageAsset.loading))
+            child: CircularProgressIndicator())
         : statusreq == statusrequest.offlineFailure
             ?  Center(
                 child: Lottie.asset(AppImageAsset.offline))

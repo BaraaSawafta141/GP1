@@ -32,7 +32,13 @@ class applink {
   static const String viewDrivers =
       "$server/driver/view_drivers.php"; //Get all drivers data
   static const String updateDrivers =
-      "$server/driver/update_profile_driver.php"; //Get all drivers data    
+      "$server/driver/update_profile_driver.php"; //Get all drivers data
+  static const String checkDriver =
+      "$server/driver/check_driver.php"; //Get all drivers data
+  // static const String drawRoute =
+  //     "$server/driver/draw_route.php"; //Get all drivers data
+
+
 
   //comment
   static const String addingComment =
@@ -42,9 +48,8 @@ class applink {
   static const String imgName =
       "$server/comments/get_users_data.php"; //get Image & name  api
 
-  //car 
-        static const String carInfo =
-      "$server/car/car_info.php"; //add car info  api
+  //car
+  static const String carInfo = "$server/car/car_info.php"; //add car info  api
 }
 /*
 i have a problem when i do hot reload and the problem because iam working on the localhost i should put it on the server 
