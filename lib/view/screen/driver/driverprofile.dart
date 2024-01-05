@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
-import 'package:ecommercebig/core/services/services.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/driverSignUp.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/carinfotemplate.dart';
 import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
@@ -19,7 +18,6 @@ class DriverProfileSetup extends StatefulWidget {
   @override
   State<DriverProfileSetup> createState() => _DriverProfileSetupState();
 }
-MyServices driverServices = Get.find(); 
 
 class _DriverProfileSetupState extends State<DriverProfileSetup> {
   TextEditingController nameController = TextEditingController();

@@ -2,17 +2,15 @@ import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/check_driver.dart';
-import 'package:ecommercebig/main.dart';
 import 'package:ecommercebig/view/screen/driver/driverhome.dart';
 import 'package:ecommercebig/view/screen/driver/driverloginphone.dart';
 import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
-import 'package:ecommercebig/view/screen/driver/mobileverify.dart';
 import 'package:ecommercebig/view/screen/driver/pinput.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ecommercebig/core/services/services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -26,6 +24,7 @@ String? phonenum;
 FirebaseAuth auth = FirebaseAuth.instance;
 checkDriver check = checkDriver(Get.find());
 statusrequest statusreq = statusrequest.none;
+MyServices driverServices = Get.find();
 
 void phoneauth() async {
   await FirebaseAuth.instance.verifyPhoneNumber(
@@ -132,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (statusrequest.success == statusreq) {
       if (response['status'] == "Success") {
-        myServices.sharedPreferences.setString("homedriver", "1");
+        // myServices.sharedPreferences.setString("homedriver", "1");
         driverServices.sharedPreferences
             .setString("id", response['message']['drivers_id'].toString());
         driverServices.sharedPreferences
@@ -142,15 +141,18 @@ class _LoginScreenState extends State<LoginScreen> {
         driverServices.sharedPreferences
             .setString("img", response['message']['drivers_photo']);
         print('========this is a old number====================');
-        Get.off(homedriver());
+        // Get.to(() => homedriver());
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => homedriver()));
       } else {
         print("========this is a new number====================");
+        print(
+            "========This is phoneNum============$phonenum====================");
+        //codeSent();
+        // Get.to(() => OtpVerificationScreen(phonenum!));
+        Get.to(() => DriverProfileSetup());
       }
     }
-    print("========This is phoneNum============$phonenum====================");
-    //codeSent();
-    Get.to(() => OtpVerificationScreen(phonenum!));
-    // Get.to(() => DriverProfileSetup());
   }
 
   @override

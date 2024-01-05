@@ -2,33 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 //import 'dart:html';
-import 'package:ecommercebig/controller/auth/login_controller.dart';
 import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
-import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
-import 'package:ecommercebig/core/functions/handlingdata.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/data/datasource/remote/driver/add_LatLong.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/viewDrivers.dart';
 import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
 import 'package:ecommercebig/linkapi.dart';
-import 'package:ecommercebig/view/screen/commentpage.dart';
-import 'package:ecommercebig/view/screen/drawer.dart';
 import 'package:ecommercebig/view/screen/driver/driverdrawer.dart';
-import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
-import 'package:ecommercebig/view/screen/maptheme.dart';
-import 'package:ecommercebig/view/screen/rating_driver.dart';
-import 'package:ecommercebig/view/screen/ridehistory.dart';
+import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
-import 'package:flutter_google_maps_webservices/directions.dart'
-    as maps_directions;
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:geocoding/geocoding.dart' as geoCoding;
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,6 +33,7 @@ viewDriversData driversData = viewDriversData(Get.find());
 List<String> cardsList = <String>[];
 String selectedDriver = "";
 final homePageMarkersdriver = <Marker>{}.obs;
+addLatLong addlatlong = addLatLong(Get.find());
 
 class homedriver extends StatefulWidget {
   const homedriver({super.key});
@@ -87,6 +74,8 @@ class driverHome extends State<homedriver> {
     driverEmail = driverServices.sharedPreferences.getString("email")!;
     drivername = driverServices.sharedPreferences.getString("name")!;
     driverPhoto = driverServices.sharedPreferences.getString("img")!;
+    myServices.sharedPreferences.setString("homedriver", "1");
+    // getCurrentLocationIcon();
   }
 
   String? storedTheme;
@@ -270,6 +259,9 @@ class driverHome extends State<homedriver> {
           ));
           print(myPosLatitude);
           print(myPosLongitude);
+          var res = await addlatlong.postdata(
+              myPosLatitude.toString(), myPosLongitude.toString(), driverId);
+          print(res);
         }
       } catch (e) {
         print("Error getting current location: $e");

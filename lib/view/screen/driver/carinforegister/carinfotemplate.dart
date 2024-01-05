@@ -186,8 +186,7 @@ class _nameState extends State<carRegistertemplate> {
                               btnOkOnPress: () {
                                 // myServices.sharedPreferences
                                 //     .setString("DocumentUploadedPage", "1");
-                                myServices.sharedPreferences
-                                    .setString("homedriver", "1");
+                               
                                 Get.off(() => homedriver());
                               },
                             ).show();

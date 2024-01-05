@@ -11,11 +11,11 @@ class MyMiddleWare extends GetMiddleware {
 
   @override
   RouteSettings? redirect(String? route) {
-    if (myServices.sharedPreferences.getString("homedriver") == "1") {
-      return const RouteSettings(name: AppRoute.driverhome);
-    }
     if (myServices.sharedPreferences.getString("DocumentUploadedPage") == "1") {
       return const RouteSettings(name: AppRoute.waitingpage);
+    }
+    if (myServices.sharedPreferences.getString("homedriver") == "1") {
+      return const RouteSettings(name: AppRoute.driverhome);
     }
     if (myServices.sharedPreferences.getString("Login") == "1") {
       return const RouteSettings(name: AppRoute.homepage);

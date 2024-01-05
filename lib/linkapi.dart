@@ -32,11 +32,13 @@ class applink {
   static const String viewDrivers =
       "$server/driver/view_drivers.php"; //Get all drivers data
   static const String updateDrivers =
-      "$server/driver/update_profile_driver.php"; //Get all drivers data
+      "$server/driver/update_profile_driver.php"; //update driver data
   static const String checkDriver =
-      "$server/driver/check_driver.php"; //Get all drivers data
-  // static const String drawRoute =
-  //     "$server/driver/draw_route.php"; //Get all drivers data
+      "$server/driver/check_driver.php"; //check driver
+  static const String drawRoute =
+      "$server/driver/draw_route.php"; //draw route 
+  static const String addLatLong =
+      "$server/driver/add_coordinates.php"; //draw route 
 
 
 

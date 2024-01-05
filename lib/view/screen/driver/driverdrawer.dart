@@ -1,13 +1,9 @@
-import 'package:ecommercebig/controller/auth/login_controller.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
-import 'package:ecommercebig/view/screen/auth/login.dart';
 import 'package:ecommercebig/view/screen/driver/choosingscreen.dart';
 import 'package:ecommercebig/view/screen/driver/driverhome.dart';
-import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
 import 'package:ecommercebig/view/screen/driver/driverupdateprofile.dart';
+import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
 import 'package:ecommercebig/view/screen/emergency.dart';
-import 'package:ecommercebig/view/screen/myprofile.dart';
-import 'package:ecommercebig/view/screen/payment/payment.dart';
 import 'package:ecommercebig/view/screen/ridehistory.dart';
 import 'package:ecommercebig/view/screen/settings_page.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -173,7 +169,6 @@ class CustomDrawerDriver extends StatelessWidget {
           ),
           Spacer(),
           Divider(),
-          
           const SizedBox(
             height: 20,
           ),

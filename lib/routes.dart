@@ -26,8 +26,8 @@ import 'package:ecommercebig/view/screen/onboarding.dart';
 import 'package:get/get.dart';
 
 List<GetPage<dynamic>>? routes = [
-  // GetPage(name: "/", page: () => DriverProfileSetup(), middlewares: [MyMiddleWare()]),
-      GetPage( name: "/", page: () => Login()),
+  GetPage(name: "/", page: () => DecisionScreen(), middlewares: [MyMiddleWare()]),
+      // GetPage( name: "/", page: () => DecisionScreen()),
 
   // name: "/",
   // page: () =>  Login()),
@@ -47,5 +47,8 @@ List<GetPage<dynamic>>? routes = [
       name: AppRoute.verfiyCodeSignUp, page: () => const VerfiyCodeSignUp()),
   GetPage(name: AppRoute.homepage, page: () => const home()),
   GetPage(name: AppRoute.waitingpage, page: () => const DocumentUploadedPage()),
+
+  GetPage(name: AppRoute.driverhome, page: () =>  homedriver()),
+
   //Home
 ];
