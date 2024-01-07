@@ -35,12 +35,12 @@ class applink {
       "$server/driver/update_profile_driver.php"; //update driver data
   static const String checkDriver =
       "$server/driver/check_driver.php"; //check driver
-  static const String drawRoute =
-      "$server/driver/draw_route.php"; //draw route 
+  static const String drawRoute = "$server/driver/draw_route.php"; //draw route
   static const String addLatLong =
-      "$server/driver/add_coordinates.php"; //draw route 
+      "$server/driver/add_coordinates.php"; //add Latlong
 
-
+  static const String reserveDriver = "$server/driver/not_available.php"; // reserve driver (change status to not available)
+  static const String makeAvailable = "$server/driver/make_available.php"; // free driver (change status to  available)
 
   //comment
   static const String addingComment =

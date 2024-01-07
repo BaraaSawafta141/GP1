@@ -16,7 +16,7 @@ class addLatLong{
         "did": did
      }
     );
-    print(response);
+    // print(response);
     return response;
   }
 }

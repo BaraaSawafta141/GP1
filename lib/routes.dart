@@ -27,8 +27,7 @@ import 'package:get/get.dart';
 
 List<GetPage<dynamic>>? routes = [
   GetPage(name: "/", page: () => DecisionScreen(), middlewares: [MyMiddleWare()]),
-      // GetPage( name: "/", page: () => DecisionScreen()),
-
+  // GetPage( name: "/", page: () => DecisionScreen()),
   // name: "/",
   // page: () =>  Login()),
 

@@ -177,4 +177,24 @@ class crud {
       return left(statusrequest.serverexception);
     }
   }
+
+  changeAvailability(String linkurl, Map id) async {
+    try {
+      if (await checkinternet()) {
+        var response = await http.post(Uri.parse(linkurl), body: id);
+        // print(">>>>>> + ${response.statusCode}  <<<<<<<< ${response.body}}");
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          Map responsebody = jsonDecode(response.body);
+          // print(responsebody);
+          return responsebody;
+        } else {
+          return left(statusrequest.serverFailure);
+        }
+      } else {
+        return left(statusrequest.offlineFailure);
+      }
+    } catch (_) {
+      return left(statusrequest.serverexception);
+    }
+  }
 }

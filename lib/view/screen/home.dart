@@ -10,6 +10,7 @@ import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/data/datasource/remote/driver/reserveDriver.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/viewDrivers.dart';
 import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
 import 'package:ecommercebig/linkapi.dart';
@@ -47,8 +48,12 @@ FirebaseFirestore firestore = FirebaseFirestore.instance;
 
 cardData cardDetails = cardData(Get.find());
 viewDriversData driversData = viewDriversData(Get.find());
+reserveDriverData reserveDriver = reserveDriverData(Get.find());
 List<String> cardsList = <String>[];
-String selectedDriver = "";
+List<Map<String, dynamic>> driversList = [];
+String selectedDriver = driversList[0]["drivers_id"] != null
+    ? driversList[0]["drivers_id"].toString()
+    : "-1";
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -91,7 +96,6 @@ class MapSampleState extends State<home> {
     LatLng(32.22117751845855, 35.24213979128875),
     LatLng(32.22074576133657, 35.2327620677686),
   ];
-  List<Map<String, dynamic>> driversList = [];
 
   Future<Uint8List> getBytesFromAssets(String path, int width) async {
     ByteData data = await rootBundle.load(path);
@@ -103,21 +107,18 @@ class MapSampleState extends State<home> {
         .asUint8List();
   }
 
-
   void chat() async {
-  firestore.collection('users').doc(Userid!).set({
-    'uid': Userid,
-    'name': Username,
-  }, SetOptions(merge: true));
-}
-
+    firestore.collection('users').doc(Userid!).set({
+      'uid': Userid,
+      'name': Username,
+    }, SetOptions(merge: true));
+  }
 
   /*void updateMapStyle(String mapTheme) {
     if (mymapcontroller != null) {
       mymapcontroller!.setMapStyle(mapTheme);
     }
   }*/
-
 
   /*void initState() {
     super.initState();
@@ -141,7 +142,6 @@ class MapSampleState extends State<home> {
 
   @override
   void initState() {
-
     // TODO: implement initState
     super.initState();
     applyStoredMapTheme();
@@ -1103,12 +1103,16 @@ class MapSampleState extends State<home> {
                                 // setState(() {
                                 //   RideCount++;
                                 // });
-                                getCurrentLocationIcon();
-                                
+                                // getCurrentLocationIcon();
+
                                 saveRideHistory(
                                     sourceController.text,
                                     destinationController.text,
                                     DateTime.now().toString());
+                                // print("+++++++ $selectedDriver");
+                                var res = await reserveDriver
+                                    .postdata(selectedDriver);
+                                // print(" >> $res");
                                 showNotification();
                                 Navigator.pop(context, 'Yes');
                                 Get.back();

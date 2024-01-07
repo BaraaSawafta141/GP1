@@ -92,7 +92,7 @@ class CustomDrawerDriver extends StatelessWidget {
                 buildDrawerItem(
                     title: 'Ride History',
                     onPressed: () {
-                      Get.to(() => rideHistory());
+                      // Get.to(() => rideHistory());
                     }),
                 buildDrawerItem(
                     title: 'Emergency',
@@ -149,7 +149,7 @@ class CustomDrawerDriver extends StatelessWidget {
                 buildDrawerItem(
                     title: 'Settings',
                     onPressed: () {
-                      Get.to(() => SettingsPage());
+                      // Get.to(() => SettingsPage());
                     }),
                 buildDrawerItem(title: 'Support', onPressed: () {}),
                 buildDrawerItem(

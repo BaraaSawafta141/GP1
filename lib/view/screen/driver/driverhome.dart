@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 //import 'dart:html';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
 import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/add_LatLong.dart';
+import 'package:ecommercebig/data/datasource/remote/driver/becomeAvailable.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/viewDrivers.dart';
 import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
 import 'package:ecommercebig/linkapi.dart';
@@ -34,7 +36,7 @@ List<String> cardsList = <String>[];
 String selectedDriver = "";
 final homePageMarkersdriver = <Marker>{}.obs;
 addLatLong addlatlong = addLatLong(Get.find());
-
+becomeAvailable becomeavailable = becomeAvailable(Get.find());
 class homedriver extends StatefulWidget {
   const homedriver({super.key});
 
@@ -75,7 +77,7 @@ class driverHome extends State<homedriver> {
     drivername = driverServices.sharedPreferences.getString("name")!;
     driverPhoto = driverServices.sharedPreferences.getString("img")!;
     myServices.sharedPreferences.setString("homedriver", "1");
-    // getCurrentLocationIcon();
+    getCurrentLocationIcon();
   }
 
   String? storedTheme;
@@ -261,7 +263,7 @@ class driverHome extends State<homedriver> {
           print(myPosLongitude);
           var res = await addlatlong.postdata(
               myPosLatitude.toString(), myPosLongitude.toString(), driverId);
-          print(res);
+          print("=======$res");
         }
       } catch (e) {
         print("Error getting current location: $e");
@@ -271,24 +273,53 @@ class driverHome extends State<homedriver> {
     }
   }
 
+
   Widget buildCurrentLocationmarker() {
     return Align(
-      alignment: Alignment.bottomRight,
       child: Padding(
-          padding: EdgeInsets.all(30),
-          child: MaterialButton(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            color: Colors.green,
-            minWidth: Get.width,
-            height: 50,
-            onPressed: () {
-              getCurrentLocationIcon();
-            },
-            child: Text(
-              "Show Your Location",
-              style: TextStyle(fontSize: 22, color: Colors.white),
-            ),
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+               MaterialButton(
+                shape:
+                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                color: Colors.green,
+                minWidth: Get.width/1.2,
+                height: 45,
+                onPressed: () {
+                 becomeavailable.postdata(driverId!);
+                   AwesomeDialog(
+                    context: context,
+                    dialogType: DialogType.success,
+                    animType: AnimType.bottomSlide,
+                    title: 'Become Available',
+                    desc: 'You are now available for rides',
+                  ).show();
+                },
+                child: Text(
+                  "Become Available",
+                  style: TextStyle(fontSize: 22, color: Colors.white),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              MaterialButton(
+                shape:
+                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                color: Colors.green,
+                minWidth: Get.width/1.2,
+                height: 45,
+                onPressed: () {
+                  getCurrentLocationIcon();
+                },
+                child: Text(
+                  "Show Your Location",
+                  style: TextStyle(fontSize: 22, color: Colors.white),
+                ),
+              ),
+            ],
           )),
     );
   }
