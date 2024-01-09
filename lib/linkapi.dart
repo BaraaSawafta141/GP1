@@ -39,8 +39,10 @@ class applink {
   static const String addLatLong =
       "$server/driver/add_coordinates.php"; //add Latlong
 
-  static const String reserveDriver = "$server/driver/not_available.php"; // reserve driver (change status to not available)
-  static const String makeAvailable = "$server/driver/make_available.php"; // free driver (change status to  available)
+  static const String reserveDriver =
+      "$server/driver/not_available.php"; // reserve driver (change status to not available)
+  static const String makeAvailable =
+      "$server/driver/make_available.php"; // free driver (change status to  available)
 
   //comment
   static const String addingComment =
@@ -52,6 +54,11 @@ class applink {
 
   //car
   static const String carInfo = "$server/car/car_info.php"; //add car info  api
+
+  //user coordinates
+    static const String userCords =
+      "$server/ulocation/user_coordinates.php"; // add user coordinates
+
 }
 /*
 i have a problem when i do hot reload and the problem because iam working on the localhost i should put it on the server 

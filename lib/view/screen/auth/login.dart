@@ -30,9 +30,7 @@ class Login extends StatelessWidget {
                 .headline1!
                 .copyWith(color: const Color.fromARGB(255, 87, 86, 86))),
       ),
-      body: WillPopScope(
-          onWillPop: alertExitApp,
-          child: GetBuilder<LoginControllerImp>(
+      body:  GetBuilder<LoginControllerImp>(
               builder: (controller) => handlingdatarequest(
                   statusreq: controller.statusreq!,
                   widget: Container(
@@ -102,7 +100,7 @@ class Login extends StatelessWidget {
                         )
                       ]),
                     ),
-                  )))),
+                  ))),
     );
   }
 }

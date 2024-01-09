@@ -13,6 +13,7 @@ import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/reserveDriver.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/viewDrivers.dart';
 import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
+import 'package:ecommercebig/data/datasource/remote/userCords/user_cords.dart';
 import 'package:ecommercebig/linkapi.dart';
 import 'package:ecommercebig/view/screen/commentpage.dart';
 import 'package:ecommercebig/view/screen/drawer.dart';
@@ -49,6 +50,7 @@ FirebaseFirestore firestore = FirebaseFirestore.instance;
 cardData cardDetails = cardData(Get.find());
 viewDriversData driversData = viewDriversData(Get.find());
 reserveDriverData reserveDriver = reserveDriverData(Get.find());
+addLatLongUser userCords = addLatLongUser(Get.find());
 List<String> cardsList = <String>[];
 List<Map<String, dynamic>> driversList = [];
 String selectedDriver = driversList[0]["drivers_id"] != null
@@ -126,7 +128,7 @@ class MapSampleState extends State<home> {
       _mapStyle = string;
     });
   }*/
-  String googleAPIKey = 'AIzaSyAWw0O5296K5kLNisnYj5YiRBKzMh5Dpq4';
+  // String googleAPIKey = 'AIzaSyAWw0O5296K5kLNisnYj5YiRBKzMh5Dpq4';
 
   final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(32.223295060141346, 35.237885713381246),
@@ -198,7 +200,7 @@ class MapSampleState extends State<home> {
   }
 
   void getSuggestionSource(String input) async {
-    String places_key = "AIzaSyAWw0O5296K5kLNisnYj5YiRBKzMh5Dpq4";
+    String places_key = "AIzaSyCInTqCTY9b-p3Q2vtdZ9vJYH7ykKZJG6w";
     String baseURL =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json';
     String request =
@@ -219,7 +221,7 @@ class MapSampleState extends State<home> {
   }
 
   void getSuggestionDest(String input) async {
-    String places_key = "AIzaSyAWw0O5296K5kLNisnYj5YiRBKzMh5Dpq4";
+    String places_key = "AIzaSyCInTqCTY9b-p3Q2vtdZ9vJYH7ykKZJG6w";
     String baseURL =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json';
     String request =
@@ -859,8 +861,8 @@ class MapSampleState extends State<home> {
                           srclong == null ? myposLastlong : srclong,
                           dstlati,
                           dstlong);
-                      //final trackingController = Get.find<TrackingController>();
-                      //trackingController.getCurrentLocation();
+                      final trackingController = Get.find<TrackingController>();
+                      trackingController.getCurrentLocation();
                       print(locations.last.latitude);
                       print(locations.last.longitude);
                       _placesList.removeAt(index);
@@ -903,6 +905,8 @@ class MapSampleState extends State<home> {
           );
           print(myPosLatitude);
           print(myPoslongitude);
+          userCords.postdata(
+              myPosLatitude.toString(), myPoslongitude.toString(), Userid);
         }
       } catch (e) {
         print("Error getting current location: $e");
@@ -1109,6 +1113,8 @@ class MapSampleState extends State<home> {
                                     sourceController.text,
                                     destinationController.text,
                                     DateTime.now().toString());
+                                userCords.postdata(myPosLatitude.toString(),
+                                    myPoslongitude.toString(), Userid);
                                 // print("+++++++ $selectedDriver");
                                 var res = await reserveDriver
                                     .postdata(selectedDriver);
