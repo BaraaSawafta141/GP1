@@ -45,7 +45,6 @@ String? Userphone;
 String? Userid;
 String? Userpass;
 String? UserPhoto;
-FirebaseFirestore firestore = FirebaseFirestore.instance;
 
 cardData cardDetails = cardData(Get.find());
 viewDriversData driversData = viewDriversData(Get.find());
@@ -91,12 +90,12 @@ class MapSampleState extends State<home> {
   late LatLng source;
   final List<Marker> _markers = <Marker>[];
   final List<LatLng> _latlng = <LatLng>[
-    LatLng(32.223295060141346, 35.237885713381246),
-    LatLng(32.22376702872116, 35.239902734459896),
-    LatLng(32.22108040562581, 35.23814320546564),
-    LatLng(32.22535466270865, 35.24139978035635),
-    LatLng(32.22117751845855, 35.24213979128875),
-    LatLng(32.22074576133657, 35.2327620677686),
+    // LatLng(32.223295060141346, 35.237885713381246),
+    // LatLng(32.22376702872116, 35.239902734459896),
+    // LatLng(32.22108040562581, 35.23814320546564),
+    // LatLng(32.22535466270865, 35.24139978035635),
+    // LatLng(32.22117751845855, 35.24213979128875),
+    // LatLng(32.22074576133657, 35.2327620677686),
   ];
 
   Future<Uint8List> getBytesFromAssets(String path, int width) async {
@@ -109,12 +108,12 @@ class MapSampleState extends State<home> {
         .asUint8List();
   }
 
-  void chat() async {
-    firestore.collection('users').doc(Userid!).set({
-      'uid': Userid,
-      'name': Username,
-    }, SetOptions(merge: true));
-  }
+  // void chat() async {
+  //   firestore.collection('users').doc(Userid!).set({
+  //     'uid': Userid,
+  //     'name': Username,
+  //   }, SetOptions(merge: true));
+  // }
 
   /*void updateMapStyle(String mapTheme) {
     if (mymapcontroller != null) {
@@ -153,7 +152,7 @@ class MapSampleState extends State<home> {
     Userid = userServices.sharedPreferences.getString("id")!;
     Userpass = userServices.sharedPreferences.getString("password")!;
     UserPhoto = userServices.sharedPreferences.getString("image");
-    chat();
+    // chat();
     destinationController.addListener(() {
       onChangedest();
     });
@@ -180,13 +179,43 @@ class MapSampleState extends State<home> {
   }
 
   loadData() async {
-    for (int i = 0; i < images.length; i++) {
+    _latlng.clear();
+    driversList.clear();
+    var response = await driversData.getData();
+    statusrequest driversReq = handlingdata(response);
+    List<dynamic> dataList = response['data'];
+    if (statusrequest.success == driversReq) {
+      if (response['status'] == "success") {
+        for (var driver in dataList) {
+          if (driver['drivers_availability'] == "0" &&
+              driver['drivers_long'] != "0") {
+            int driversId = driver['drivers_id'];
+            String driversName = driver['drivers_name'];
+            LatLng driverLocation = LatLng(double.parse(driver['drivers_lat']),
+                double.parse(driver['drivers_long']));
+            _latlng.add(driverLocation);
+            // Create a map with the extracted information and add it to the list
+            Map<String, dynamic> driverInfo = {
+              'drivers_id': driversId,
+              'drivers_name': driversName,
+              'drivers_lat': driver['drivers_lat'],
+              'drivers_long': driver['drivers_long'],
+            };
+            driversList.add(driverInfo);
+          }
+        }
+        print(driversList);
+      }
+    } else {
+      print("error in getting drivers Data");
+    }
+    for (int i = 0; i < driversList.length; i++) {
       final Uint8List markericon = await getBytesFromAssets(images[i], 140);
       homePageMarkers.add(Marker(
           markerId: MarkerId(i.toString()),
           position: _latlng[i],
           icon: BitmapDescriptor.fromBytes(markericon),
-          infoWindow: InfoWindow(title: 'Driver ' + i.toString())));
+          infoWindow: InfoWindow(title: driversList[i]['drivers_name'])));
       setState(() {});
     }
   }

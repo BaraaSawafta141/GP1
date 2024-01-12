@@ -3,18 +3,19 @@ import 'package:ecommercebig/controller/test_controller.dart';
 import 'package:ecommercebig/core/class/handlingdataview.dart';
 import 'package:ecommercebig/core/constant/color.dart';
 import 'package:ecommercebig/view/screen/chat/chat_user.dart';
+import 'package:ecommercebig/view/screen/driver/chat/chat_driver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class testview extends StatelessWidget {
-  const testview({super.key});
+class chatViewDriver extends StatelessWidget {
+  const chatViewDriver({super.key});
 
   @override
   Widget build(BuildContext context) {
     // Get.put(testcontroller());
     return Scaffold(
       appBar: AppBar(
-        title: Text("Title"),
+        title: Text("Chat"),
         backgroundColor: AppColor.primaryColor,
       ),
       body: usersList(),
@@ -40,20 +41,17 @@ class testview extends StatelessWidget {
 
 Widget _buildUserListItem(DocumentSnapshot document) {
   Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-
   return ListTile(
     title: Text(data['name']),
     // subtitle: Text(data['uid']),
     onTap: () {
-      Get.to(() => chatUser(
+      Get.to(() => chatDriver(
             receiverId: data['uid'],
             name: data['name'],
       ));
     },
   );
-
 }
-
 }
 
 

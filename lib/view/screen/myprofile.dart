@@ -42,6 +42,15 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
       var response = await updateprof.postRequestWithFile(selectedImage!);
       userServices.sharedPreferences
           .setString("image", response['data']['users_photo']);
+      AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.success,
+        animType: AnimType.rightSlide,
+        title: 'Success',
+        desc: 'Your profile picture has been updated successfully',
+        //btnCancelOnPress: () {},
+        btnOkOnPress: () {},
+      ).show();
       setState(() {});
     }
   }
@@ -74,7 +83,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                     alignment: Alignment.center,
                     child: InkWell(
                       onTap: () {
-                        getImage(ImageSource.gallery);
+                        getImage(ImageSource.camera);
                       },
                       child: selectedImage == null
                           ? Container(
@@ -212,7 +221,9 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                             }
                           }
                           setState(() {});
-                        } else {}
+                        } else {
+
+                        }
                       } else if (confirmpassController.text !=
                           passController.text) {
                         AwesomeDialog(
@@ -221,6 +232,18 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                           animType: AnimType.rightSlide,
                           title: 'Warning',
                           desc: 'The Entered Paswwords Are Not Equal',
+                          //btnCancelOnPress: () {},
+                          btnOkOnPress: () {},
+                        ).show();
+                      }
+                      else{
+                        AwesomeDialog(
+                          context: Get.context!,
+                          dialogType: DialogType.info,
+                          animType: AnimType.rightSlide,
+                          title: 'Info',
+                          desc: 'Please Enter Your Information',
+                          btnOkColor:Colors.blue,
                           //btnCancelOnPress: () {},
                           btnOkOnPress: () {},
                         ).show();

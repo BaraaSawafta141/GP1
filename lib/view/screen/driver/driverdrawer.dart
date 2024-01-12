@@ -1,4 +1,5 @@
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/view/screen/driver/chat/chat_view.dart';
 import 'package:ecommercebig/view/screen/driver/choosingscreen.dart';
 import 'package:ecommercebig/view/screen/driver/driverhome.dart';
 import 'package:ecommercebig/view/screen/driver/driverupdateprofile.dart';
@@ -98,6 +99,11 @@ class CustomDrawerDriver extends StatelessWidget {
                     title: 'Emergency',
                     onPressed: () {
                       Get.to(SOSPage());
+                    }),
+                buildDrawerItem(
+                    title: 'Chat',
+                    onPressed: () {
+                      Get.to(chatViewDriver());
                     }),
                 buildDrawerItem(
                     title: 'Custom map',

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 //import 'dart:html';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
 import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
@@ -37,13 +38,20 @@ String selectedDriver = "";
 final homePageMarkersdriver = <Marker>{}.obs;
 addLatLong addlatlong = addLatLong(Get.find());
 becomeAvailable becomeavailable = becomeAvailable(Get.find());
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+
 class homedriver extends StatefulWidget {
   const homedriver({super.key});
 
   @override
   State<homedriver> createState() => driverHome();
 }
-
+  void chat() async {
+    firestore.collection('drivers').doc(driverId!).set({
+      'id': driverId,
+      'name': drivername,
+    }, SetOptions(merge: true));
+  }
 Set<Marker> marks = Set<Marker>();
 GoogleMapController? mymapcontroller;
 final homePageMarkers = <Marker>{}.obs;
@@ -77,6 +85,7 @@ class driverHome extends State<homedriver> {
     drivername = driverServices.sharedPreferences.getString("name")!;
     driverPhoto = driverServices.sharedPreferences.getString("img")!;
     myServices.sharedPreferences.setString("homedriver", "1");
+    chat();
     getCurrentLocationIcon();
   }
 

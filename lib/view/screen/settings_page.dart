@@ -1,4 +1,7 @@
+import 'package:ecommercebig/view/screen/myprofile.dart';
+import 'package:ecommercebig/view/screen/payment/payment.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -24,7 +27,7 @@ class SettingsPage extends StatelessWidget {
               leading: Icon(Icons.person),
               onTap: () {
                 // Navigate to profile settings
-                // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileSettings()));
+                Get.to(() => ProfileSettingScreen());
               },
             ),
             ListTile(
@@ -32,7 +35,7 @@ class SettingsPage extends StatelessWidget {
               leading: Icon(Icons.payment),
               onTap: () {
                 // Navigate to payment settings
-                // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentSettings()));
+                   Get.to(() => PaymentScreen());
               },
             ),
             Divider(),

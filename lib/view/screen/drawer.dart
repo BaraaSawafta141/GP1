@@ -28,9 +28,9 @@ class CustomDrawer extends StatelessWidget {
         color: Colors.white,
         child: Column(children: [
           InkWell(
-            onTap: () {
-              Get.to(() => ProfileSettingScreen());
-            },
+            // onTap: () {
+              // Get.to(() => ProfileSettingScreen());
+            // },
             child: SizedBox(
               height: 150,
               child: DrawerHeader(
@@ -87,11 +87,11 @@ class CustomDrawer extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 30),
             child: Column(
               children: [
-                buildDrawerItem(
-                    title: 'Payment History',
-                    onPressed: () {
-                      Get.to(() => PaymentScreen());
-                    }),
+                // buildDrawerItem(
+                //     title: 'Payment History',
+                //     onPressed: () {
+                //       Get.to(() => PaymentScreen());
+                //     }),
                 buildDrawerItem(
                     title: 'Ride History',
                     onPressed: () {
