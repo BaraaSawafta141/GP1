@@ -4,13 +4,25 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-    
         {
-            "type": "pwa-chrome",
+            "name": "Android",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:8080",
-            "webRoot": "${workspaceFolder}"
+            "type": "dart",
+            "deviceId": "emulator-5554",
         }
+        ,
+        {
+            "name": "SamsungS9+",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "23cb5fe4e70c7ece",
+        }
+    ],
+    "compounds": [
+        {
+            "name": "All devices",
+            "configurations": ["Android", "SamsungS9+"]
+        },
+      
     ]
 }

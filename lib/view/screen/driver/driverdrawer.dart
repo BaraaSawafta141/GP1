@@ -1,12 +1,11 @@
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/view/screen/driver/SOSPageDriver.dart';
 import 'package:ecommercebig/view/screen/driver/chat/chat_view.dart';
 import 'package:ecommercebig/view/screen/driver/choosingscreen.dart';
+import 'package:ecommercebig/view/screen/driver/driverSettingsPage.dart';
+import 'package:ecommercebig/view/screen/driver/driverSupport.dart';
 import 'package:ecommercebig/view/screen/driver/driverhome.dart';
-import 'package:ecommercebig/view/screen/driver/driverupdateprofile.dart';
 import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
-import 'package:ecommercebig/view/screen/emergency.dart';
-import 'package:ecommercebig/view/screen/ridehistory.dart';
-import 'package:ecommercebig/view/screen/settings_page.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,7 +26,7 @@ class CustomDrawerDriver extends StatelessWidget {
         child: Column(children: [
           InkWell(
             onTap: () {
-              Get.to(() => DriverProfileupdate());
+              // Get.to(() => DriverProfileupdate());
             },
             child: SizedBox(
               height: 150,
@@ -98,7 +97,7 @@ class CustomDrawerDriver extends StatelessWidget {
                 buildDrawerItem(
                     title: 'Emergency',
                     onPressed: () {
-                      Get.to(SOSPage());
+                      Get.to(SOSPageDriver());
                     }),
                 buildDrawerItem(
                     title: 'Chat',
@@ -155,9 +154,11 @@ class CustomDrawerDriver extends StatelessWidget {
                 buildDrawerItem(
                     title: 'Settings',
                     onPressed: () {
-                      // Get.to(() => SettingsPage());
+                      Get.to(() => DriverSettingsPage());
                     }),
-                buildDrawerItem(title: 'Support', onPressed: () {}),
+                buildDrawerItem(title: 'Support', onPressed: () {
+                  Get.to(() => SupportDriver());
+                }),
                 buildDrawerItem(
                     title: 'Log Out',
                     onPressed: () {

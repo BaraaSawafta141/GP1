@@ -4,6 +4,7 @@ import 'package:ecommercebig/view/screen/chat/chat_service.dart';
 import 'package:ecommercebig/view/screen/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class chatUser extends StatefulWidget {
   chatUser({super.key, this.receiverId, this.name});
@@ -16,7 +17,13 @@ class chatUser extends StatefulWidget {
 class chatUserState extends State<chatUser> {
   final TextEditingController _messageController = TextEditingController();
   final ChatService _chatService = ChatService();
-
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+@override
+  void initState() {
+    super.initState();
+    _configureLocalNotifications();
+  }
   void sendMessage() async {
     // only send message if the text field is not empty
     if (_messageController.text.isNotEmpty) {
@@ -24,6 +31,19 @@ class chatUserState extends State<chatUser> {
       // clear the text controller
       _messageController.clear();
     }
+  }
+
+  void _configureLocalNotifications() {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      // onSelectNotification: _onSelectNotification,
+    );
   }
 
   @override
