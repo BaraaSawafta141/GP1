@@ -89,11 +89,11 @@ class CustomDrawerDriver extends StatelessWidget {
                 //     onPressed: () {
                 //       Get.to(() => PaymentScreen());
                 //     }),
-                buildDrawerItem(
-                    title: 'Ride History',
-                    onPressed: () {
-                      // Get.to(() => rideHistory());
-                    }),
+                // buildDrawerItem(
+                //     title: 'Ride History',
+                //     onPressed: () {
+                //       // Get.to(() => rideHistory());
+                //     }),
                 buildDrawerItem(
                     title: 'Emergency',
                     onPressed: () {
@@ -156,9 +156,11 @@ class CustomDrawerDriver extends StatelessWidget {
                     onPressed: () {
                       Get.to(() => DriverSettingsPage());
                     }),
-                buildDrawerItem(title: 'Support', onPressed: () {
-                  Get.to(() => SupportDriver());
-                }),
+                buildDrawerItem(
+                    title: 'Support',
+                    onPressed: () {
+                      Get.to(() => SupportDriver());
+                    }),
                 buildDrawerItem(
                     title: 'Log Out',
                     onPressed: () {

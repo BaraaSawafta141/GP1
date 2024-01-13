@@ -30,7 +30,7 @@ List<GetPage<dynamic>>? routes = [
   // GetPage( name: "/", page: () => DecisionScreen()),
   // name: "/",
   // page: () =>  Login()),
-
+  
   //Auth
   GetPage(name: AppRoute.login, page: () => const Login()),
   GetPage(name: AppRoute.signUp, page: () => const SignUp()),

@@ -1,9 +1,9 @@
-import 'package:ecommercebig/view/screen/driver/driverhome.dart';
+import 'package:ecommercebig/view/screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SupportDriver extends StatelessWidget {
+class Supportuser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,12 +18,11 @@ class SupportPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
         leading: InkWell(
-            onTap: () {
-              Get.back();
-            },
-            child: Icon(Icons.arrow_back)),
+          onTap: (){
+            Get.to(home());
+          },
+          child: Icon(Icons.arrow_back)),
         title: Text('Support'),
       ),
       body: Padding(
@@ -45,10 +44,7 @@ class SupportPage extends StatelessWidget {
             ),
             SizedBox(height: 16),
             ListTile(
-              leading: Icon(
-                Icons.email,
-                color: Colors.green,
-              ),
+              leading: Icon(Icons.email),
               title: Text('palwheel2023@gmail.com'),
               onTap: () async {
                 final Uri emailLaunchUri = Uri(
@@ -67,10 +63,7 @@ class SupportPage extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: Icon(
-                Icons.phone,
-                color: Colors.green,
-              ),
+              leading: Icon(Icons.phone),
               title: Text('+970 (595) 180806'),
               onTap: () async {
                 final Uri phoneLaunchUri = Uri(
@@ -86,23 +79,23 @@ class SupportPage extends StatelessWidget {
               },
             ),
             Divider(),
-            // Text(
-            //   'FAQs',
-            //   style: TextStyle(
-            //     fontSize: 24,
-            //     fontWeight: FontWeight.bold,
-            //   ),
-            // ),
-            // SizedBox(height: 16),
-            // // Add your frequently asked questions here
-            // FaqItem(
-            //     question: 'How to create an account?',
-            //     answer: 'To create an account...'),
-            // FaqItem(
-            //     question: 'How to book a ride?',
-            //     answer:
-            //         'To book a ride you have to select the pick up location you want and then select the destination location after that you should choose a driver '),
-            // // Add more FAQ items as needed
+            Text(
+              'FAQs',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 16),
+            // Add your frequently asked questions here
+            FaqItem(
+                question: 'How to create an account?',
+                answer: 'To create an account...'),
+            FaqItem(
+                question: 'How to book a ride?',
+                answer:
+                    'To book a ride you have to select the pick up location you want and then select the destination location after that you should choose a driver '),
+            // Add more FAQ items as needed
           ],
         ),
       ),
