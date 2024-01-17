@@ -9,6 +9,7 @@ import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 
 class PaymentScreen extends StatefulWidget {
   @override
@@ -139,9 +140,11 @@ class PaymentScreenState extends State<PaymentScreen> {
                     );
                   }
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                        child: Lottie.asset('assets/lottie/load.json'));
                   }
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                      child: Lottie.asset('assets/lottie/loading.json'));
                 },
                 future: getCards(),
               ),

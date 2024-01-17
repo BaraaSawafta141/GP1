@@ -9,6 +9,7 @@ import 'package:ecommercebig/view/screen/myprofile.dart';
 import 'package:ecommercebig/view/screen/payment/payment.dart';
 import 'package:ecommercebig/view/screen/ridehistory.dart';
 import 'package:ecommercebig/view/screen/settings_page.dart';
+import 'package:ecommercebig/view/screen/user_support.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,7 +30,7 @@ class CustomDrawer extends StatelessWidget {
         child: Column(children: [
           InkWell(
             // onTap: () {
-              // Get.to(() => ProfileSettingScreen());
+            // Get.to(() => ProfileSettingScreen());
             // },
             child: SizedBox(
               height: 150,
@@ -159,7 +160,11 @@ class CustomDrawer extends StatelessWidget {
                     onPressed: () {
                       Get.to(() => testview());
                     }),
-                buildDrawerItem(title: 'Support', onPressed: () {}),
+                buildDrawerItem(
+                    title: 'Support',
+                    onPressed: () {
+                      Get.to(SupportPage());
+                    }),
                 buildDrawerItem(
                     title: 'Log Out',
                     onPressed: () {

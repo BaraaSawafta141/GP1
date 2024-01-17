@@ -46,7 +46,7 @@ class handlingdatarequest extends StatelessWidget {
                 child: Lottie.asset(AppImageAsset.offline))
             : statusreq == statusrequest.serverFailure
                 ?  Center(
-                    child: Lottie.asset(applink.server))
+                    child: Lottie.asset(AppImageAsset.server))
                 :  widget;
   }
 }

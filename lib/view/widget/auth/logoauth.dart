@@ -1,6 +1,7 @@
 
 import 'package:ecommercebig/core/constant/imageasset.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class LogoAuth extends StatelessWidget {
   const LogoAuth({Key? key}) : super(key: key);
@@ -13,9 +14,10 @@ class LogoAuth extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(0), // Border radius
           child: ClipOval(
-            child: Image.asset(
-              AppImageAsset.logo,
-            ),
+            child:Lottie.asset('assets/lottie/login.json'),
+            //  Image.asset(
+            //   AppImageAsset.logo,
+            // ),
           ),
         ));
   }

@@ -21,7 +21,7 @@ class CustomSliderOnBoarding extends GetView<OnBoardingControllerImp> {
         itemBuilder: (context, i) => Column(
               children: [
                 
-                Image.asset(
+                Lottie.asset(
                   onBoardingList[i].image!,
                   // width: ,
                   height: Get.width / 1.3,

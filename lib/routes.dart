@@ -27,10 +27,10 @@ import 'package:get/get.dart';
 
 List<GetPage<dynamic>>? routes = [
   GetPage(name: "/", page: () => DecisionScreen(), middlewares: [MyMiddleWare()]),
-  // GetPage( name: "/", page: () => DecisionScreen()),
+  // GetPage(name: "/", page: () => Language()),
   // name: "/",
   // page: () =>  Login()),
-  
+
   //Auth
   GetPage(name: AppRoute.login, page: () => const Login()),
   GetPage(name: AppRoute.signUp, page: () => const SignUp()),
@@ -47,7 +47,7 @@ List<GetPage<dynamic>>? routes = [
   GetPage(name: AppRoute.homepage, page: () => const home()),
   GetPage(name: AppRoute.waitingpage, page: () => const DocumentUploadedPage()),
 
-  GetPage(name: AppRoute.driverhome, page: () =>  homedriver()),
+  GetPage(name: AppRoute.driverhome, page: () => homedriver()),
 
   //Home
 ];

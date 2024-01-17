@@ -37,14 +37,14 @@ class LoginControllerImp extends LoginController {
   @override
   login() async {
     if (formstate.currentState!.validate()) {
-      //statusreq = statusrequest.loading;
-      //update();
       var response = await loginData.postdata(password.text, email.text);
       print("============================ Controller $response ");
       statusreq = handlingdata(response);
 
       if (statusrequest.success == statusreq) {
         if (response['status'] == "Success") {
+          statusreq = statusrequest.loading;
+          update();
           //data.addAll(response['data']);
           myServices.sharedPreferences.setString("Login", "1");
           userServices.sharedPreferences
@@ -73,6 +73,8 @@ class LoginControllerImp extends LoginController {
               btnOkOnPress: () {},
             ).show();
           } else {
+            statusreq = statusrequest.serverFailure;
+            update();
             AwesomeDialog(
               context: Get.context!,
               dialogType: DialogType.warning,

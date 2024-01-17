@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
 import 'package:ecommercebig/core/services/services.dart';
+import 'package:lottie/lottie.dart';
 
 statusrequest statusreq = statusrequest.none;
 rideHistorydata ridehistory = rideHistorydata(Get.find());
@@ -121,9 +122,9 @@ class rideHistorytemp extends StatelessWidget {
             );
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: Lottie.asset('assets/lottie/load.json'));
           }
-          return const Center(child: CircularProgressIndicator());
+          return Lottie.asset('assets/lottie/load.json');
         },
         future: getRides(),
       ),

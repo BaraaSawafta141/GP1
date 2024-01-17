@@ -2,6 +2,7 @@ import 'package:ecommercebig/view/screen/auth/login.dart';
 import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 class DecisionScreen extends StatelessWidget {
   DecisionScreen({Key? key}) : super(key: key);
@@ -15,7 +16,8 @@ class DecisionScreen extends StatelessWidget {
         width: double.infinity,
         child: Column(
           children: [
-            taxiIntroWidget(),
+            Lottie.asset('assets/lottie/choose.json'),
+            // taxiIntroWidget(),
             Center(
                 child: Text(
               "39".tr,
@@ -64,7 +66,7 @@ class DecisionScreen extends StatelessWidget {
               width: 65,
               height: height,
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 100, 167, 223),
+                color: Colors.blue,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(8),
                     bottomLeft: Radius.circular(8)),
@@ -80,9 +82,10 @@ class DecisionScreen extends StatelessWidget {
                 child: Text(
               text,
               style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18),
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
               textAlign: TextAlign.center,
             )),
           ],

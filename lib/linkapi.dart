@@ -56,9 +56,8 @@ class applink {
   static const String carInfo = "$server/car/car_info.php"; //add car info  api
 
   //user coordinates
-    static const String userCords =
+  static const String userCords =
       "$server/ulocation/user_coordinates.php"; // add user coordinates
-
 }
 /*
 i have a problem when i do hot reload and the problem because iam working on the localhost i should put it on the server 
