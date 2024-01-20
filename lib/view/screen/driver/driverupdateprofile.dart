@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/driverSignUp.dart';
@@ -55,6 +56,29 @@ class _DriverProfileupdateState extends State<DriverProfileupdate> {
         if (response['status'] == "Success") {
           // driverId = response['id'];
           // } else {
+          driverServices.sharedPreferences
+              .setString("name", response['message']['drivers_name']);
+          driverServices.sharedPreferences
+              .setString("email", response['message']['drivers_email']);
+          driverServices.sharedPreferences
+              .setString("img", response['message']['drivers_photo']);
+          FirebaseFirestore.instance
+              .collection('drivers')
+              .where('id', isEqualTo: driverId)
+              .get()
+              .then((value) {
+            if (value.docs.isNotEmpty) {
+              for (var element in value.docs) {
+                element.reference
+                    .update({'name': response['message']['drivers_name']});
+              }
+            } else {
+              print("User not found");
+            }
+          }).catchError((error) {
+            print("Error updating user name: $error");
+          });
+
           AwesomeDialog(
             context: Get.context!,
             dialogType: DialogType.success,
