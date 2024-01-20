@@ -819,6 +819,7 @@ class MapSampleState extends State<home> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () async {
+                      driversList.clear();
                       var response = await driversData.getData();
                       statusrequest driversReq = handlingdata(response);
                       List<dynamic> dataList = response['data'];

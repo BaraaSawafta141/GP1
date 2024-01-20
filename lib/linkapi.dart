@@ -43,7 +43,8 @@ class applink {
       "$server/driver/not_available.php"; // reserve driver (change status to not available)
   static const String makeAvailable =
       "$server/driver/make_available.php"; // free driver (change status to  available)
-
+  static const String driverApproval =
+      "$server/driver/check_approval.php"; // check driver approval
   //comment
   static const String addingComment =
       "$server/comments/addingComment.php"; //adding comments api

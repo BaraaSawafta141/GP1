@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommercebig/controller/auth/login_controller.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
@@ -180,9 +181,10 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                       if (passController.text != "" &&
                           confirmpassController.text == passController.text) {
                         if (formstate.currentState!.validate()) {
-                      
                           var response = await updateprof.postdata(
-                              nameController.text, passController.text, Userid!);
+                              nameController.text,
+                              passController.text,
+                              Userid!);
                           print(
                               "============================ Controller $response ");
 
@@ -192,6 +194,25 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                             if (response['status'] == "Success") {
                               userServices.sharedPreferences.setString(
                                   "name", response['message']['users_name']);
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .where('uid', isEqualTo: Userid)
+                                  .get()
+                                  .then((value) {
+                                if (value.docs.isNotEmpty) {
+                                  for (var element in value.docs) {
+                                    element.reference.update({
+                                      'name': response['message']['users_name']
+                                    });
+                                  }
+                                } else {
+                                  print("User not found");
+                                }
+                              }).catchError((error) {
+                                print("Error updating user name: $error");
+                              });
+
+                              // .update({'name': newName});
                               userServices.sharedPreferences.setString(
                                   "password",
                                   response['message']['users_password']);
@@ -221,9 +242,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                             }
                           }
                           setState(() {});
-                        } else {
-
-                        }
+                        } else {}
                       } else if (confirmpassController.text !=
                           passController.text) {
                         AwesomeDialog(
@@ -235,15 +254,14 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                           //btnCancelOnPress: () {},
                           btnOkOnPress: () {},
                         ).show();
-                      }
-                      else{
+                      } else {
                         AwesomeDialog(
                           context: Get.context!,
                           dialogType: DialogType.info,
                           animType: AnimType.rightSlide,
                           title: 'Info',
                           desc: 'Please Enter Your Information',
-                          btnOkColor:Colors.blue,
+                          btnOkColor: Colors.blue,
                           //btnCancelOnPress: () {},
                           btnOkOnPress: () {},
                         ).show();

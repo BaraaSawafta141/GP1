@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommercebig/core/constant/color.dart';
-import 'package:ecommercebig/view/screen/chat/chat_service.dart';
 import 'package:ecommercebig/view/screen/driver/chat/chat_service_driver.dart';
 import 'package:ecommercebig/view/screen/driver/driverhome.dart';
-import 'package:ecommercebig/view/screen/home.dart';
 import 'package:flutter/material.dart';
 
 class chatDriver extends StatefulWidget {

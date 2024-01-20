@@ -23,7 +23,7 @@ class testview extends StatelessWidget {
 
   Widget usersList() {
     return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('users').snapshots(),
+        stream: FirebaseFirestore.instance.collection('drivers').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Its Error!');
@@ -46,7 +46,7 @@ Widget _buildUserListItem(DocumentSnapshot document) {
     // subtitle: Text(data['uid']),
     onTap: () {
       Get.to(() => chatUser(
-            receiverId: data['uid'],
+            receiverId: data['id'],
             name: data['name'],
       ));
     },

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommercebig/core/constant/color.dart';
 import 'package:ecommercebig/view/screen/chat/chat_service.dart';
 import 'package:ecommercebig/view/screen/home.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 

@@ -6,13 +6,15 @@ import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/car_info.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/location.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/uploaddoc.dart';
+import 'package:ecommercebig/view/screen/driver/carinforegister/pages/uploaddocument.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehiclecolor.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehicleplatenumber.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehicletype.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vehicleyear.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/vericletype.dart';
 import 'package:ecommercebig/view/screen/driver/driverhome.dart';
-import 'package:ecommercebig/view/screen/driver/driverupdateprofile.dart' as update;
+import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
+// import 'package:ecommercebig/view/screen/driver/driverupdateprofile.dart' as update;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -173,7 +175,7 @@ class _nameState extends State<carRegistertemplate> {
                                 selectModelYear,
                                 vehicalNumberController.text,
                                 vehicalColor,
-                                update.driverId!,
+                               driverServices.sharedPreferences.getString("id")!,
                                 document!);
 
                             AwesomeDialog(
@@ -184,10 +186,10 @@ class _nameState extends State<carRegistertemplate> {
                               desc:
                                   'Your request has been registered successfully',
                               btnOkOnPress: () {
-                                // myServices.sharedPreferences
-                                //     .setString("DocumentUploadedPage", "1");
+                                myServices.sharedPreferences
+                                    .setString("DocumentUploadedPage", "1");
                                
-                                Get.off(() => homedriver());
+                                Get.off(() => DocumentUploadedPage());
                               },
                             ).show();
                           }

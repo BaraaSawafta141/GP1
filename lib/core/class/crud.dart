@@ -26,7 +26,24 @@ class crud {
       return left(statusrequest.serverexception);
     }
   }
-
+postDataDriver(String linkurl, Map data) async {
+    try {
+      if (await checkinternet()) {
+        var response = await http.post(Uri.parse(linkurl), body: data);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          Map responsebody = jsonDecode(response.body);
+          print(responsebody);
+          return (responsebody);
+        } else {
+          return left(statusrequest.serverFailure);
+        }
+      } else {
+        return left(statusrequest.offlineFailure);
+      }
+    } catch (_) {
+      return left(statusrequest.serverexception);
+    }
+  }
   postDataCheckDriver(String linkurl, Map data) async {
     try {
       if (await checkinternet()) {

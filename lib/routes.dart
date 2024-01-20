@@ -45,7 +45,7 @@ List<GetPage<dynamic>>? routes = [
   GetPage(
       name: AppRoute.verfiyCodeSignUp, page: () => const VerfiyCodeSignUp()),
   GetPage(name: AppRoute.homepage, page: () => const home()),
-  GetPage(name: AppRoute.waitingpage, page: () => const DocumentUploadedPage()),
+  GetPage(name: AppRoute.waitingpage, page: () =>  DocumentUploadedPage()),
 
   GetPage(name: AppRoute.driverhome, page: () => homedriver()),
 

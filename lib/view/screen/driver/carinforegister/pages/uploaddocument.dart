@@ -1,12 +1,17 @@
+import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/data/datasource/remote/driver/check_approval.dart';
+import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DocumentUploadedPage extends StatefulWidget {
-  const DocumentUploadedPage({Key? key}) : super(key: key);
+  // const DocumentUploadedPage(String s, {Key? key}) : super(key: key);
   @override
   State<DocumentUploadedPage> createState() => _DocumentUploadedPageState();
 }
+
+checkApproval checkapproval = checkApproval(Get.find());
 
 class _DocumentUploadedPageState extends State<DocumentUploadedPage> {
   @override
@@ -81,6 +86,38 @@ class _DocumentUploadedPageState extends State<DocumentUploadedPage> {
                   ],
                 ),
               ),
+              SizedBox(
+                height: 30,
+              ),
+              InkWell(
+                onTap: () async {
+                  // print("widget :" + widget.key.toString());
+                  var res = await checkapproval.postdata(
+                      driverServices.sharedPreferences.getString("id")!);
+                  if (res['status'] == "Success") {
+                    myServices.sharedPreferences
+                        .setString("DocumentUploadedPage", "0");
+                    myServices.sharedPreferences.setString("homedriver", "1");
+                    Get.offAllNamed("/driverhome");
+                  } else {
+                    Get.snackbar("Error", "You are not approved yet!");
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Color(0xff2FB654)),
+                  child: Center(
+                    child: Text(
+                      'Check Approval',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ));
