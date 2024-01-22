@@ -34,7 +34,7 @@ class ResetPasswordControllerImp extends ResetPasswordController {
       statusreq = handlingdata(response);
 
       if (statusrequest.success == statusreq) {
-        if (response['success'] == "success") {
+        if (response['status'] == "success") {
           //data.addAll(response['data']);
           Get.offNamed(AppRoute.successResetpassword);
         } else {

@@ -24,7 +24,7 @@ class ForgetPasswordControllerImp extends ForgetPasswordController {
       statusreq = handlingdata(response);
 
       if (statusrequest.success == statusreq) {
-        if (response['success'] == "success") {
+        if (response['status'] == "Success") {
           //data.addAll(response['data']);
           Get.offNamed(AppRoute.verfiyCode, arguments: {"email": email.text});
         } else {

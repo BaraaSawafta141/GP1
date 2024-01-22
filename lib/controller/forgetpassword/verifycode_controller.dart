@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/constant/routes.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
@@ -15,34 +17,29 @@ class VerifyCodeControllerImp extends VerifyCodeController {
   String? email;
   verifycodeforgetpassworddata verifycodeforget =
       verifycodeforgetpassworddata(Get.find());
-
-  statusrequest? statusreq= statusrequest.none;   
-
-  @override
-  checkCode() {
-
-  }
+  statusrequest? statusreq = statusrequest.none;
 
   @override
-  goToResetPassword(verifycode) async{
+  checkCode() {}
+
+  @override
+  goToResetPassword(verifycode) async {
     statusreq = statusrequest.loading;
     update();
-    var response = await verifycodeforget.postdata(email!, verifycode);
-    print("============================ Controller $response ");
+    var response = await verifycodeforget.postdata(verifycode, email!);
+    print("============================ Controller $response");
     statusreq = handlingdata(response);
 
     if (statusrequest.success == statusreq) {
-      if (response['success'] == "success") {
-        Get.offNamed(AppRoute.resetPassword,arguments: {"email":email});
+      if (response['status'] == "Success") {
+        Get.offNamed(AppRoute.resetPassword, arguments: {"email": email});
       } else {
         Get.defaultDialog(
-            title: "Warning",
-            middleText: "Please Enter Valid Verify Code");
+            title: "Warning", middleText: "Please Enter Valid Verify Code");
         statusreq = statusrequest.failure;
       }
     }
     update();
-    
   }
 
   @override

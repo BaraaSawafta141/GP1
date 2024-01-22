@@ -40,7 +40,6 @@ class LoginControllerImp extends LoginController {
       var response = await loginData.postdata(password.text, email.text);
       print("============================ Controller $response ");
       statusreq = handlingdata(response);
-
       if (statusrequest.success == statusreq) {
         if (response['status'] == "Success") {
           statusreq = statusrequest.loading;
