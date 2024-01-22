@@ -79,12 +79,12 @@ class MapSampleState extends State<home> {
   final Set<Polyline> _polyline = {};
 
   List<String> images = [
-    'assets/images/1.png',
-    'assets/images/2.png',
-    'assets/images/3.png',
+    // 'assets/images/1.png',
+    // 'assets/images/2.png',
+    // 'assets/images/3.png',
     'assets/images/4.png',
-    'assets/images/5.png',
-    'assets/images/6.png',
+    // 'assets/images/5.png',
+    // 'assets/images/6.png',
   ];
   late LatLng destination;
   late LatLng source;
@@ -210,7 +210,7 @@ class MapSampleState extends State<home> {
       print("error in getting drivers Data");
     }
     for (int i = 0; i < driversList.length; i++) {
-      final Uint8List markericon = await getBytesFromAssets(images[i], 140);
+      final Uint8List markericon = await getBytesFromAssets(images[0], 140);
       homePageMarkers.add(Marker(
           markerId: MarkerId(i.toString()),
           position: _latlng[i],
