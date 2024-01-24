@@ -14,6 +14,7 @@ import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
 import 'package:ecommercebig/linkapi.dart';
 import 'package:ecommercebig/view/screen/driver/driverdrawer.dart';
 import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -39,6 +40,21 @@ final homePageMarkersdriver = <Marker>{}.obs;
 addLatLong addlatlong = addLatLong(Get.find());
 becomeAvailable becomeavailable = becomeAvailable(Get.find());
 FirebaseFirestore firestore = FirebaseFirestore.instance;
+sendMessageNotificaiton(String title, String message, String token) async {
+  var headerslist = {
+    'Accept': '*/*',
+    'Content-Type': 'application/json',
+    'Authorization':
+        'key=AAAAGgyANw4:APA91bEdUINe3cK1OHuaLJiC1atYC7-7EvPP-xKNKnZgwbXBnZSv3kOubwh7xiu2d2-Tamk0yv-itrEgHTfq6JE6URf3tf5Q4iPKG78RawCXTliqMpy_EqNie0g39VH5UaI7QKsqergX',
+  };
+  var url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+  var body = {
+    "to": token,
+    "notification": {"title": title, "body": message},
+  };
+  var req = await http.post(url, headers: headerslist, body: jsonEncode(body));
+  req.statusCode == 200 ? print("success") : print("error");
+}
 
 class homedriver extends StatefulWidget {
   const homedriver({super.key});
@@ -46,12 +62,15 @@ class homedriver extends StatefulWidget {
   @override
   State<homedriver> createState() => driverHome();
 }
-  void chat() async {
-    firestore.collection('drivers').doc(driverId!).set({
-      'id': driverId,
-      'name': drivername,
-    }, SetOptions(merge: true));
-  }
+
+void chat() async {
+  firestore.collection('drivers').doc(driverId!).set({
+    'id': driverId,
+    'name': drivername,
+    'token': await FirebaseMessaging.instance.getToken(),
+  }, SetOptions(merge: true));
+}
+
 Set<Marker> marks = Set<Marker>();
 GoogleMapController? mymapcontroller;
 final homePageMarkers = <Marker>{}.obs;
@@ -282,7 +301,6 @@ class driverHome extends State<homedriver> {
     }
   }
 
-
   Widget buildCurrentLocationmarker() {
     return Align(
       child: Padding(
@@ -290,15 +308,15 @@ class driverHome extends State<homedriver> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-               MaterialButton(
-                shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              MaterialButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
                 color: Colors.green,
-                minWidth: Get.width/1.2,
+                minWidth: Get.width / 1.2,
                 height: 45,
                 onPressed: () {
-                 becomeavailable.postdata(driverId!);
-                   AwesomeDialog(
+                  becomeavailable.postdata(driverId!);
+                  AwesomeDialog(
                     context: context,
                     dialogType: DialogType.success,
                     animType: AnimType.bottomSlide,
@@ -315,10 +333,10 @@ class driverHome extends State<homedriver> {
                 height: 10,
               ),
               MaterialButton(
-                shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
                 color: Colors.green,
-                minWidth: Get.width/1.2,
+                minWidth: Get.width / 1.2,
                 height: 45,
                 onPressed: () {
                   getCurrentLocationIcon();

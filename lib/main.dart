@@ -5,6 +5,7 @@ import 'package:ecommercebig/core/services/services.dart';
 import 'package:ecommercebig/routes.dart';
 import 'package:ecommercebig/view/screen/driver/driverphonesectry.dart';
 import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'core/localization/changelocal.dart';
@@ -21,8 +22,28 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        Get.snackbar(
+          message.notification!.title!, message.notification!.body!,
+          duration: const Duration(seconds: 5),
+          );
+
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     LocaleController controller = Get.put(LocaleController());

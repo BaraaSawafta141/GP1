@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "Android",
             "request": "launch",
@@ -16,13 +17,25 @@
             "request": "launch",
             "type": "dart",
             "deviceId": "23cb5fe4e70c7ece",
+        }  ,
+        {
+            "name": "second emulator",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "emulator-5556",
         }
+      
     ],
     "compounds": [
         {
             "name": "All devices",
             "configurations": ["Android", "SamsungS9+"]
         },
-      
+        
+        {
+            "name": "2 android emulators", 
+            "configurations": ["Android", "second emulator"]
+        }
+
     ]
 }

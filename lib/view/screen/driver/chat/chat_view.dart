@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommercebig/core/constant/color.dart';
 import 'package:ecommercebig/view/screen/driver/chat/chat_driver.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart'; 
 
 class chatViewDriver extends StatefulWidget {
   const chatViewDriver({super.key});
@@ -88,6 +88,7 @@ class _chatViewDriverState extends State<chatViewDriver> {
         Get.to(() => chatDriver(
               receiverId: data['uid'],
               name: data['name'],
+              token: data['token'],
             ));
       },
     );

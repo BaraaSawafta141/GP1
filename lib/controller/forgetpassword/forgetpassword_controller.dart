@@ -37,8 +37,6 @@ class ForgetPasswordControllerImp extends ForgetPasswordController {
     }
   }
 
-
-
   @override
   void onInit() {
     email = TextEditingController();

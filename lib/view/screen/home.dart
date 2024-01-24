@@ -20,6 +20,8 @@ import 'package:ecommercebig/view/screen/drawer.dart';
 import 'package:ecommercebig/view/screen/maptheme.dart';
 import 'package:ecommercebig/view/screen/rating_driver.dart';
 import 'package:ecommercebig/view/screen/ridehistory.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:flutter_google_maps_webservices/directions.dart'
@@ -45,7 +47,7 @@ String? Userphone;
 String? Userid;
 String? Userpass;
 String? UserPhoto;
-
+FirebaseFirestore firestore = FirebaseFirestore.instance;
 cardData cardDetails = cardData(Get.find());
 viewDriversData driversData = viewDriversData(Get.find());
 reserveDriverData reserveDriver = reserveDriverData(Get.find());
@@ -68,6 +70,22 @@ GoogleMapController? mymapcontroller;
 String? _mapStyle;
 final homePageMarkers = <Marker>{}.obs;
 bool showdialograting = true;
+
+sendMessageNotificaiton(String title, String message, String token) async {
+  var headerslist = {
+    'Accept': '*/*',
+    'Content-Type': 'application/json',
+    'Authorization':
+        'key=AAAAGgyANw4:APA91bEdUINe3cK1OHuaLJiC1atYC7-7EvPP-xKNKnZgwbXBnZSv3kOubwh7xiu2d2-Tamk0yv-itrEgHTfq6JE6URf3tf5Q4iPKG78RawCXTliqMpy_EqNie0g39VH5UaI7QKsqergX',
+  };
+  var url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+  var body = {
+    "to": token,
+    "notification": {"title": title, "body": message},
+  };
+  var req = await http.post(url, headers: headerslist, body: jsonEncode(body));
+  req.statusCode == 200 ? print("success") : print("error");
+}
 
 class MapSampleState extends State<home> {
   //final Completer<GoogleMapController> _controllergoogle =
@@ -108,12 +126,36 @@ class MapSampleState extends State<home> {
         .asUint8List();
   }
 
-  // void chat() async {
-  //   firestore.collection('users').doc(Userid!).set({
-  //     'uid': Userid,
-  //     'name': Username,
-  //   }, SetOptions(merge: true));
-  // }
+  void chat() async {
+    firestore.collection('users').doc(Userid!).set({
+      'uid': Userid,
+      'name': Username,
+      'token': await FirebaseMessaging.instance.getToken(),
+    }, SetOptions(merge: true));
+  }
+
+  myRequestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
 
   /*void updateMapStyle(String mapTheme) {
     if (mymapcontroller != null) {
@@ -145,6 +187,7 @@ class MapSampleState extends State<home> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    myRequestPermission();
     applyStoredMapTheme();
     UserEmail = userServices.sharedPreferences.getString("email")!;
     Username = userServices.sharedPreferences.getString("name")!;
@@ -152,7 +195,7 @@ class MapSampleState extends State<home> {
     Userid = userServices.sharedPreferences.getString("id")!;
     Userpass = userServices.sharedPreferences.getString("password")!;
     UserPhoto = userServices.sharedPreferences.getString("image");
-    // chat();
+    chat();
     destinationController.addListener(() {
       onChangedest();
     });

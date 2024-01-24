@@ -21,7 +21,7 @@ class _testviewState extends State<testview> {
     // Get.put(testcontroller());
     return Scaffold(
       appBar: AppBar(
-        title: Text("Title"),
+        title: Text("Chat"),
         backgroundColor: AppColor.primaryColor,
       ),
       body: Column(
@@ -94,6 +94,7 @@ class _testviewState extends State<testview> {
         Get.to(() => chatUser(
               receiverId: data['id'],
               name: data['name'],
+              token: data['token'],
             ));
       },
     );

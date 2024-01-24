@@ -1,18 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommercebig/view/screen/driver/driverhome.dart';
 import 'package:flutter/material.dart';
-import 'package:ecommercebig/model/message.dart';
+import 'package:ecommercebig/model/message.dart' as model;
 
 class ChatServiceDriver extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> sendMessage(String recevierId, String message) async {
+  Future<void> sendMessage(
+      String recevierId, String message, String token) async {
     // get current user data
     final String currentUserId = driverId!;
     final String currentUserName = drivername!;
     final Timestamp timestamp = Timestamp.now();
     // create a new message
-    Message messageObj = Message(
+    model.Message messageObj = model.Message(
       senderId: currentUserId,
       senderName: currentUserName,
       receiverId: recevierId,
@@ -29,7 +30,9 @@ class ChatServiceDriver extends ChangeNotifier {
         .doc(chatId)
         .collection('messages')
         .add(messageObj.toMap());
- 
+
+    await sendMessageNotificaiton(
+        'Message from $currentUserName', message, token);
   }
 
   Stream<QuerySnapshot> getMessages(String userId, String otherUserId) {
@@ -47,5 +50,4 @@ class ChatServiceDriver extends ChangeNotifier {
         .orderBy('timestamp', descending: false)
         .snapshots();
   }
-
 }

@@ -5,9 +5,10 @@ import 'package:ecommercebig/view/screen/driver/driverhome.dart';
 import 'package:flutter/material.dart';
 
 class chatDriver extends StatefulWidget {
-  chatDriver({super.key, this.receiverId, this.name});
+  chatDriver({super.key, this.receiverId, this.name, this.token});
   final String? receiverId;
   final String? name;
+  final String? token;
   @override
   State<chatDriver> createState() => chatDriverState();
 }
@@ -19,10 +20,17 @@ class chatDriverState extends State<chatDriver> {
   void sendMessage() async {
     // only send message if the text field is not empty
     if (_messageController.text.isNotEmpty) {
-      await _chatService.sendMessage(widget.receiverId!, _messageController.text);
+      await _chatService.sendMessage( 
+          widget.receiverId!, _messageController.text, widget.token!);
       // clear the text controller
       _messageController.clear();
     }
+  }
+
+  @override
+  void initState() {
+
+    super.initState();
   }
 
   @override
