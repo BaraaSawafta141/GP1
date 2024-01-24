@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
+
 import 'dart:typed_data';
 //import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,7 +9,6 @@ import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
-import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/reserveDriver.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/viewDrivers.dart';
 import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
@@ -17,17 +16,15 @@ import 'package:ecommercebig/data/datasource/remote/userCords/user_cords.dart';
 import 'package:ecommercebig/linkapi.dart';
 import 'package:ecommercebig/view/screen/commentpage.dart';
 import 'package:ecommercebig/view/screen/drawer.dart';
-import 'package:ecommercebig/view/screen/maptheme.dart';
-import 'package:ecommercebig/view/screen/rating_driver.dart';
+
 import 'package:ecommercebig/view/screen/ridehistory.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:flutter_google_maps_webservices/directions.dart'
     as maps_directions;
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:geocoding/geocoding.dart' as geoCoding;
 import 'package:geolocator/geolocator.dart';
@@ -206,12 +203,7 @@ class MapSampleState extends State<home> {
     _ratingController = TextEditingController(text: '3.0');
     _rating = _initialRating;
     WidgetsFlutterBinding.ensureInitialized();
-    notifications.initialize(
-      InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-        //iOS: IOSInitializationSettings(),
-      ),
-    );
+ 
   }
 
   String? storedTheme;
@@ -1055,27 +1047,6 @@ class MapSampleState extends State<home> {
     );
   }
 
-  final FlutterLocalNotificationsPlugin notifications =
-      FlutterLocalNotificationsPlugin();
-  Future<void> showNotification() async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'channel_id',
-      'channel_name',
-      importance: Importance.max,
-      priority: Priority.high,
-      channelDescription: 'channel_description',
-    );
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    await notifications.show(
-      0,
-      'Driver On His Way',
-      'The driver is on his way!',
-      platformChannelSpecifics,
-    );
-  }
-
   buildRideConfirmationSheet() {
     Get.bottomSheet(Container(
       width: Get.width,
@@ -1181,7 +1152,6 @@ class MapSampleState extends State<home> {
                                 //   RideCount++;
                                 // });
                                 // getCurrentLocationIcon();
-
                                 saveRideHistory(
                                     sourceController.text,
                                     destinationController.text,
@@ -1192,7 +1162,8 @@ class MapSampleState extends State<home> {
                                 var res = await reserveDriver
                                     .postdata(selectedDriver);
                                 // print(" >> $res");
-                                showNotification();
+                                String? driverToken = await getDriverToken(selectedDriver);
+                                await sendMessageNotificaiton('You have a new ride request!', 'From $Username', driverToken! );
                                 Navigator.pop(context, 'Yes');
                                 Get.back();
                               },
@@ -1513,6 +1484,31 @@ class MapSampleState extends State<home> {
       }),
     );
   }*/
+
+Future<String?> getDriverToken(String driverId) async {
+  try {
+    // Get a reference to the Firestore collection
+    CollectionReference driversCollection = FirebaseFirestore.instance.collection('drivers');
+    // Get the document snapshot for the specified driver ID
+    DocumentSnapshot driverDocument = await driversCollection.doc(driverId).get();
+    // Check if the document exists
+    if (driverDocument.exists) {
+      // Retrieve the 'token' field from the document data
+      String? driverToken = driverDocument.get('token');
+      // Return the driver's token
+      return driverToken;
+    } else {
+      // Driver document with the specified ID not found
+      print('Driver with ID $driverId not found.');
+      return null;
+    }
+  } catch (e) {
+    // Handle any errors that occurred during the process
+    print('Error fetching driver token: $e');
+    return null;
+  }
+}
+
   buildDriverCard(bool selected, int i) {
     return Container(
       margin: EdgeInsets.only(right: 8, left: 8, top: 4, bottom: 4),

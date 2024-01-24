@@ -89,11 +89,11 @@ class CustomDrawerDriver extends StatelessWidget {
                 //     onPressed: () {
                 //       Get.to(() => PaymentScreen());
                 //     }),
-                // buildDrawerItem(
-                //     title: 'Ride History',
-                //     onPressed: () {
-                //       // Get.to(() => rideHistory());
-                //     }),
+                buildDrawerItem(
+                    title: 'Current Ride',
+                    onPressed: () {
+                      // Get.to(() => rideHistory());
+                    }),
                 buildDrawerItem(
                     title: 'Emergency',
                     onPressed: () {

@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
@@ -7,7 +6,6 @@ import 'package:ecommercebig/core/functions/handlingdata.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/core/services/services.dart';
 import 'package:ecommercebig/data/datasource/remote/auth/login.dart';
-import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
 import 'package:ecommercebig/view/screen/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
