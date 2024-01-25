@@ -2,6 +2,7 @@ import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/view/screen/driver/SOSPageDriver.dart';
 import 'package:ecommercebig/view/screen/driver/chat/chat_view.dart';
 import 'package:ecommercebig/view/screen/driver/choosingscreen.dart';
+import 'package:ecommercebig/view/screen/driver/driverRequest.dart';
 import 'package:ecommercebig/view/screen/driver/driverSettingsPage.dart';
 import 'package:ecommercebig/view/screen/driver/driverSupport.dart';
 import 'package:ecommercebig/view/screen/driver/driverhome.dart';
@@ -92,7 +93,7 @@ class CustomDrawerDriver extends StatelessWidget {
                 buildDrawerItem(
                     title: 'Current Ride',
                     onPressed: () {
-                      // Get.to(() => rideHistory());
+                      Get.to(() => driverRequest());
                     }),
                 buildDrawerItem(
                     title: 'Emergency',

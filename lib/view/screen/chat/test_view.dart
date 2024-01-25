@@ -89,7 +89,6 @@ class _testviewState extends State<testview> {
 
     return ListTile(
       title: Text(data['name']),
-      // subtitle: Text(data['uid']),
       onTap: () {
         Get.to(() => chatUser(
               receiverId: data['id'],

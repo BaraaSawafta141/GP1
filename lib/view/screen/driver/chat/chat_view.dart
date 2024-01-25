@@ -83,7 +83,6 @@ class _chatViewDriverState extends State<chatViewDriver> {
 
     return ListTile(
       title: Text(data['name']),
-      // subtitle: Text(data['uid']),
       onTap: () {
         Get.to(() => chatDriver(
               receiverId: data['uid'],

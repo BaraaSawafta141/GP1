@@ -8,10 +8,12 @@ import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
 import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/add_LatLong.dart';
+import 'package:ecommercebig/data/datasource/remote/driver/approveRide.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/becomeAvailable.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/viewDrivers.dart';
 import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
 import 'package:ecommercebig/linkapi.dart';
+import 'package:ecommercebig/view/screen/driver/chat/chat_view.dart';
 import 'package:ecommercebig/view/screen/driver/driverdrawer.dart';
 import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -27,6 +29,7 @@ import 'package:uuid/uuid.dart';
 import 'dart:ui' as ui;
 import 'package:permission_handler/permission_handler.dart';
 
+// bool showdialog = false;
 String? driverEmail;
 String? drivername = "";
 String? driverId;
@@ -39,8 +42,10 @@ String selectedDriver = "";
 final homePageMarkersdriver = <Marker>{}.obs;
 addLatLong addlatlong = addLatLong(Get.find());
 becomeAvailable becomeavailable = becomeAvailable(Get.find());
+approveRide approve = approveRide(Get.find());
 FirebaseFirestore firestore = FirebaseFirestore.instance;
-sendMessageNotificaiton(String title, String message, String token) async {
+sendMessageNotificaiton(String title, String message, String token, String type,
+    String rideId) async {
   var headerslist = {
     'Accept': '*/*',
     'Content-Type': 'application/json',
@@ -51,6 +56,11 @@ sendMessageNotificaiton(String title, String message, String token) async {
   var body = {
     "to": token,
     "notification": {"title": title, "body": message},
+    "data": {
+      "type": type,
+      "rideId": rideId,
+      "token": await FirebaseMessaging.instance.getToken()
+    }
   };
   var req = await http.post(url, headers: headerslist, body: jsonEncode(body));
   req.statusCode == 200 ? print("success") : print("error");
@@ -105,6 +115,105 @@ class driverHome extends State<homedriver> {
     driverPhoto = driverServices.sharedPreferences.getString("img")!;
     myServices.sharedPreferences.setString("homedriver", "1");
     chat();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        if (message.data['type'] == 'ride_request') {
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.info,
+            animType: AnimType.bottomSlide,
+            title: 'Ride Request',
+            desc: 'You have a new ride request',
+            btnCancelText: 'Reject',
+            btnCancelOnPress: () async {
+              await becomeavailable.postdata(driverId!);
+              print("=============================cancel");
+              sendMessageNotificaiton(
+                  "Ride Request",
+                  "Ride Request Rejected",
+                  message.data['token'],
+                  "ride_request",
+                  message.data['rideId']);
+              // Handle cancel action
+            },
+            btnOkText: 'Accept',
+            btnOkOnPress: () async {
+              var res = await approve.postdata(message.data['rideId']);
+              if (res['status'] == 'success') {
+                print('========================ok');
+                sendMessageNotificaiton(
+                    "Ride Request",
+                    "Ride Request Accepted",
+                    message.data['token'],
+                    "ride_request",
+                    message.data['rideId']);
+                // Handle OK action
+                // Get.to(() => chatViewDriver());
+              }
+            },
+          ).show();
+        } else {
+          Get.snackbar(
+            message.notification!.title!,
+            message.notification!.body!,
+            duration: const Duration(seconds: 5),
+          );
+        }
+      }
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        if (message.data['type'] == 'ride_request') {
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.info,
+            animType: AnimType.bottomSlide,
+            title: 'Ride Request',
+            desc: 'You have a new ride request',
+            btnCancelText: 'Reject',
+            btnCancelOnPress: () async {
+               await becomeavailable.postdata(driverId!);
+              print("=============================cancel");
+              sendMessageNotificaiton(
+                  "Ride Request",
+                  "Ride Request Rejected",
+                  message.data['token'],
+                  "ride_request",
+                  message.data['rideId']);
+              // Handle cancel action
+            },
+            btnOkText: 'Accept',
+            btnOkOnPress: () async {
+              var res = await approve.postdata(message.data['rideId']);
+              if (res['status'] == 'success') {
+                print('========================ok');
+                sendMessageNotificaiton(
+                    "Ride Request",
+                    "Ride Request Accepted",
+                    message.data['token'],
+                    "ride_request",
+                    message.data['rideId']);
+                // Handle OK action
+                // Get.to(() => chatViewDriver());
+              }
+            },
+          ).show();
+        } else {
+          Get.snackbar(
+            message.notification!.title!,
+            message.notification!.body!,
+            duration: const Duration(seconds: 5),
+          );
+        }
+      }
+    });
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //   if (message.notification != null) {
+    //     if (message.data['type'] == 'chat') {
+    //       Get.to(() => chatViewDriver());
+    //     }
+    //   }
+    // });
     getCurrentLocationIcon();
   }
 
@@ -112,7 +221,7 @@ class driverHome extends State<homedriver> {
   Future<void> applyStoredMapTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     storedTheme = prefs.getString('map_theme_d');
-    print("$storedTheme<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    print("$storedTheme<<<<Theme is<<<<<<<<");
   }
 
   GlobalKey<ScaffoldState> scaffoldkey = GlobalKey<ScaffoldState>();

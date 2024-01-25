@@ -3,6 +3,9 @@ import 'package:ecommercebig/controller/driversectrycont.dart';
 import 'package:ecommercebig/core/localization/translation.dart';
 import 'package:ecommercebig/core/services/services.dart';
 import 'package:ecommercebig/routes.dart';
+import 'package:ecommercebig/view/screen/chat/test_view.dart';
+import 'package:ecommercebig/view/screen/driver/chat/chat_view.dart';
+import 'package:ecommercebig/view/screen/driver/driverhome.dart';
 import 'package:ecommercebig/view/screen/driver/driverphonesectry.dart';
 import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -12,12 +15,23 @@ import 'core/localization/changelocal.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    if (message.notification != null) {
+        print("Handling a background message: ${message.notification!.body}");
+        Get.snackbar(
+          message.notification!.title!,
+          message.notification!.body!,
+          duration: const Duration(seconds: 5),
+        );
+      }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await initialServices();
   runApp(const MyApp());
 }
@@ -33,15 +47,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        Get.snackbar(
-          message.notification!.title!, message.notification!.body!,
-          duration: const Duration(seconds: 5),
-          );
-
-      }
-    });
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //   if (message.notification != null) {
+    //     if (message.data['type'] == 'chat') {
+    //        driverId != null ? Get.to(() => chatViewDriver() ) :  Get.to(() => testview());
+    //     }
+    //   }
+    // });
   }
 
   @override

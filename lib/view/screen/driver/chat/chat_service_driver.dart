@@ -32,7 +32,7 @@ class ChatServiceDriver extends ChangeNotifier {
         .add(messageObj.toMap());
 
     await sendMessageNotificaiton(
-        'Message from $currentUserName', message, token);
+        'Message from $currentUserName', message, token,'chat','chat');
   }
 
   Stream<QuerySnapshot> getMessages(String userId, String otherUserId) {

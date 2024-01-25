@@ -15,9 +15,9 @@ class ChatService extends ChangeNotifier {
     final Timestamp timestamp = Timestamp.now();
     // create a new message
     model.Message messageObj = model.Message(
-      senderId: recevierId,
+      senderId: currentUserId,
       senderName: currentUserName,
-      receiverId: currentUserId,
+      receiverId: recevierId,
       message: message,
       timestamp: timestamp,
     );
@@ -36,6 +36,8 @@ class ChatService extends ChangeNotifier {
       'Message from $currentUserName',
       message,
       token,
+      'chat',
+      'chat',
     );
     // // Trigger local notification
     //   await _showNotification(currentUserId, message, currentUserName);

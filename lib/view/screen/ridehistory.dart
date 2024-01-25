@@ -41,36 +41,23 @@ class rideHistory extends StatelessWidget {
 }
 
 @override
-saveRideHistory(String source, String destination, String currentTime) async {
+Future<String> saveRideHistory(String source, String destination,
+    String currentTime, String driverId) async {
   // Assuming you have a method in your services for saving ride history
-  var response = await ridehistory.postdata(source, destination, currentTime);
+  var response =
+      await ridehistory.postdata(source, destination, currentTime, driverId);
 
   statusreq = handlingdata(response);
 
   if (statusrequest.success == statusreq) {
     if (response['status'] == "success") {
       // Handle success, e.g., show a success dialog
-      AwesomeDialog(
-        context: Get.context!,
-        dialogType: DialogType.success,
-        animType: AnimType.rightSlide,
-        title: 'Success',
-        desc: 'Ride history saved successfully',
-        //btnCancelOnPress: () {},
-        btnOkOnPress: () {},
-      ).show();
+      return response['rideId'];
     } else {
-      AwesomeDialog(
-        context: Get.context!,
-        dialogType: DialogType.error,
-        animType: AnimType.rightSlide,
-        title: 'Error',
-        desc: 'Error in saving ride history',
-        //btnCancelOnPress: () {},
-        btnOkOnPress: () {},
-      ).show();
+      return "error in ride history";
     }
   }
+  return "error in saving ride history";
 }
 
 getRides() async {

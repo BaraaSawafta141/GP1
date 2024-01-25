@@ -45,6 +45,10 @@ class applink {
       "$server/driver/make_available.php"; // free driver (change status to  available)
   static const String driverApproval =
       "$server/driver/check_approval.php"; // check driver approval
+  static const String getCurrentReq =
+      "$server/driver/getCurrentReq.php"; // get current request
+        static const String approveRide =
+      "$server/driver/approve.php"; // driver approves ride
   //comment
   static const String addingComment =
       "$server/comments/addingComment.php"; //adding comments api

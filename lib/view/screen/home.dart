@@ -14,6 +14,7 @@ import 'package:ecommercebig/data/datasource/remote/driver/viewDrivers.dart';
 import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
 import 'package:ecommercebig/data/datasource/remote/userCords/user_cords.dart';
 import 'package:ecommercebig/linkapi.dart';
+import 'package:ecommercebig/view/screen/chat/test_view.dart';
 import 'package:ecommercebig/view/screen/commentpage.dart';
 import 'package:ecommercebig/view/screen/drawer.dart';
 
@@ -68,7 +69,8 @@ String? _mapStyle;
 final homePageMarkers = <Marker>{}.obs;
 bool showdialograting = true;
 
-sendMessageNotificaiton(String title, String message, String token) async {
+sendMessageNotificaiton(String title, String message, String token, String type,
+    String rideId) async {
   var headerslist = {
     'Accept': '*/*',
     'Content-Type': 'application/json',
@@ -79,6 +81,11 @@ sendMessageNotificaiton(String title, String message, String token) async {
   var body = {
     "to": token,
     "notification": {"title": title, "body": message},
+    "data": {
+      "type": type,
+      "rideId": rideId,
+      "token": await FirebaseMessaging.instance.getToken()
+    }
   };
   var req = await http.post(url, headers: headerslist, body: jsonEncode(body));
   req.statusCode == 200 ? print("success") : print("error");
@@ -193,6 +200,22 @@ class MapSampleState extends State<home> {
     Userpass = userServices.sharedPreferences.getString("password")!;
     UserPhoto = userServices.sharedPreferences.getString("image");
     chat();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        Get.snackbar(
+          message.notification!.title!,
+          message.notification!.body!,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    });
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //   if (message.notification != null) {
+    //     if (message.data['type'] == 'chat') {
+    //       Get.to(() => testview());
+    //     }
+    //   }
+    // });
     destinationController.addListener(() {
       onChangedest();
     });
@@ -203,7 +226,6 @@ class MapSampleState extends State<home> {
     _ratingController = TextEditingController(text: '3.0');
     _rating = _initialRating;
     WidgetsFlutterBinding.ensureInitialized();
- 
   }
 
   String? storedTheme;
@@ -1152,18 +1174,26 @@ class MapSampleState extends State<home> {
                                 //   RideCount++;
                                 // });
                                 // getCurrentLocationIcon();
-                                saveRideHistory(
-                                    sourceController.text,
-                                    destinationController.text,
-                                    DateTime.now().toString());
+                                String rideId = await saveRideHistory(
+                                  sourceController.text,
+                                  destinationController.text,
+                                  DateTime.now().toString(),
+                                  selectedDriver,
+                                );
                                 userCords.postdata(myPosLatitude.toString(),
                                     myPoslongitude.toString(), Userid);
                                 // print("+++++++ $selectedDriver");
                                 var res = await reserveDriver
                                     .postdata(selectedDriver);
                                 // print(" >> $res");
-                                String? driverToken = await getDriverToken(selectedDriver);
-                                await sendMessageNotificaiton('You have a new ride request!', 'From $Username', driverToken! );
+                                String? driverToken =
+                                    await getDriverToken(selectedDriver);
+                                await sendMessageNotificaiton(
+                                    'You have a new ride request!',
+                                    'From $Username',
+                                    driverToken!,
+                                    'ride_request',
+                                    rideId);
                                 Navigator.pop(context, 'Yes');
                                 Get.back();
                               },
@@ -1485,29 +1515,31 @@ class MapSampleState extends State<home> {
     );
   }*/
 
-Future<String?> getDriverToken(String driverId) async {
-  try {
-    // Get a reference to the Firestore collection
-    CollectionReference driversCollection = FirebaseFirestore.instance.collection('drivers');
-    // Get the document snapshot for the specified driver ID
-    DocumentSnapshot driverDocument = await driversCollection.doc(driverId).get();
-    // Check if the document exists
-    if (driverDocument.exists) {
-      // Retrieve the 'token' field from the document data
-      String? driverToken = driverDocument.get('token');
-      // Return the driver's token
-      return driverToken;
-    } else {
-      // Driver document with the specified ID not found
-      print('Driver with ID $driverId not found.');
+  Future<String?> getDriverToken(String driverId) async {
+    try {
+      // Get a reference to the Firestore collection
+      CollectionReference driversCollection =
+          FirebaseFirestore.instance.collection('drivers');
+      // Get the document snapshot for the specified driver ID
+      DocumentSnapshot driverDocument =
+          await driversCollection.doc(driverId).get();
+      // Check if the document exists
+      if (driverDocument.exists) {
+        // Retrieve the 'token' field from the document data
+        String? driverToken = driverDocument.get('token');
+        // Return the driver's token
+        return driverToken;
+      } else {
+        // Driver document with the specified ID not found
+        print('Driver with ID $driverId not found.');
+        return null;
+      }
+    } catch (e) {
+      // Handle any errors that occurred during the process
+      print('Error fetching driver token: $e');
       return null;
     }
-  } catch (e) {
-    // Handle any errors that occurred during the process
-    print('Error fetching driver token: $e');
-    return null;
   }
-}
 
   buildDriverCard(bool selected, int i) {
     return Container(

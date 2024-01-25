@@ -7,11 +7,12 @@ class rideHistorydata {
 
   rideHistorydata(this.Crud);
 
-  postdata(String src,String dst, String time) async {
+  postdata(String src,String dst, String time, String did) async {
     var response = await Crud.postData(applink.history, {
       "ride_history_src": src ,
       "ride_history_dst": dst ,
       "ride_history_time": time ,
+      "did": did ,
       "email": UserEmail,
           });
     return response.fold((l) => l, (r) => r);
