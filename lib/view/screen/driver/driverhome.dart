@@ -107,6 +107,7 @@ class driverHome extends State<homedriver> {
 
   @override
   void initState() {
+    FirebaseMessaging.instance.subscribeToTopic("drivers");
     super.initState();
     applyStoredMapTheme();
     driverId = driverServices.sharedPreferences.getString("id")!;
@@ -172,7 +173,7 @@ class driverHome extends State<homedriver> {
             desc: 'You have a new ride request',
             btnCancelText: 'Reject',
             btnCancelOnPress: () async {
-               await becomeavailable.postdata(driverId!);
+              await becomeavailable.postdata(driverId!);
               print("=============================cancel");
               sendMessageNotificaiton(
                   "Ride Request",

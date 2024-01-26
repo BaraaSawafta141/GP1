@@ -1,5 +1,6 @@
 plugins {
     id "com.android.application"
+    id 'com.google.gms.google-services'
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -23,9 +24,10 @@ if (flutterVersionName == null) {
 }
 apply plugin: 'com.google.gms.google-services'
 android {
+    ndkVersion "26.1.10909125"
     namespace "com.example.ecommercebig"
     compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    // ndkVersion flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
