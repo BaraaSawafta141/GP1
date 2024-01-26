@@ -40,36 +40,7 @@ class _TestMeState extends State<commentpage> {
 
   final formKey = GlobalKey<FormState>();
   final TextEditingController commentController = TextEditingController();
-  List filedata = [
-    // {
-    //   'name': 'Chuks Okwuenu',
-    //   'pic': 'assets/images/profile.png',
-    //   'message': 'I love to code',
-    //   'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
-    //   'rating': 4.0,
-    // },
-    // {
-    //   'name': 'Biggi Man',
-    //   'pic': 'assets/images/profile.png',
-    //   'message': 'Very cool',
-    //   'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
-    //   'rating': 4.0,
-    // },
-    // {
-    //   'name': 'Tunde Martins',
-    //   'pic': 'assets/images/profile.png',
-    //   'message': 'Very cool',
-    //   'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
-    //   'rating': 4.0,
-    // },
-    // {
-    //   'name': 'Biggi Man',
-    //   'pic': 'assets/images/profile.png',
-    //   'message': 'Very cool',
-    //   'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
-    //   'rating': 4.0,
-    // },
-  ];
+  List filedata = [];
 
   getAllComments() async {
     var response = await viewcommentData.postdata(selectedDriver);
@@ -95,10 +66,7 @@ class _TestMeState extends State<commentpage> {
         filedata.insert(0, value);
       }
     }
-    // response['data'][]['comment_user_id']
-
     setState(() {
-      // filedata = response['data'];
     });
   }
 

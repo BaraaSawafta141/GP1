@@ -33,7 +33,7 @@ import 'package:permission_handler/permission_handler.dart';
 String? driverEmail;
 String? drivername = "";
 String? driverId;
-String? Userpass;
+// String? Userpass;
 String? driverPhoto = "";
 cardData cardDetails = cardData(Get.find());
 viewDriversData driversData = viewDriversData(Get.find());

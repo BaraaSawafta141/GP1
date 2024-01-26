@@ -25,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -53,6 +50,7 @@ class DefaultFirebaseOptions {
     projectId: 'ecommercebig',
     authDomain: 'ecommercebig.firebaseapp.com',
     storageBucket: 'ecommercebig.appspot.com',
+    measurementId: 'G-52FMRL2W3N',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -70,5 +68,14 @@ class DefaultFirebaseOptions {
     projectId: 'ecommercebig',
     storageBucket: 'ecommercebig.appspot.com',
     iosBundleId: 'com.example.ecommercebig',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyD0qrVn3yJkKGCbd3GRUJaUTVbQZbPMZ0s',
+    appId: '1:111878878990:ios:918eb888e0ad70c89b495f',
+    messagingSenderId: '111878878990',
+    projectId: 'ecommercebig',
+    storageBucket: 'ecommercebig.appspot.com',
+    iosBundleId: 'com.example.ecommercebig.RunnerTests',
   );
 }
