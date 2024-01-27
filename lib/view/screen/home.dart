@@ -247,7 +247,7 @@ class MapSampleState extends State<home> {
       print("error in getting drivers Data");
     }
     for (int i = 0; i < driversList.length; i++) {
-      final Uint8List markericon = await getBytesFromAssets(images[0], 140);
+      final Uint8List markericon = await getBytesFromAssets(images[0], 140); 
       homePageMarkers.add(Marker(
           markerId: MarkerId(i.toString()),
           position: _latlng[i],

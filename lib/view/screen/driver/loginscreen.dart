@@ -1,7 +1,9 @@
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
+import 'package:ecommercebig/data/datasource/remote/driver/auth/driverLogin.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/check_driver.dart';
+import 'package:ecommercebig/view/screen/driver/carinforegister/pages/uploaddocument.dart';
 import 'package:ecommercebig/view/screen/driver/driverhome.dart';
 import 'package:ecommercebig/view/screen/driver/driverloginphone.dart';
 import 'package:ecommercebig/view/screen/driver/driverprofile.dart';
@@ -19,10 +21,13 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+late TextEditingController passwordController = TextEditingController();
+late TextEditingController phoneNumController = TextEditingController();
+
 String? verify;
 String? phonenum;
 FirebaseAuth auth = FirebaseAuth.instance;
-checkDriver check = checkDriver(Get.find());
+driverLogin check = driverLogin(Get.find());
 statusrequest statusreq = statusrequest.none;
 MyServices driverServices = Get.find();
 
@@ -117,43 +122,12 @@ void codeAutoRetrievalTimeout() async {
   );
 }
 
+CountryCode countryCode =
+    CountryCode(name: 'Palestine', code: "PS", dialCode: "+970");
+
 class _LoginScreenState extends State<LoginScreen> {
   @override
   final countryPicker = const FlCountryCodePicker();
-
-  CountryCode countryCode =
-      CountryCode(name: 'Palestine', code: "PS", dialCode: "+970");
-
-  onSubmit(String? input) async {
-    phonenum = countryCode.dialCode + input!;
-    var response = await check.postdata(phonenum!);
-    statusreq = handlingdata(response);
-
-    if (statusrequest.success == statusreq) {
-      if (response['status'] == "Success") {
-        // myServices.sharedPreferences.setString("homedriver", "1");
-        driverServices.sharedPreferences
-            .setString("id", response['message']['drivers_id'].toString());
-        driverServices.sharedPreferences
-            .setString("name", response['message']['drivers_name']);
-        driverServices.sharedPreferences
-            .setString("email", response['message']['drivers_email']);
-        driverServices.sharedPreferences
-            .setString("img", response['message']['drivers_photo']);
-        print('========this is a old number====================');
-        // Get.to(() => homedriver());
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => homedriver()));
-      } else {
-        print("========this is a new number====================");
-        print(
-            "========This is phoneNum============$phonenum====================");
-        //codeSent();
-        // Get.to(() => OtpVerificationScreen(phonenum!));
-        Get.to(() => DriverProfileSetup());
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 final code = await countryPicker.showPicker(context: context);
                 if (code != null) countryCode = code;
                 setState(() {});
-              }, onSubmit),
+              }, passwordController, phoneNumController),
             ],
           ),
         ),
@@ -187,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
       decoration: BoxDecoration(
           image: DecorationImage(
               image: AssetImage('assets/images/mask.png'), fit: BoxFit.cover)),
-      height: Get.height * 0.6,
+      height: Get.height * 0.4,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -205,5 +179,44 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
+  }
+}
+
+onSubmit(String? input, String password) async {
+  phonenum = input!;
+  var response = await check.postdata(phonenum!, password);
+  statusreq = handlingdata(response);
+  passwordController.clear();
+  phoneNumController.clear();
+  if (statusrequest.success == statusreq) {
+    if (response['status'] == "Success") {
+      driverServices.sharedPreferences
+          .setString("id", response['message']['drivers_id'].toString());
+      driverServices.sharedPreferences
+          .setString("name", response['message']['drivers_name']);
+      driverServices.sharedPreferences
+          .setString("email", response['message']['drivers_email']);
+      driverServices.sharedPreferences
+          .setString("img", response['message']['drivers_photo']);
+      // myServices.sharedPreferences.setString("homedriver", "1");
+      if (response['message']['drivers_adminApprove'] == 0) {
+        myServices.sharedPreferences.setString("DocumentUploadedPage", "1");
+        Get.off(() => DocumentUploadedPage());
+      } else {
+        print('========this is a old number====================');
+        Get.offAll(() => homedriver());
+      }
+    } else {
+      if (response['status'] == "failure") {
+        if (response['message'] == "email or password") {
+          Get.snackbar("Error", "Phone or password is wrong");
+        } else {
+          // never used
+          print(
+              "========This is phoneNum============$phonenum====================");
+          Get.off(() => DriverProfileSetup());
+        }
+      }
+    }
   }
 }

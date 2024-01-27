@@ -215,7 +215,7 @@ class driverHome extends State<homedriver> {
     //     }
     //   }
     // });
-    getCurrentLocationIcon();
+    // getCurrentLocationIcon();
   }
 
   String? storedTheme;
@@ -363,6 +363,15 @@ class driverHome extends State<homedriver> {
   TextEditingController sourceController = TextEditingController();
   TextEditingController destinationController = TextEditingController();
   List<dynamic> sourcePlacesList = [];
+  Future<Uint8List> getBytesFromAssets(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
+  }
 
   bool showListdst = false;
   double? dstlong;
@@ -385,16 +394,15 @@ class driverHome extends State<homedriver> {
           mymapcontroller!.animateCamera(
             CameraUpdate.newLatLng(driverLocation),
           );
+          final Uint8List markericon =
+              await getBytesFromAssets('assets/images/4.png', 160);
 
           // Clear existing markers and add a new marker at the current location
           homePageMarkersdriver.clear();
           homePageMarkersdriver.add(Marker(
             markerId: MarkerId("currentLocation"),
             position: driverLocation,
-            icon: await BitmapDescriptor.fromAssetImage(
-              ImageConfiguration(size: Size(5.0, 5.0)),
-              'assets/images/4.png',
-            ),
+            icon: BitmapDescriptor.fromBytes(markericon),
             infoWindow: InfoWindow(title: 'Your Location'),
           ));
           print(myPosLatitude);

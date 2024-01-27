@@ -47,8 +47,10 @@ class applink {
       "$server/driver/check_approval.php"; // check driver approval
   static const String getCurrentReq =
       "$server/driver/getCurrentReq.php"; // get current request
-        static const String approveRide =
+  static const String approveRide =
       "$server/driver/approve.php"; // driver approves ride
+  static const String loginDriver =
+      "$server/driver/auth/signin.php"; // driver login
   //comment
   static const String addingComment =
       "$server/comments/addingComment.php"; //adding comments api
