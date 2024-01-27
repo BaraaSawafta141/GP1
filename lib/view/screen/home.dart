@@ -247,7 +247,7 @@ class MapSampleState extends State<home> {
       print("error in getting drivers Data");
     }
     for (int i = 0; i < driversList.length; i++) {
-      final Uint8List markericon = await getBytesFromAssets(images[0], 140); 
+      final Uint8List markericon = await getBytesFromAssets(images[0], 140);
       homePageMarkers.add(Marker(
           markerId: MarkerId(i.toString()),
           position: _latlng[i],
@@ -285,7 +285,7 @@ class MapSampleState extends State<home> {
       throw Exception('failed to load');
     }
   }
-
+  
   void getSuggestionDest(String input) async {
     String places_key = "AIzaSyCInTqCTY9b-p3Q2vtdZ9vJYH7ykKZJG6w";
     String baseURL =
@@ -386,7 +386,7 @@ class MapSampleState extends State<home> {
           //buildTextFieldForSource(sourceController, sourcePlacesList),
           customButtonSource(),
           buildCurrentLocationIcon(),
-          buildNotificationIcon(),
+          // buildNotificationIcon(),
           buildBottomSheet(),
         ],
       ),
@@ -512,23 +512,16 @@ class MapSampleState extends State<home> {
                           "Select Your Location:",
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 20,
+                            fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 10),
-                        Text(
-                          "Home Address",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        // SizedBox(height: 10),
+
                         //SizedBox(height: 10),
                         Container(
                           width: Get.width,
-                          height: 50,
+                          height: 40,
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -541,26 +534,13 @@ class MapSampleState extends State<home> {
                               ),
                             ],
                           ),
-                          child: const Row(
-                            children: [
-                              Text(
-                                "My Home",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.start,
-                              ),
-                            ],
-                          ),
                         ),
                         SizedBox(height: 10),
                         Text(
                           "Current Location",
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 20,
+                            fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -603,7 +583,7 @@ class MapSampleState extends State<home> {
                                   "My Location",
                                   style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 18,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   textAlign: TextAlign.start,
@@ -612,7 +592,7 @@ class MapSampleState extends State<home> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 80),
                         InkWell(
                           onTap: () {
                             Get.back();
@@ -667,8 +647,8 @@ class MapSampleState extends State<home> {
                           },
                           child: Container(
                             width: Get.width,
-                            height: 50,
-                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            height: 70,
+                            padding: EdgeInsets.all(5),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
@@ -680,17 +660,31 @@ class MapSampleState extends State<home> {
                                 ),
                               ],
                             ),
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  "Search For Address",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                                Container(
+                                  width: Get.width*0.7,
+                                  padding: EdgeInsets.all(
+                                      10), // Adjust padding as needed
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue[200], // Replace with your desired background color
+                                    borderRadius: BorderRadius.circular(
+                                        20), // Adjust border radius as needed
+                                    border: Border.all(
+                                      color: const Color.fromARGB(255, 44, 44, 44), // Replace with your desired border color
+                                      width: 1, // Adjust border width as needed
+                                    ),
                                   ),
-                                  textAlign: TextAlign.start,
+                                  child: Text(
+                                    "Search For Address",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                               ],
                             ),
@@ -928,8 +922,8 @@ class MapSampleState extends State<home> {
                           srclong == null ? myposLastlong : srclong,
                           dstlati,
                           dstlong);
-                  //    final trackingController = Get.find<TrackingController>();
-                   //   trackingController.getCurrentLocation();
+                      //    final trackingController = Get.find<TrackingController>();
+                      //   trackingController.getCurrentLocation();
                       print(locations.last.latitude);
                       print(locations.last.longitude);
                       _placesList.removeAt(index);

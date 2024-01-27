@@ -19,10 +19,10 @@ class SupportPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(
-          onTap: (){
-            Get.to(home());
-          },
-          child: Icon(Icons.arrow_back)),
+            onTap: () {
+              Get.to(home());
+            },
+            child: Icon(Icons.arrow_back)),
         title: Text('Support'),
       ),
       body: Padding(
@@ -89,8 +89,9 @@ class SupportPage extends StatelessWidget {
             SizedBox(height: 16),
             // Add your frequently asked questions here
             FaqItem(
-                question: 'How to create an account?',
-                answer: 'To create an account...'),
+                question: 'How to add a comment to a driver?',
+                answer:
+                    'To add a comment to a driver you can add a comment while waiting the driver and after you finish the ride '),
             FaqItem(
                 question: 'How to book a ride?',
                 answer:
