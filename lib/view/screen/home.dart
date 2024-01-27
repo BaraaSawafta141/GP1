@@ -45,6 +45,7 @@ String? Userphone;
 String? Userid;
 String? Userpass;
 String? UserPhoto;
+bool isLiveTrackingEnabled = false;
 FirebaseFirestore firestore = FirebaseFirestore.instance;
 cardData cardDetails = cardData(Get.find());
 viewDriversData driversData = viewDriversData(Get.find());
@@ -161,20 +162,6 @@ class MapSampleState extends State<home> {
     }
   }
 
-  /*void updateMapStyle(String mapTheme) {
-    if (mymapcontroller != null) {
-      mymapcontroller!.setMapStyle(mapTheme);
-    }
-  }*/
-
-  /*void initState() {
-    super.initState();
-    rootBundle.loadString('assets/map_style.txt').then((string) {
-      _mapStyle = string;
-    });
-  }*/
-  // String googleAPIKey = 'AIzaSyAWw0O5296K5kLNisnYj5YiRBKzMh5Dpq4';
-
   final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(32.223295060141346, 35.237885713381246),
     zoom: 15,
@@ -182,17 +169,16 @@ class MapSampleState extends State<home> {
 
   TrackingController trackingController = TrackingController();
   TextEditingController controller = TextEditingController();
-  TextEditingController _controller2 = TextEditingController();
   var uuid = Uuid();
   String _sessionToken = '122344';
   List<dynamic> _placesList = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     myRequestPermission();
     applyStoredMapTheme();
+    isLiveTrackingEnabled = false;
     UserEmail = userServices.sharedPreferences.getString("email")!;
     Username = userServices.sharedPreferences.getString("name")!;
     Userphone = userServices.sharedPreferences.getString("phone")!;
@@ -209,13 +195,7 @@ class MapSampleState extends State<home> {
         );
       }
     });
-    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    //   if (message.notification != null) {
-    //     if (message.data['type'] == 'chat') {
-    //       Get.to(() => testview());
-    //     }
-    //   }
-    // });
+
     destinationController.addListener(() {
       onChangedest();
     });
@@ -616,7 +596,7 @@ class MapSampleState extends State<home> {
                                       Get.find<TrackingController>();
                                   sourceController.text = "Current Location";
                                   showListsrc = false;
-                                  trackingController.getCurrentLocation();
+                                  trackingController.getCurrentLocation(); //<<
                                   Get.back();
                                 },
                                 child: Text(
@@ -948,8 +928,8 @@ class MapSampleState extends State<home> {
                           srclong == null ? myposLastlong : srclong,
                           dstlati,
                           dstlong);
-                      final trackingController = Get.find<TrackingController>();
-                      trackingController.getCurrentLocation();
+                  //    final trackingController = Get.find<TrackingController>();
+                   //   trackingController.getCurrentLocation();
                       print(locations.last.latitude);
                       print(locations.last.longitude);
                       _placesList.removeAt(index);

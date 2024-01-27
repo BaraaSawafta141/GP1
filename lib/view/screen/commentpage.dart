@@ -66,60 +66,65 @@ class _TestMeState extends State<commentpage> {
         filedata.insert(0, value);
       }
     }
-    setState(() {
-    });
+    setState(() {});
   }
 
   Widget commentChild(data) {
-    return ListView(
-      children: [
-        for (var i = 0; i < data.length; i++)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
-            child: ListTile(
-              leading: GestureDetector(
-                onTap: () async {
-                  // Display the image in large form.
-                  print("Comment Clicked");
-                },
-                child: Container(
-                  height: 50.0,
-                  width: 50.0,
-                  decoration: new BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: new BorderRadius.all(Radius.circular(50))),
-                  child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: CommentBox.commentImageParser(
-                          imageURLorPath: data[i]['pic'])),
-                ),
-              ),
-              title: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    data[i]['name'],
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  RatingBarIndicator(
-                    rating: data[i]['rating'].toDouble(),
-                    itemBuilder: (context, index) => Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    ),
-                    itemCount: 5,
-                    itemSize: 20.0,
-                    direction: Axis.horizontal,
-                  ),
-                ],
-              ),
-              subtitle: Text(data[i]['message']),
-              trailing: Text(data[i]['date'], style: TextStyle(fontSize: 14)),
-            ),
+    return data.length == 0
+        ? Center(
+            child: Text("No Comments yet !", style: TextStyle(fontSize: 20)),
           )
-      ],
-    );
+        : ListView(
+            children: [
+              for (var i = 0; i < data.length; i++)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
+                  child: ListTile(
+                    leading: GestureDetector(
+                      onTap: () async {
+                        // Display the image in large form.
+                        print("Comment Clicked");
+                      },
+                      child: Container(
+                        height: 50.0,
+                        width: 50.0,
+                        decoration: new BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius:
+                                new BorderRadius.all(Radius.circular(50))),
+                        child: CircleAvatar(
+                            radius: 50,
+                            backgroundImage: CommentBox.commentImageParser(
+                                imageURLorPath: data[i]['pic'])),
+                      ),
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data[i]['name'],
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        RatingBarIndicator(
+                          rating: data[i]['rating'].toDouble(),
+                          itemBuilder: (context, index) => Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                          itemCount: 5,
+                          itemSize: 20.0,
+                          direction: Axis.horizontal,
+                        ),
+                      ],
+                    ),
+                    subtitle: Text(data[i]['message']),
+                    trailing:
+                        Text(data[i]['date'], style: TextStyle(fontSize: 14)),
+                  ),
+                )
+            ],
+          );
   }
 
   Widget _heading(String text) => Column(
@@ -218,7 +223,7 @@ class _TestMeState extends State<commentpage> {
               Get.back(result: showdialograting);
             },
             child: Icon(Icons.arrow_back)),
-        title: Text("Comment Page"),
+        title: Text("Comment Page", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
       body: Container(
@@ -237,9 +242,10 @@ class _TestMeState extends State<commentpage> {
             Expanded(
               child: CommentBox(
                 userImage: CommentBox.commentImageParser(
-                  imageURLorPath:
-                      UserPhoto == "" ? AssetImage('assets/images/profile.png') as ImageProvider<Object>:
-                      NetworkImage(applink.linkImageRoot + '/$UserPhoto'),
+                  imageURLorPath: UserPhoto == ""
+                      ? AssetImage('assets/images/profile.png')
+                          as ImageProvider<Object>
+                      : NetworkImage(applink.linkImageRoot + '/$UserPhoto'),
                 ),
                 child: commentChild(filedata),
                 labelText: 'Write a comment...',
@@ -251,9 +257,11 @@ class _TestMeState extends State<commentpage> {
                     setState(() {
                       var value = {
                         'name': Username,
-                        'pic': UserPhoto == ""?
-                        AssetImage('assets/images/profile.png') as ImageProvider<Object>:
-                            NetworkImage(applink.linkImageRoot + '/$UserPhoto'),
+                        'pic': UserPhoto == ""
+                            ? AssetImage('assets/images/profile.png')
+                                as ImageProvider<Object>
+                            : NetworkImage(
+                                applink.linkImageRoot + '/$UserPhoto'),
                         'message': commentController.text,
                         'date': DateFormat('yyyy-MM-dd HH:mm:ss')
                             .format(DateTime.now()),

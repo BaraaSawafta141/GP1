@@ -1,4 +1,5 @@
 import 'package:ecommercebig/controller/auth/login_controller.dart';
+import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/view/screen/chat/test_view.dart';
 import 'package:ecommercebig/view/screen/auth/login.dart';
@@ -16,11 +17,17 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ecommercebig/linkapi.dart';
-// int RideCount = 0;
 
-class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({Key? key});
+final trackingController = Get.find<TrackingController>();
 
+class CustomDrawer extends StatefulWidget {
+  CustomDrawer({Key? key});
+
+  @override
+  _CustomDrawerState createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
   @override
   Widget build(BuildContext context) {
     return IntrinsicWidth(
@@ -88,11 +95,45 @@ class CustomDrawer extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 30),
             child: Column(
               children: [
-                // buildDrawerItem(
-                //     title: 'Payment History',
-                //     onPressed: () {
-                //       Get.to(() => PaymentScreen());
-                //     }),
+                buildDrawerItem(
+                  title: 'Live Tracking', // Add Live Tracking item
+                  onPressed: () {
+                    // Toggle the live tracking state
+                    setState(() {
+                      isLiveTrackingEnabled = !isLiveTrackingEnabled;
+                      // If live tracking is enabled, start the tracking
+                      if (isLiveTrackingEnabled) {
+                        trackingController.getCurrentLocation();
+                      } else {
+                        // If live tracking is disabled, cancel the subscription
+                        trackingController.positionStream?.cancel();
+                      }
+                    });
+                  },
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  height: 45,
+                  isVisible: true,
+                  // Use a Switch widget for live tracking toggle
+                  child: Switch(
+                    value: isLiveTrackingEnabled,
+                    onChanged: (value) {
+                      // Toggle the live tracking state
+                      setState(() {
+                        isLiveTrackingEnabled = value;
+                        // If live tracking is enabled, start the tracking
+                        if (isLiveTrackingEnabled) {
+                          trackingController.getCurrentLocation();
+                        } else {
+                          // If live tracking is disabled, cancel the subscription
+                          trackingController.positionStream?.cancel();
+                        }
+                      });
+                    },
+                    activeColor: Colors.blue,
+                  ),
+                ),
                 buildDrawerItem(
                     title: 'Ride History',
                     onPressed: () {
@@ -235,19 +276,20 @@ Future<void> setMapTheme(String theme) async {
   prefs.setString('map_theme', theme);
 }
 
-buildDrawerItem(
-    {required String title,
-    required Function onPressed,
-    Color color = Colors.black,
-    double fontSize = 20,
-    FontWeight fontWeight = FontWeight.w700,
-    double height = 45,
-    bool isVisible = false}) {
+buildDrawerItem({
+  required String title,
+  required Function onPressed,
+  Color color = Colors.black,
+  double fontSize = 20,
+  FontWeight fontWeight = FontWeight.w700,
+  double height = 45,
+  bool isVisible = false,
+  Widget? child, // Add Widget? child parameter
+}) {
   return SizedBox(
     height: height,
     child: ListTile(
       contentPadding: EdgeInsets.all(0),
-      // minVerticalPadding: 0,
       dense: true,
       onTap: () => onPressed(),
       title: Row(
@@ -255,21 +297,26 @@ buildDrawerItem(
           Text(
             title,
             style: GoogleFonts.poppins(
-                fontSize: fontSize, fontWeight: fontWeight, color: color),
+              fontSize: fontSize,
+              fontWeight: fontWeight,
+              color: color,
+            ),
           ),
           const SizedBox(
             width: 5,
           ),
-          isVisible
-              ? CircleAvatar(
-                  backgroundColor: Colors.blue,
-                  radius: 15,
-                  child: Text(
-                    '1',
-                    style: GoogleFonts.poppins(color: Colors.white),
-                  ),
-                )
-              : Container()
+          // isVisible
+          //     ? CircleAvatar(
+          //         backgroundColor: Colors.blue,
+          //         radius: 15,
+          //         child: Text(
+          //           '1',
+          //           style: GoogleFonts.poppins(color: Colors.white),
+          //         ),
+          //       )
+          //     : Container(),
+          // Add child widget if provided
+          if (child != null) child,
         ],
       ),
     ),
