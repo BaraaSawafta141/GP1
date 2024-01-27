@@ -104,6 +104,7 @@ class rideHistorytemp extends StatelessWidget {
                   source: snapshot.data[index]['ride_history_src'],
                   destination: snapshot.data[index]['ride_history_dst'],
                   time: snapshot.data[index]['ride_history_time'],
+                  selected: snapshot.data[index]['driver_id'].toString(),
                 );
               },
             );
