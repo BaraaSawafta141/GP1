@@ -8,13 +8,14 @@ class signupdataDriver {
 
   signupdataDriver(this.Crud);
 
-  postdata(String name, String email, String phone, File image) async {
+  postdata(String name, String email, String phone, String password,File image) async {
     var response = await Crud.postRequestWithFileDriver(
       applink.driverSignUp,
       image,
       name,
       email,
       phone,
+      password,
     );
     print(response);
     return response;

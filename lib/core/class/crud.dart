@@ -99,8 +99,9 @@ postDataDriver(String linkurl, Map data) async {
     }
   }
 
+
   postRequestWithFileDriver(String linkurl, File file, String name,
-      String email, String phone) async {
+      String email, String phone,String password ) async {
     print(linkurl);
     print(file.path);
     var request = http.MultipartRequest('POST', Uri.parse(linkurl));
@@ -109,7 +110,7 @@ postDataDriver(String linkurl, Map data) async {
     var multipartFile = http.MultipartFile('image', stream, length,
         filename: basename(file.path));
     request.files.add(multipartFile);
-    request.fields.addAll({"name": name, "email": email, "phone": phone});
+    request.fields.addAll({"name": name, "email": email, "phone": phone,"password": password});
 
     try {
       var myrequest = await request.send();

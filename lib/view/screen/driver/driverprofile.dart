@@ -20,8 +20,10 @@ class DriverProfileSetup extends StatefulWidget {
 }
 
 class _DriverProfileSetupState extends State<DriverProfileSetup> {
+  TextEditingController phoneController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   //AuthController authController = Get.find<AuthController>();
   statusrequest statusreq = statusrequest.none;
@@ -46,21 +48,24 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
   signUp() async {
     if (nameController.text != "" &&
         emailController.text != "" &&
-        selectedImage != null) {
+        selectedImage != null &&
+        phoneController.text != "" &&
+        passwordController.text!= ""
+         ) {
       var response = await signupdata.postdata(
-          nameController.text, emailController.text, phonenum!, selectedImage!);
+          nameController.text, emailController.text, phoneController.text, passwordController.text ,selectedImage!);
       statusreq = handlingdata(response);
       if (statusrequest.success == statusreq) {
         if (response['status'] == "success") {
-         driverServices.sharedPreferences
+          driverServices.sharedPreferences
               .setString("id", response['id'].toString());
-         driverServices.sharedPreferences
+          driverServices.sharedPreferences
               .setString("name", response['data']['drivers_name'].toString());
-         driverServices.sharedPreferences
-              .setString("email", response['data']['drivers_email'].toString());     
-         driverServices.sharedPreferences
-              .setString("img", response['data']['drivers_photo']);          
-           
+          driverServices.sharedPreferences
+              .setString("email", response['data']['drivers_email'].toString());
+          driverServices.sharedPreferences
+              .setString("img", response['data']['drivers_photo']);
+
           Get.off(() => carRegistertemplate());
         } else {
           AwesomeDialog(
@@ -81,7 +86,7 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
         dialogType: DialogType.warning,
         animType: AnimType.rightSlide,
         title: 'Warning',
-        desc: 'Please Enter Your Name And Email and add your image',
+        desc: 'Please Enter All The Information',
         btnCancelOnPress: () {},
         btnOkOnPress: () {},
       ).show();
@@ -161,7 +166,7 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
               ),
             ),
             const SizedBox(
-              height: 80,
+              height: 50,
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 23),
@@ -189,6 +194,32 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
                           hintText: "enter your email",
                           prefixIcon: Icon(
                             Icons.email,
+                            color: Colors.green,
+                          )),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    TextFormField(
+                      controller: phoneController,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "enter your phone",
+                          prefixIcon: Icon(
+                            Icons.phone,
+                            color: Colors.green,
+                          )),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    TextFormField(
+                      controller: passwordController,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "enter your password",
+                          prefixIcon: Icon(
+                            Icons.password,
                             color: Colors.green,
                           )),
                     ),

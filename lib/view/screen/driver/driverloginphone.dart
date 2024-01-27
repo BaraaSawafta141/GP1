@@ -137,6 +137,9 @@ Widget loginWidget(
               },
               child: Text('Log In'),
             ),
+            SizedBox(
+              width: 30,
+            ),
             InkWell(
               child: Text('Don\'t have an account?'),
               onTap: () {

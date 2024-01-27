@@ -11,7 +11,7 @@ class VehicalColorPage extends StatefulWidget {
   State<VehicalColorPage> createState() => _VehicalColorPageState();
 }
 
-TextEditingController colorcontroller = new TextEditingController();
+TextEditingController colorcontroller =  TextEditingController();
 
 class _VehicalColorPageState extends State<VehicalColorPage> {
   String dropdownvalue = 'Pick a color';
