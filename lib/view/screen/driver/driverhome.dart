@@ -119,22 +119,32 @@ class driverHome extends State<homedriver> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
         if (message.data['type'] == 'ride_request') {
+          // Assuming the message body format is 'From $Username, ${sourceController.text} to ${destinationController.text}'
+          String messageBody = message.notification!.body!;
+          // Split the message using ','
+          List<String> parts = messageBody.split(',');
+          // Extract the source and destination values
+          String usernamePart = parts[0].trim(); // 'From $Username'
+          String sourcePart = parts[1]
+              .trim(); // '${sourceController.text} to ${destinationController.text}'
+          // Extract source value
+          String sourceValue = sourcePart.split(' to ')[0].trim();
+          // Extract destination value
+          String destinationValue = sourcePart.split(' to ')[1].trim();
+          // Now you have the sourceValue and destinationValue
+          print('Source: $sourceValue, Destination: $destinationValue');
           AwesomeDialog(
             context: context,
             dialogType: DialogType.info,
             animType: AnimType.bottomSlide,
             title: 'Ride Request',
-            desc: 'You have a new ride request',
+            desc: 'You have a new ride request from $sourceValue to $destinationValue',
             btnCancelText: 'Reject',
             btnCancelOnPress: () async {
               await becomeavailable.postdata(driverId!);
               print("=============================cancel");
-              sendMessageNotificaiton(
-                  "Ride Request",
-                  "Ride Request Rejected",
-                  message.data['token'],
-                  "ride_request",
-                  message.data['rideId']);
+              sendMessageNotificaiton("Ride Request", "Ride Request Rejected",
+                  message.data['token'], "ride_cancel", message.data['rideId']);
               // Handle cancel action
             },
             btnOkText: 'Accept',

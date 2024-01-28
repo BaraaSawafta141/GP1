@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'dart:typed_data';
 //import 'dart:html';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommercebig/controller/auth/login_controller.dart';
 import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
@@ -99,7 +100,6 @@ class MapSampleState extends State<home> {
   String? _mapStyle;
 
   Uint8List? markerImage;
-  final Set<Polyline> _polyline = {};
 
   List<String> images = [
     // 'assets/images/1.png',
@@ -188,11 +188,46 @@ class MapSampleState extends State<home> {
     chat();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
-        Get.snackbar(
-          message.notification!.title!,
-          message.notification!.body!,
-          duration: const Duration(seconds: 5),
-        );
+        if (message.data['type'] == 'ride_request') {
+          AwesomeDialog(
+            dismissOnBackKeyPress: false,
+            dismissOnTouchOutside: false,
+            context: context,
+            dialogType: DialogType.info,
+            animType: AnimType.bottomSlide,
+            title: 'Ride Accepted',
+            desc: 'Your Ride Has Been Accepted, the driver is on his way',
+            btnOkOnPress: () {},
+          ).show();
+        } else if (message.data['type'] == 'ride_cancel') {
+          if (mounted) {
+            polelineSet.clear();
+            homePageMarkers.clear();
+            // Clear the text field
+            sourceController.clear();
+            destinationController.clear();
+            AwesomeDialog(
+              dismissOnBackKeyPress: false,
+              dismissOnTouchOutside: false,
+              context: context,
+              dialogType: DialogType.info,
+              animType: AnimType.bottomSlide,
+              title: 'Ride Cancelled',
+              desc: 'Your Ride Has Been Cancelled',
+              btnOkOnPress: () {
+                if (mounted) {
+                  Get.offAll(() => home());
+                }
+              },
+            ).show();
+          }
+        } else {
+          Get.snackbar(
+            message.notification!.title!,
+            message.notification!.body!,
+            duration: const Duration(seconds: 5),
+          );
+        }
       }
     });
 
@@ -285,7 +320,7 @@ class MapSampleState extends State<home> {
       throw Exception('failed to load');
     }
   }
-  
+
   void getSuggestionDest(String input) async {
     String places_key = "AIzaSyCInTqCTY9b-p3Q2vtdZ9vJYH7ykKZJG6w";
     String baseURL =
@@ -664,15 +699,17 @@ class MapSampleState extends State<home> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  width: Get.width*0.7,
+                                  width: Get.width * 0.7,
                                   padding: EdgeInsets.all(
                                       10), // Adjust padding as needed
                                   decoration: BoxDecoration(
-                                    color: Colors.blue[200], // Replace with your desired background color
+                                    color: Colors.blue[
+                                        200], // Replace with your desired background color
                                     borderRadius: BorderRadius.circular(
                                         20), // Adjust border radius as needed
                                     border: Border.all(
-                                      color: const Color.fromARGB(255, 44, 44, 44), // Replace with your desired border color
+                                      color: const Color.fromARGB(255, 44, 44,
+                                          44), // Replace with your desired border color
                                       width: 1, // Adjust border width as needed
                                     ),
                                   ),
@@ -1164,7 +1201,7 @@ class MapSampleState extends State<home> {
                                     await getDriverToken(selectedDriver);
                                 await sendMessageNotificaiton(
                                     'You have a new ride request!',
-                                    'From $Username',
+                                    'From $Username, ${sourceController.text} to ${destinationController.text}',
                                     driverToken!,
                                     'ride_request',
                                     rideId);
