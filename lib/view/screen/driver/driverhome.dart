@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommercebig/controller/tracking/tracking_controller.dart';
-import 'package:ecommercebig/core/functions/geocodingpolyline.dart';
+import 'package:ecommercebig/core/functions/polylineDriver.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/add_LatLong.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/approveRide.dart';
@@ -66,15 +66,16 @@ sendMessageNotificaiton(String title, String message, String token, String type,
       "rideId": rideId,
       "token": await FirebaseMessaging.instance.getToken()
     },
-    "android": {"priority": "high"},
   };
   var req = await http.post(url, headers: headerslist, body: jsonEncode(body));
   req.statusCode == 200 ? print("success") : print("error");
 }
 
-bool driverAvailable = true;
+bool driverAvailable = false;
 bool inARide = false;
 String userToken = "";
+double? userLat;
+double? userLong;
 
 class homedriver extends StatefulWidget {
   const homedriver({super.key});
@@ -124,7 +125,7 @@ class driverHome extends State<homedriver> {
     driverPhoto = driverServices.sharedPreferences.getString("img")!;
     myServices.sharedPreferences.setString("homedriver", "1");
     chat();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
         userToken = message.data['token'];
         if (message.data['type'] == 'ride_request') {
@@ -141,7 +142,6 @@ class driverHome extends State<homedriver> {
           // Extract destination value
           String destinationValue = sourcePart.split(' to ')[1].trim();
           // Now you have the sourceValue and destinationValue
-          print('Source: $sourceValue, Destination: $destinationValue');
           AwesomeDialog(
             context: context,
             dialogType: DialogType.info,
@@ -152,7 +152,6 @@ class driverHome extends State<homedriver> {
             btnCancelText: 'Reject',
             btnCancelOnPress: () async {
               await becomeavailable.postdata(driverId!);
-              print("=============================cancel");
               await sendMessageNotificaiton(
                   "Ride Request",
                   "Ride Request Rejected",
@@ -168,29 +167,20 @@ class driverHome extends State<homedriver> {
                 setState(() {
                   inARide = true;
                 });
-                print('========================ok');
                 await getCurrentLocationWithoutCam();
+                userLat = double.parse(message.data['lat']);
+                userLong = double.parse(message.data['long']);
                 await sendMessageNotificaiton(
                     "Ride Request",
                     "Ride Request Accepted",
                     message.data['token'],
                     "ride_request",
                     message.data['rideId']);
-                print(">> driver :" +
-                    myPosLatitude.toString() +
-                    " " +
-                    myPosLongitude.toString());
-                print(">> user :" +
-                    message.data['lat'] +
-                    " " +
-                    message.data['long']);
                 // Handle OK action
                 // Get.to(() => chatViewDriver());
               }
             },
           ).show();
-          await getPolyline(context, myPosLatitude, myPosLongitude,
-              message.data['lat'], message.data['long']);
         } else {
           Get.snackbar(
             message.notification!.title!,
@@ -274,7 +264,7 @@ class driverHome extends State<homedriver> {
               final trackingController = Get.find<TrackingController>();
               final marks = trackingController.marks;
               return GoogleMap(
-                polylines: polelineSet,
+                polylines: polelineSetDriver,
                 zoomControlsEnabled: false,
                 mapType: MapType.normal,
                 initialCameraPosition: _kGooglePlex,
@@ -548,6 +538,8 @@ class driverHome extends State<homedriver> {
                             await sendMessageNotificaiton("Ride Ended",
                                 "Ride Ended", userToken, "ride_ended", "");
                             await notAvailable.postdata(driverId!);
+                            polelineSetDriver.clear();
+                            // homePageMarkersdriver.clear();
                             setState(() {
                               inARide = false;
                               driverAvailable = false;
@@ -563,20 +555,51 @@ class driverHome extends State<homedriver> {
               SizedBox(
                 height: 10,
               ),
-              MaterialButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                color: Colors.green,
-                minWidth: Get.width / 1.2,
-                height: 45,
-                onPressed: () {
-                  getCurrentLocationIcon();
-                },
-                child: Text(
-                  "Show Your Location",
-                  style: TextStyle(fontSize: 22, color: Colors.white),
-                ),
-              ),
+              inARide == false
+                  ? MaterialButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      color: Colors.green,
+                      minWidth: Get.width / 1.2,
+                      height: 45,
+                      onPressed: () {
+                        getCurrentLocationIcon();
+                      },
+                      child: Text(
+                        "Show Your Location",
+                        style: TextStyle(fontSize: 22, color: Colors.white),
+                      ),
+                    )
+                  : MaterialButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      color: Colors.green,
+                      minWidth: Get.width / 1.2,
+                      height: 45,
+                      onPressed: () {
+                        // LatLng driverLocation = LatLng(myPosLatitude!,myPosLongitude!);
+                        // final Uint8List markericon = await getBytesFromAssets(
+                        //     'assets/images/4.png', 160);
+                        // homePageMarkersdriver.add(Marker(
+                        //   markerId: MarkerId("currentLocation"),
+                        //   position: driverLocation,
+                        //   icon: BitmapDescriptor.fromBytes(markericon),
+                        //   infoWindow: InfoWindow(title: 'Your Location'),
+                        // ));
+                        getPolylineDriver(
+                          context,
+                          myPosLatitude,
+                          myPosLongitude,
+                          userLat,
+                          userLong,
+                        );
+                        setState(() {});
+                      },
+                      child: Text(
+                        "Draw Route",
+                        style: TextStyle(fontSize: 22, color: Colors.white),
+                      ),
+                    )
             ],
           )),
     );

@@ -1,3 +1,4 @@
+import 'package:ecommercebig/core/functions/polylineDriver.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/view/screen/driver/SOSPageDriver.dart';
 import 'package:ecommercebig/view/screen/driver/chat/chat_view.dart';
@@ -85,11 +86,6 @@ class CustomDrawerDriver extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 30),
             child: Column(
               children: [
-                // buildDrawerItem(
-                //     title: 'Payment History',
-                //     onPressed: () {
-                //       Get.to(() => PaymentScreen());
-                //     }),
                 buildDrawerItem(
                     title: 'Current Ride',
                     onPressed: () {
@@ -162,7 +158,7 @@ class CustomDrawerDriver extends StatelessWidget {
                     onPressed: () {
                       Get.to(() => SupportDriver());
                     }),
-                buildDrawerItem(    
+                buildDrawerItem(
                     title: 'Log Out',
                     onPressed: () {
                       myServices.sharedPreferences.setString("homedriver", "0");

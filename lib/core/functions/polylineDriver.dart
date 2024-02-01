@@ -5,10 +5,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
-Set<Polyline> polelineSet = {};
+Set<Polyline> polelineSetDriver = {};
 bool showconfbox = true;
 
-Future getPolyline(context, lat, long, destlat, destlong) async {
+Future getPolylineDriver(context, lat, long, destlat, destlong) async {
   List<LatLng> polylineco = [];
   PolylinePoints polylinePoints = PolylinePoints();
   final status = await Permission.location.request();
@@ -59,7 +59,7 @@ Future getPolyline(context, lat, long, destlat, destlong) async {
                 points: polylineco,
                 width: 5);
 
-            polelineSet.add(polyline);
+            polelineSetDriver.add(polyline);
           } else {
             // Handle case where 'result' is empty
             showDialogWithMessage('Result is empty');

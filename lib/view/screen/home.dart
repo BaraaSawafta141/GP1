@@ -91,7 +91,6 @@ sendMessageNotificaiton(String title, String message, String token, String type,
       "lat": myPosLatitude,
       "long": myPoslongitude,
     },
-    "android": {"priority": "high"},
   };
   var req = await http.post(url, headers: headerslist, body: jsonEncode(body));
   req.statusCode == 200 ? print("success") : print("error");
@@ -182,7 +181,7 @@ class MapSampleState extends State<home> {
     Userpass = userServices.sharedPreferences.getString("password")!;
     UserPhoto = userServices.sharedPreferences.getString("image");
     chat();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message)  {
       if (message.notification != null) {
         if (message.data['type'] == 'ride_request') {
           AwesomeDialog(
