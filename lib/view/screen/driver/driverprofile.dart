@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommercebig/core/class/statusrequest.dart';
 import 'package:ecommercebig/core/functions/handlingdata.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/driverSignUp.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/carinfotemplate.dart';
 import 'package:ecommercebig/view/screen/driver/loginscreen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -50,10 +52,13 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
         emailController.text != "" &&
         selectedImage != null &&
         phoneController.text != "" &&
-        passwordController.text!= ""
-         ) {
+        passwordController.text != "") {
       var response = await signupdata.postdata(
-          nameController.text, emailController.text, phoneController.text, passwordController.text ,selectedImage!);
+          nameController.text,
+          emailController.text,
+          phoneController.text,
+          passwordController.text,
+          selectedImage!);
       statusreq = handlingdata(response);
       if (statusrequest.success == statusreq) {
         if (response['status'] == "success") {
@@ -65,7 +70,13 @@ class _DriverProfileSetupState extends State<DriverProfileSetup> {
               .setString("email", response['data']['drivers_email'].toString());
           driverServices.sharedPreferences
               .setString("img", response['data']['drivers_photo']);
-
+          FirebaseFirestore firestore = FirebaseFirestore.instance;
+          firestore.collection('drivers').doc(response['id'].toString()!).set({
+            'id': response['id'].toString(),
+            'name': response['data']['drivers_name'].toString(),
+            'token': await FirebaseMessaging.instance.getToken(),
+            'email': response['data']['drivers_email'].toString(),
+          }, SetOptions(merge: true));
           Get.off(() => carRegistertemplate());
         } else {
           AwesomeDialog(

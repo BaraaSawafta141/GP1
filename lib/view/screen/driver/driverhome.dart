@@ -10,6 +10,7 @@ import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/add_LatLong.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/approveRide.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/becomeAvailable.dart';
+import 'package:ecommercebig/data/datasource/remote/driver/reserveDriver.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/viewDrivers.dart';
 import 'package:ecommercebig/data/datasource/remote/payment/card.dart';
 import 'package:ecommercebig/linkapi.dart';
@@ -33,7 +34,6 @@ import 'package:permission_handler/permission_handler.dart';
 String? driverEmail;
 String? drivername = "";
 String? driverId;
-// String? Userpass;
 String? driverPhoto = "";
 cardData cardDetails = cardData(Get.find());
 viewDriversData driversData = viewDriversData(Get.find());
@@ -41,7 +41,10 @@ List<String> cardsList = <String>[];
 String selectedDriver = "";
 final homePageMarkersdriver = <Marker>{}.obs;
 addLatLong addlatlong = addLatLong(Get.find());
-becomeAvailable becomeavailable = becomeAvailable(Get.find());
+becomeAvailable becomeavailable =
+    becomeAvailable(Get.find()); //become available
+reserveDriverData notAvailable =
+    reserveDriverData(Get.find()); //become not available
 approveRide approve = approveRide(Get.find());
 FirebaseFirestore firestore = FirebaseFirestore.instance;
 sendMessageNotificaiton(String title, String message, String token, String type,
@@ -60,11 +63,16 @@ sendMessageNotificaiton(String title, String message, String token, String type,
       "type": type,
       "rideId": rideId,
       "token": await FirebaseMessaging.instance.getToken()
-    }
+    },
+    "android": {"priority": "high"},
   };
   var req = await http.post(url, headers: headerslist, body: jsonEncode(body));
   req.statusCode == 200 ? print("success") : print("error");
 }
+
+bool driverAvailable = true;
+bool inARide = false;
+String userToken = "";
 
 class homedriver extends StatefulWidget {
   const homedriver({super.key});
@@ -118,6 +126,7 @@ class driverHome extends State<homedriver> {
     chat();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
+          userToken = message.data['token'];
         if (message.data['type'] == 'ride_request') {
           // Assuming the message body format is 'From $Username, ${sourceController.text} to ${destinationController.text}'
           String messageBody = message.notification!.body!;
@@ -138,58 +147,17 @@ class driverHome extends State<homedriver> {
             dialogType: DialogType.info,
             animType: AnimType.bottomSlide,
             title: 'Ride Request',
-            desc: 'You have a new ride request from $sourceValue to $destinationValue',
+            desc:
+                'You have a new ride request from $sourceValue to $destinationValue',
             btnCancelText: 'Reject',
             btnCancelOnPress: () async {
               await becomeavailable.postdata(driverId!);
               print("=============================cancel");
-              sendMessageNotificaiton("Ride Request", "Ride Request Rejected",
-                  message.data['token'], "ride_cancel", message.data['rideId']);
-              // Handle cancel action
-            },
-            btnOkText: 'Accept',
-            btnOkOnPress: () async {
-              var res = await approve.postdata(message.data['rideId']);
-              if (res['status'] == 'success') {
-                print('========================ok');
-                sendMessageNotificaiton(
-                    "Ride Request",
-                    "Ride Request Accepted",
-                    message.data['token'],
-                    "ride_request",
-                    message.data['rideId']);
-                // Handle OK action
-                // Get.to(() => chatViewDriver());
-              }
-            },
-          ).show();
-        } else {
-          Get.snackbar(
-            message.notification!.title!,
-            message.notification!.body!,
-            duration: const Duration(seconds: 5),
-          );
-        }
-      }
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        if (message.data['type'] == 'ride_request') {
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.info,
-            animType: AnimType.bottomSlide,
-            title: 'Ride Request',
-            desc: 'You have a new ride request',
-            btnCancelText: 'Reject',
-            btnCancelOnPress: () async {
-              await becomeavailable.postdata(driverId!);
-              print("=============================cancel");
-              sendMessageNotificaiton(
+              await sendMessageNotificaiton(
                   "Ride Request",
                   "Ride Request Rejected",
                   message.data['token'],
-                  "ride_request",
+                  "ride_cancel",
                   message.data['rideId']);
               // Handle cancel action
             },
@@ -197,8 +165,11 @@ class driverHome extends State<homedriver> {
             btnOkOnPress: () async {
               var res = await approve.postdata(message.data['rideId']);
               if (res['status'] == 'success') {
+                setState(() {
+                  inARide = true;
+                });
                 print('========================ok');
-                sendMessageNotificaiton(
+                await sendMessageNotificaiton(
                     "Ride Request",
                     "Ride Request Accepted",
                     message.data['token'],
@@ -220,12 +191,54 @@ class driverHome extends State<homedriver> {
     });
     // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
     //   if (message.notification != null) {
-    //     if (message.data['type'] == 'chat') {
-    //       Get.to(() => chatViewDriver());
+    //     if (message.data['type'] == 'ride_request') {
+    //       AwesomeDialog(
+    //         context: context,
+    //         dialogType: DialogType.info,
+    //         animType: AnimType.bottomSlide,
+    //         title: 'Ride Request',
+    //         desc: 'You have a new ride request',
+    //         btnCancelText: 'Reject',
+    //         btnCancelOnPress: () async {
+    //           await becomeavailable.postdata(driverId!);
+    //           print("=============================cancel");
+    //           await sendMessageNotificaiton(
+    //               "Ride Request",
+    //               "Ride Request Rejected",
+    //               message.data['token'],
+    //               "ride_request",
+    //               message.data['rideId']);
+    //           // Handle cancel action
+    //         },
+    //         btnOkText: 'Accept',
+    //         btnOkOnPress: () async {
+    //           var res = await approve.postdata(message.data['rideId']);
+    //           if (res['status'] == 'success') {
+    //             setState(() {
+    //               inARide = true;
+    //             });
+    //             userToken = message.data['token'];
+    //             print('========================ok');
+    //             await sendMessageNotificaiton(
+    //                 "Ride Request",
+    //                 "Ride Request Accepted",
+    //                 message.data['token'],
+    //                 "ride_request",
+    //                 message.data['rideId']);
+    //             // Handle OK action
+    //             // Get.to(() => chatViewDriver());
+    //           }
+    //         },
+    //       ).show();
+    //     } else {
+    //       Get.snackbar(
+    //         message.notification!.title!,
+    //         message.notification!.body!,
+    //         duration: const Duration(seconds: 5),
+    //       );
     //     }
     //   }
     // });
-    // getCurrentLocationIcon();
   }
 
   String? storedTheme;
@@ -436,27 +449,88 @@ class driverHome extends State<homedriver> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              MaterialButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                color: Colors.green,
-                minWidth: Get.width / 1.2,
-                height: 45,
-                onPressed: () {
-                  becomeavailable.postdata(driverId!);
-                  AwesomeDialog(
-                    context: context,
-                    dialogType: DialogType.success,
-                    animType: AnimType.bottomSlide,
-                    title: 'Become Available',
-                    desc: 'You are now available for rides',
-                  ).show();
-                },
-                child: Text(
-                  "Become Available",
-                  style: TextStyle(fontSize: 22, color: Colors.white),
-                ),
-              ),
+              inARide == false
+                  ? driverAvailable == false
+                      ? MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          color: Colors.green,
+                          minWidth: Get.width / 1.2,
+                          height: 45,
+                          onPressed: () {
+                            becomeavailable.postdata(driverId!);
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.success,
+                              animType: AnimType.bottomSlide,
+                              title: 'Become Available',
+                              desc: 'You are now available for rides',
+                            ).show();
+                            setState(() {
+                              driverAvailable = true;
+                            });
+                          },
+                          child: Text(
+                            "Become Available",
+                            style: TextStyle(fontSize: 22, color: Colors.white),
+                          ),
+                        )
+                      : MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          color: Colors.green,
+                          minWidth: Get.width / 1.2,
+                          height: 45,
+                          onPressed: () {
+                            notAvailable.postdata(driverId!);
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.info,
+                              animType: AnimType.bottomSlide,
+                              title: 'Become Unavailable',
+                              desc: 'You are now unavailable for rides',
+                            ).show();
+                            setState(() {
+                              driverAvailable = false;
+                            });
+                          },
+                          child: Text(
+                            "Become Unavailable",
+                            style: TextStyle(fontSize: 22, color: Colors.white),
+                          ),
+                        )
+                  : MaterialButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      color: Colors.green,
+                      minWidth: Get.width / 1.2,
+                      height: 45,
+                      onPressed: () {
+                        AwesomeDialog(
+                          context: context,
+                          dialogType: DialogType.info,
+                          animType: AnimType.bottomSlide,
+                          title: 'End Ride',
+                          desc: 'Are you sure you want to end this ride?',
+                          btnCancelText: 'No',
+                          btnCancelOnPress: () {},
+                          btnOkText: 'Yes',
+                          btnOkOnPress: () async {
+                            await sendMessageNotificaiton("Ride Ended",
+                                "Ride Ended", userToken, "ride_ended", "");
+                            await notAvailable.postdata(driverId!);
+                            setState(() {
+                              inARide = false;
+                              driverAvailable = false;
+                            });
+                          },
+                        ).show();
+                      },
+                      child: Text(
+                        "End Ride",
+                        style: TextStyle(fontSize: 22, color: Colors.white),
+                      ),
+                    ),
               SizedBox(
                 height: 10,
               ),

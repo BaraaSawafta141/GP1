@@ -30,27 +30,27 @@ class DriverSettingsPage extends StatelessWidget {
               },
             ),
             Divider(),
-            Text(
-              'App Settings',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),
-            ),
-            SizedBox(height: 16),
-            ListTile(
-              title: Text('Notifications'),
-              leading: Icon(Icons.notifications),
-              onTap: () {
-                // Navigate to notification settings
-                // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationSettings()));
-              },
-            ),
-            ListTile(
-              title: Text('Privacy'),
-              leading: Icon(Icons.lock),
-              onTap: () {
-                // Navigate to privacy settings
-                // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => PrivacySettings()));
-              },
-            ),
+            // Text(
+            //   'App Settings',
+            //   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),
+            // ),
+            // SizedBox(height: 16),
+            // ListTile(
+            //   title: Text('Notifications'),
+            //   leading: Icon(Icons.notifications),
+            //   onTap: () {
+            //     // Navigate to notification settings
+            //     // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationSettings()));
+            //   },
+            // ),
+            // ListTile(
+            //   title: Text('Privacy'),
+            //   leading: Icon(Icons.lock),
+            //   onTap: () {
+            //     // Navigate to privacy settings
+            //     // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => PrivacySettings()));
+            //   },
+            // ),
           ],
         ),
       ),

@@ -87,7 +87,8 @@ sendMessageNotificaiton(String title, String message, String token, String type,
       "type": type,
       "rideId": rideId,
       "token": await FirebaseMessaging.instance.getToken()
-    }
+    },
+    "android": {"priority": "high"},
   };
   var req = await http.post(url, headers: headerslist, body: jsonEncode(body));
   req.statusCode == 200 ? print("success") : print("error");
@@ -200,27 +201,48 @@ class MapSampleState extends State<home> {
             btnOkOnPress: () {},
           ).show();
         } else if (message.data['type'] == 'ride_cancel') {
-          if (mounted) {
-            polelineSet.clear();
-            homePageMarkers.clear();
-            // Clear the text field
-            sourceController.clear();
-            destinationController.clear();
-            AwesomeDialog(
-              dismissOnBackKeyPress: false,
-              dismissOnTouchOutside: false,
-              context: context,
-              dialogType: DialogType.info,
-              animType: AnimType.bottomSlide,
-              title: 'Ride Cancelled',
-              desc: 'Your Ride Has Been Cancelled',
-              btnOkOnPress: () {
-                if (mounted) {
-                  Get.offAll(() => home());
-                }
-              },
-            ).show();
-          }
+          // if (mounted) {
+          polelineSet.clear();
+          homePageMarkers.clear();
+          // Clear the text field
+          sourceController.clear();
+          destinationController.clear();
+          AwesomeDialog(
+            dismissOnBackKeyPress: false,
+            dismissOnTouchOutside: false,
+            context: context,
+            dialogType: DialogType.info,
+            animType: AnimType.bottomSlide,
+            title: 'Ride Cancelled',
+            desc: 'Your Ride Has Been Cancelled',
+            btnOkOnPress: () {
+              // if (mounted) {
+              Get.offAll(() => home());
+              // }
+            },
+          ).show();
+          // }
+        } else if (message.data['type'] == 'ride_ended') {
+          polelineSet.clear();
+          homePageMarkers.clear();
+          // Clear the text field
+          sourceController.clear();
+          destinationController.clear();
+          AwesomeDialog(
+            dismissOnBackKeyPress: false,
+            dismissOnTouchOutside: false,
+            context: context,
+            dialogType: DialogType.info,
+            animType: AnimType.bottomSlide,
+            title: 'Ride Ended',
+            desc:
+                'Your ride has ended, You can rate the driver in the ride history page',
+            btnOkOnPress: () {
+              // if (mounted) {
+              Get.offAll(() => home());
+              // }
+            },
+          ).show();
         } else {
           Get.snackbar(
             message.notification!.title!,
@@ -230,7 +252,71 @@ class MapSampleState extends State<home> {
         }
       }
     });
-
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //   if (message.notification != null) {
+    //     if (message.data['type'] == 'ride_request') {
+    //       AwesomeDialog(
+    //         dismissOnBackKeyPress: false,
+    //         dismissOnTouchOutside: false,
+    //         context: context,
+    //         dialogType: DialogType.info,
+    //         animType: AnimType.bottomSlide,
+    //         title: 'Ride Accepted',
+    //         desc: 'Your Ride Has Been Accepted, the driver is on his way',
+    //         btnOkOnPress: () {},
+    //       ).show();
+    //     } else if (message.data['type'] == 'ride_cancel') {
+    //       // if (mounted) {
+    //       polelineSet.clear();
+    //       homePageMarkers.clear();
+    //       // Clear the text field
+    //       sourceController.clear();
+    //       destinationController.clear();
+    //       AwesomeDialog(
+    //         dismissOnBackKeyPress: false,
+    //         dismissOnTouchOutside: false,
+    //         context: context,
+    //         dialogType: DialogType.info,
+    //         animType: AnimType.bottomSlide,
+    //         title: 'Ride Cancelled',
+    //         desc: 'Your Ride Has Been Cancelled',
+    //         btnOkOnPress: () {
+    //           // if (mounted) {
+    //           Get.offAll(() => home());
+    //           // }
+    //         },
+    //       ).show();
+    //       // }
+    //     } else if (message.data['type'] == 'ride_ended') {
+    //       polelineSet.clear();
+    //       homePageMarkers.clear();
+    //       // Clear the text field
+    //       sourceController.clear();
+    //       destinationController.clear();
+    //       AwesomeDialog(
+    //         dismissOnBackKeyPress: false,
+    //         dismissOnTouchOutside: false,
+    //         context: context,
+    //         dialogType: DialogType.info,
+    //         animType: AnimType.bottomSlide,
+    //         title: 'Ride Ended',
+    //         desc:
+    //             'Your ride has ended, You can rate the driver in the ride history page',
+    //         btnOkOnPress: () {
+    //           // if (mounted) {
+    //           Get.offAll(() => home());
+    //           // }
+    //         },
+    //       ).show();
+    //     } else {
+    //       Get.snackbar(
+    //         message.notification!.title!,
+    //         message.notification!.body!,
+    //         duration: const Duration(seconds: 5),
+    //       );
+    //     }
+    //   }
+    // });
     destinationController.addListener(() {
       onChangedest();
     });

@@ -26,7 +26,7 @@ import 'package:ecommercebig/view/screen/onboarding.dart';
 import 'package:get/get.dart';
 
 List<GetPage<dynamic>>? routes = [
-  GetPage(name: "/", page: () => DecisionScreen(), middlewares: [MyMiddleWare()]),
+  GetPage(name: "/", page: () => Language(), middlewares: [MyMiddleWare()]),
   // GetPage(name: "/", page: () => Language()),
   // name: "/",
   // page: () =>  Login()),

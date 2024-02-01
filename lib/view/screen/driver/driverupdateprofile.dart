@@ -73,10 +73,10 @@ class _DriverProfileupdateState extends State<DriverProfileupdate> {
                     .update({'name': response['message']['drivers_name']});
               }
             } else {
-              print("User not found");
+              print("Driver not found in Firestore");
             }
           }).catchError((error) {
-            print("Error updating user name: $error");
+            print("Error updating driver name: $error");
           });
 
           AwesomeDialog(

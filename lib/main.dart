@@ -15,23 +15,23 @@ import 'core/localization/changelocal.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    if (message.notification != null) {
-        print("Handling a background message: ${message.notification!.body}");
-        Get.snackbar(
-          message.notification!.title!,
-          message.notification!.body!,
-          duration: const Duration(seconds: 5),
-        );
-      }
-}
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//     if (message.notification != null) {
+//         print("Handling a background message: ${message.notification!.body}");
+//         Get.snackbar(
+//           message.notification!.title!,
+//           message.notification!.body!,
+//           duration: const Duration(seconds: 5),
+//         );
+//       }
+// }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await initialServices();
   runApp(const MyApp());
 }
