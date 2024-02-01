@@ -26,7 +26,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:location/location.dart' as lo;
-import 'package:uuid/uuid.dart';
+
 import 'dart:ui' as ui;
 import 'package:permission_handler/permission_handler.dart';
 
@@ -35,6 +35,8 @@ String? driverEmail;
 String? drivername = "";
 String? driverId;
 String? driverPhoto = "";
+double? myPosLatitude;
+double? myPosLongitude;
 cardData cardDetails = cardData(Get.find());
 viewDriversData driversData = viewDriversData(Get.find());
 List<String> cardsList = <String>[];
@@ -111,8 +113,6 @@ class driverHome extends State<homedriver> {
   TrackingController trackingController = TrackingController();
   TextEditingController controller = TextEditingController();
 
-  var uuid = Uuid();
-
   @override
   void initState() {
     FirebaseMessaging.instance.subscribeToTopic("drivers");
@@ -124,9 +124,9 @@ class driverHome extends State<homedriver> {
     driverPhoto = driverServices.sharedPreferences.getString("img")!;
     myServices.sharedPreferences.setString("homedriver", "1");
     chat();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       if (message.notification != null) {
-          userToken = message.data['token'];
+        userToken = message.data['token'];
         if (message.data['type'] == 'ride_request') {
           // Assuming the message body format is 'From $Username, ${sourceController.text} to ${destinationController.text}'
           String messageBody = message.notification!.body!;
@@ -169,17 +169,28 @@ class driverHome extends State<homedriver> {
                   inARide = true;
                 });
                 print('========================ok');
+                await getCurrentLocationWithoutCam();
                 await sendMessageNotificaiton(
                     "Ride Request",
                     "Ride Request Accepted",
                     message.data['token'],
                     "ride_request",
                     message.data['rideId']);
+                print(">> driver :" +
+                    myPosLatitude.toString() +
+                    " " +
+                    myPosLongitude.toString());
+                print(">> user :" +
+                    message.data['lat'] +
+                    " " +
+                    message.data['long']);
                 // Handle OK action
                 // Get.to(() => chatViewDriver());
               }
             },
           ).show();
+          await getPolyline(context, myPosLatitude, myPosLongitude,
+              message.data['lat'], message.data['long']);
         } else {
           Get.snackbar(
             message.notification!.title!,
@@ -400,8 +411,6 @@ class driverHome extends State<homedriver> {
   double? dstlong;
   double? dstlati;
 
-  double? myPosLatitude;
-  double? myPosLongitude;
   Future<void> getCurrentLocationIcon() async {
     final status = await Permission.location.request();
     if (status.isGranted) {
@@ -433,6 +442,26 @@ class driverHome extends State<homedriver> {
           var res = await addlatlong.postdata(
               myPosLatitude.toString(), myPosLongitude.toString(), driverId);
           print("=======$res");
+        }
+      } catch (e) {
+        print("Error getting current location: $e");
+      }
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
+  }
+
+  Future<void> getCurrentLocationWithoutCam() async {
+    final status = await Permission.location.request();
+    if (status.isGranted) {
+      try {
+        Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+        if (mymapcontroller != null) {
+          myPosLatitude = position.latitude;
+          myPosLongitude = position.longitude;
+          LatLng driverLocation = LatLng(position.latitude, position.longitude);
         }
       } catch (e) {
         print("Error getting current location: $e");

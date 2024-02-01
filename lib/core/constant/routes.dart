@@ -12,4 +12,5 @@ class AppRoute {
   static const String homepage = "/home";
   static const String waitingpage = "/DocumentUploadedPage";
   static const String driverhome = "/driverhome";
+  static const String decision = "/choosingscreen";
 }

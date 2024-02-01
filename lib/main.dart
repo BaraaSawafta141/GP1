@@ -47,13 +47,15 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    //   if (message.notification != null) {
-    //     if (message.data['type'] == 'chat') {
-    //        driverId != null ? Get.to(() => chatViewDriver() ) :  Get.to(() => testview());
-    //     }
-    //   }
-    // });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        if (message.data['type'] == 'chat') {
+          driverId != null
+              ? Get.to(() => chatViewDriver())
+              : Get.to(() => testview());
+        }
+      }
+    });
   }
 
   @override
@@ -84,11 +86,13 @@ class _CheckUserLoggedInOrNotState extends State<CheckUserLoggedInOrNot> {
   void initState() {
     AuthService.isLoggedIn().then((value) {
       if (value) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => DriverProfileSetup()));
+        Get.off(() => DriverProfileSetup());
+        // Navigator.pushReplacement(context,
+        //     MaterialPageRoute(builder: (context) => DriverProfileSetup()));
       } else {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPagesec()));
+        Get.off(() => LoginPagesec());
+        // Navigator.pushReplacement(
+        //     context, MaterialPageRoute(builder: (context) => LoginPagesec()));
       }
     });
     super.initState();

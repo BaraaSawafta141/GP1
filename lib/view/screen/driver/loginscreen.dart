@@ -3,6 +3,7 @@ import 'package:ecommercebig/core/functions/handlingdata.dart';
 import 'package:ecommercebig/core/middleware/mymiddleware.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/auth/driverLogin.dart';
 import 'package:ecommercebig/data/datasource/remote/driver/check_driver.dart';
+import 'package:ecommercebig/data/datasource/remote/driver/reserveDriver.dart';
 import 'package:ecommercebig/view/screen/driver/carinforegister/pages/uploaddocument.dart';
 import 'package:ecommercebig/view/screen/driver/driverhome.dart';
 import 'package:ecommercebig/view/screen/driver/driverloginphone.dart';
@@ -23,7 +24,8 @@ class LoginScreen extends StatefulWidget {
 
 late TextEditingController passwordController = TextEditingController();
 late TextEditingController phoneNumController = TextEditingController();
-
+reserveDriverData BecomeNotAvailable =
+    reserveDriverData(Get.find()); //become not available
 String? verify;
 String? phonenum;
 FirebaseAuth auth = FirebaseAuth.instance;
@@ -190,6 +192,7 @@ onSubmit(String? input, String password) async {
   phoneNumController.clear();
   if (statusrequest.success == statusreq) {
     if (response['status'] == "Success") {
+     await BecomeNotAvailable.postdata(response['message']['drivers_id'].toString());
       driverServices.sharedPreferences
           .setString("id", response['message']['drivers_id'].toString());
       driverServices.sharedPreferences

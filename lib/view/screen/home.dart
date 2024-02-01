@@ -36,7 +36,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:location/location.dart' as lo;
-import 'package:uuid/uuid.dart';
 import 'dart:ui' as ui;
 import 'package:permission_handler/permission_handler.dart';
 
@@ -46,6 +45,8 @@ String? Userphone;
 String? Userid;
 String? Userpass;
 String? UserPhoto;
+double? myPosLatitude;
+double? myPoslongitude;
 bool isLiveTrackingEnabled = false;
 FirebaseFirestore firestore = FirebaseFirestore.instance;
 cardData cardDetails = cardData(Get.find());
@@ -86,7 +87,9 @@ sendMessageNotificaiton(String title, String message, String token, String type,
     "data": {
       "type": type,
       "rideId": rideId,
-      "token": await FirebaseMessaging.instance.getToken()
+      "token": await FirebaseMessaging.instance.getToken(),
+      "lat": myPosLatitude,
+      "long": myPoslongitude,
     },
     "android": {"priority": "high"},
   };
@@ -113,14 +116,7 @@ class MapSampleState extends State<home> {
   late LatLng destination;
   late LatLng source;
   final List<Marker> _markers = <Marker>[];
-  final List<LatLng> _latlng = <LatLng>[
-    // LatLng(32.223295060141346, 35.237885713381246),
-    // LatLng(32.22376702872116, 35.239902734459896),
-    // LatLng(32.22108040562581, 35.23814320546564),
-    // LatLng(32.22535466270865, 35.24139978035635),
-    // LatLng(32.22117751845855, 35.24213979128875),
-    // LatLng(32.22074576133657, 35.2327620677686),
-  ];
+  final List<LatLng> _latlng = <LatLng>[];
 
   Future<Uint8List> getBytesFromAssets(String path, int width) async {
     ByteData data = await rootBundle.load(path);
@@ -170,7 +166,6 @@ class MapSampleState extends State<home> {
 
   TrackingController trackingController = TrackingController();
   TextEditingController controller = TextEditingController();
-  var uuid = Uuid();
   String _sessionToken = '122344';
   List<dynamic> _placesList = [];
 
@@ -187,7 +182,7 @@ class MapSampleState extends State<home> {
     Userpass = userServices.sharedPreferences.getString("password")!;
     UserPhoto = userServices.sharedPreferences.getString("image");
     chat();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       if (message.notification != null) {
         if (message.data['type'] == 'ride_request') {
           AwesomeDialog(
@@ -1070,8 +1065,6 @@ class MapSampleState extends State<home> {
 
   bool isBottomSheetOpen = false;
 
-  double? myPosLatitude;
-  double? myPoslongitude;
   Future<void> getCurrentLocationIcon() async {
     final status = await Permission.location.request();
     if (status.isGranted) {
@@ -1089,6 +1082,29 @@ class MapSampleState extends State<home> {
           );
           print(myPosLatitude);
           print(myPoslongitude);
+          userCords.postdata(
+              myPosLatitude.toString(), myPoslongitude.toString(), Userid);
+        }
+      } catch (e) {
+        print("Error getting current location: $e");
+      }
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings(); // Open app settings if permission is permanently denied.
+    }
+  }
+
+  Future<void> getCurrentLocationWithoutCam() async {
+    final status = await Permission.location.request();
+    if (status.isGranted) {
+      try {
+        Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+
+        if (mymapcontroller != null) {
+          myPosLatitude = position.latitude;
+          myPoslongitude = position.longitude;
+          LatLng userLocation = LatLng(position.latitude, position.longitude);
           userCords.postdata(
               myPosLatitude.toString(), myPoslongitude.toString(), Userid);
         }
@@ -1267,6 +1283,7 @@ class MapSampleState extends State<home> {
                             ),
                             TextButton(
                               onPressed: () async {
+                                await getCurrentLocationWithoutCam();
                                 // setState(() {
                                 //   RideCount++;
                                 // });
@@ -1528,7 +1545,6 @@ class MapSampleState extends State<home> {
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
-
     myPosLatitude = position.latitude;
     myPoslongitude = position.longitude;
   }
