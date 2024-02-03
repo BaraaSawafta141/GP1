@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
 Set<Polyline> polelineSetDriver = {};
+Set<Marker> markerSetDriver = {};
 bool showconfbox = true;
 
 Future getPolylineDriver(context, lat, long, destlat, destlong) async {
@@ -50,6 +51,21 @@ Future getPolylineDriver(context, lat, long, destlat, destlong) async {
           List<PointLatLng> result = polylinePoints.decodePolyline(point);
 
           if (result.isNotEmpty) {
+            // Adding markers at the beginning and end
+            markerSetDriver.add(Marker(
+              markerId: MarkerId("sourceMarker"),
+              position: LatLng(lat, long),
+              infoWindow: InfoWindow(title: "Source"),
+              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+            ));
+
+            markerSetDriver.add(Marker(
+              markerId: MarkerId("destinationMarker"),
+              position: LatLng(destlat, destlong),
+              infoWindow: InfoWindow(title: "Destination"),
+              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+            ));
+
             result.forEach((PointLatLng point) {
               polylineco.add(LatLng(point.latitude, point.longitude));
             });

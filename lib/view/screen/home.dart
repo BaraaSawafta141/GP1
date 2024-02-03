@@ -58,6 +58,8 @@ List<Map<String, dynamic>> driversList = [];
 String selectedDriver = driversList[0]["drivers_id"] != null
     ? driversList[0]["drivers_id"].toString()
     : "-1";
+TextEditingController sourceController = TextEditingController();
+TextEditingController destinationController = TextEditingController();
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -68,7 +70,6 @@ class home extends StatefulWidget {
 
 Set<Marker> marks = Set<Marker>();
 GoogleMapController? mymapcontroller;
-String? _mapStyle;
 final homePageMarkers = <Marker>{}.obs;
 bool showdialograting = true;
 
@@ -88,8 +89,11 @@ sendMessageNotificaiton(String title, String message, String token, String type,
       "type": type,
       "rideId": rideId,
       "token": await FirebaseMessaging.instance.getToken(),
-      "lat": myPosLatitude,
-      "long": myPoslongitude,
+      "lat": myPosLatitude != null ? myPosLatitude : 0.0,
+      "long": myPoslongitude != null ? myPoslongitude : 0.0,
+      "source": sourceController.text != "" ? sourceController.text : "",
+      "destination":
+          destinationController.text != "" ? destinationController.text : "",
     },
   };
   var req = await http.post(url, headers: headerslist, body: jsonEncode(body));
@@ -99,9 +103,6 @@ sendMessageNotificaiton(String title, String message, String token, String type,
 class MapSampleState extends State<home> {
   //final Completer<GoogleMapController> _controllergoogle =
   //  Completer<GoogleMapController>();
-  final _formKey = GlobalKey<FormState>();
-  String? _mapStyle;
-
   Uint8List? markerImage;
 
   List<String> images = [
@@ -181,7 +182,7 @@ class MapSampleState extends State<home> {
     Userpass = userServices.sharedPreferences.getString("password")!;
     UserPhoto = userServices.sharedPreferences.getString("image");
     chat();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message)  {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
         if (message.data['type'] == 'ride_request') {
           AwesomeDialog(
@@ -562,9 +563,6 @@ class MapSampleState extends State<home> {
           ),
         ));
   }
-
-  TextEditingController sourceController = TextEditingController();
-  TextEditingController destinationController = TextEditingController();
 
   bool showSourceField = false;
   double? srclong;
@@ -1303,7 +1301,7 @@ class MapSampleState extends State<home> {
                                     await getDriverToken(selectedDriver);
                                 await sendMessageNotificaiton(
                                     'You have a new ride request!',
-                                    'From $Username, ${sourceController.text} to ${destinationController.text}',
+                                    'Ride Request',
                                     driverToken!,
                                     'ride_request',
                                     rideId);

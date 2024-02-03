@@ -47,15 +47,15 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        if (message.data['type'] == 'chat') {
-          driverId != null
-              ? Get.to(() => chatViewDriver())
-              : Get.to(() => testview());
-        }
-      }
-    });
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //   if (message.notification != null) {
+    //     if (message.data['type'] == 'chat') {
+    //       driverId != null
+    //           ? Get.to(() => chatViewDriver())
+    //           : Get.to(() => testview());
+    //     }
+    //   }
+    // });
   }
 
   @override

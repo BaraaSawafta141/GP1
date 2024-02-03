@@ -129,19 +129,8 @@ class driverHome extends State<homedriver> {
       if (message.notification != null) {
         userToken = message.data['token'];
         if (message.data['type'] == 'ride_request') {
-          // Assuming the message body format is 'From $Username, ${sourceController.text} to ${destinationController.text}'
-          String messageBody = message.notification!.body!;
-          // Split the message using ','
-          List<String> parts = messageBody.split(',');
-          // Extract the source and destination values
-          String usernamePart = parts[0].trim(); // 'From $Username'
-          String sourcePart = parts[1]
-              .trim(); // '${sourceController.text} to ${destinationController.text}'
-          // Extract source value
-          String sourceValue = sourcePart.split(' to ')[0].trim();
-          // Extract destination value
-          String destinationValue = sourcePart.split(' to ')[1].trim();
-          // Now you have the sourceValue and destinationValue
+          String sourceValue = message.data['source'];
+          String destinationValue = message.data['destination'];
           AwesomeDialog(
             context: context,
             dialogType: DialogType.info,
@@ -158,7 +147,6 @@ class driverHome extends State<homedriver> {
                   message.data['token'],
                   "ride_cancel",
                   message.data['rideId']);
-              // Handle cancel action
             },
             btnOkText: 'Accept',
             btnOkOnPress: () async {
@@ -176,8 +164,6 @@ class driverHome extends State<homedriver> {
                     message.data['token'],
                     "ride_request",
                     message.data['rideId']);
-                // Handle OK action
-                // Get.to(() => chatViewDriver());
               }
             },
           ).show();
@@ -268,7 +254,8 @@ class driverHome extends State<homedriver> {
                 zoomControlsEnabled: false,
                 mapType: MapType.normal,
                 initialCameraPosition: _kGooglePlex,
-                markers: Set<Marker>.from(homePageMarkersdriver),
+                markers:markerSetDriver ,
+                // Set<Marker>.from(homePageMarkersdriver),
                 //markers: Set<Marker>.of(_markers),
                 onMapCreated: (GoogleMapController controller) async {
                   mymapcontroller = controller;
@@ -539,6 +526,7 @@ class driverHome extends State<homedriver> {
                                 "Ride Ended", userToken, "ride_ended", "");
                             await notAvailable.postdata(driverId!);
                             polelineSetDriver.clear();
+                            markerSetDriver.clear();
                             // homePageMarkersdriver.clear();
                             setState(() {
                               inARide = false;
