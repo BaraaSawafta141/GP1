@@ -394,9 +394,9 @@ class MapSampleState extends State<home> {
     print(data);
 
     if (response.statusCode == 200) {
-      setState(() {
+      // setState(() {
         sourcePlacesList = jsonDecode(response.body.toString())['predictions'];
-      });
+      // });
     } else {
       throw Exception('failed to load');
     }
@@ -415,9 +415,9 @@ class MapSampleState extends State<home> {
     print(data);
 
     if (response.statusCode == 200) {
-      setState(() {
+      // setState(() {
         _placesList = jsonDecode(response.body.toString())['predictions'];
-      });
+      // });
     } else {
       throw Exception('failed to load');
     }
@@ -1077,6 +1077,12 @@ class MapSampleState extends State<home> {
           mymapcontroller!.animateCamera(
             CameraUpdate.newLatLng(userLocation),
           );
+          homePageMarkers.add(Marker(
+              markerId: MarkerId("Current Position"),
+              infoWindow: InfoWindow(
+                  title: 'Current Position',
+                  snippet: 'Latitude: $myPosLatitude, Longitude: $myPoslongitude'),
+              position: userLocation));
           print(myPosLatitude);
           print(myPoslongitude);
           userCords.postdata(

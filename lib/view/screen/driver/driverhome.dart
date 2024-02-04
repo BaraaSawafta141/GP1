@@ -127,8 +127,9 @@ class driverHome extends State<homedriver> {
     chat();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
-        userToken = message.data['token'];
+        
         if (message.data['type'] == 'ride_request') {
+          userToken = message.data['token'];
           String sourceValue = message.data['source'];
           String destinationValue = message.data['destination'];
           AwesomeDialog(
@@ -178,52 +179,52 @@ class driverHome extends State<homedriver> {
     });
     // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
     //   if (message.notification != null) {
-    //     if (message.data['type'] == 'ride_request') {
-    //       AwesomeDialog(
-    //         context: context,
-    //         dialogType: DialogType.info,
-    //         animType: AnimType.bottomSlide,
-    //         title: 'Ride Request',
-    //         desc: 'You have a new ride request',
-    //         btnCancelText: 'Reject',
-    //         btnCancelOnPress: () async {
-    //           await becomeavailable.postdata(driverId!);
-    //           print("=============================cancel");
-    //           await sendMessageNotificaiton(
-    //               "Ride Request",
-    //               "Ride Request Rejected",
-    //               message.data['token'],
-    //               "ride_request",
-    //               message.data['rideId']);
-    //           // Handle cancel action
-    //         },
-    //         btnOkText: 'Accept',
-    //         btnOkOnPress: () async {
-    //           var res = await approve.postdata(message.data['rideId']);
-    //           if (res['status'] == 'success') {
-    //             setState(() {
-    //               inARide = true;
-    //             });
-    //             userToken = message.data['token'];
-    //             print('========================ok');
-    //             await sendMessageNotificaiton(
-    //                 "Ride Request",
-    //                 "Ride Request Accepted",
-    //                 message.data['token'],
-    //                 "ride_request",
-    //                 message.data['rideId']);
-    //             // Handle OK action
-    //             // Get.to(() => chatViewDriver());
-    //           }
-    //         },
-    //       ).show();
-    //     } else {
-    //       Get.snackbar(
-    //         message.notification!.title!,
-    //         message.notification!.body!,
-    //         duration: const Duration(seconds: 5),
-    //       );
-    //     }
+    // if (message.data['type'] == 'ride_request') {
+    //   AwesomeDialog(
+    //     context: context,
+    //     dialogType: DialogType.info,
+    //     animType: AnimType.bottomSlide,
+    //     title: 'Ride Request',
+    //     desc: 'You have a new ride request',
+    //     btnCancelText: 'Reject',
+    //     btnCancelOnPress: () async {
+    //       await becomeavailable.postdata(driverId!);
+    //       print("=============================cancel");
+    //       await sendMessageNotificaiton(
+    //           "Ride Request",
+    //           "Ride Request Rejected",
+    //           message.data['token'],
+    //           "ride_request",
+    //           message.data['rideId']);
+    //       // Handle cancel action
+    //     },
+    //     btnOkText: 'Accept',
+    //     btnOkOnPress: () async {
+    //       var res = await approve.postdata(message.data['rideId']);
+    //       if (res['status'] == 'success') {
+    //         setState(() {
+    //           inARide = true;
+    //         });
+    //         userToken = message.data['token'];
+    //         print('========================ok');
+    //         await sendMessageNotificaiton(
+    //             "Ride Request",
+    //             "Ride Request Accepted",
+    //             message.data['token'],
+    //             "ride_request",
+    //             message.data['rideId']);
+    //         // Handle OK action
+    //         // Get.to(() => chatViewDriver());
+    //       }
+    //     },
+    //   ).show();
+    // } else {
+    //     Get.snackbar(
+    //       message.notification!.title!,
+    //       message.notification!.body!,
+    //       duration: const Duration(seconds: 5),
+    //     );
+    //     // }
     //   }
     // });
   }
@@ -254,7 +255,7 @@ class driverHome extends State<homedriver> {
                 zoomControlsEnabled: false,
                 mapType: MapType.normal,
                 initialCameraPosition: _kGooglePlex,
-                markers:markerSetDriver ,
+                markers: markerSetDriver,
                 // Set<Marker>.from(homePageMarkersdriver),
                 //markers: Set<Marker>.of(_markers),
                 onMapCreated: (GoogleMapController controller) async {

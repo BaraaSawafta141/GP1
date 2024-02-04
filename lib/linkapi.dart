@@ -1,6 +1,6 @@
 class applink {
-  static const String server = "http://10.0.2.2/taxiapp";
-  static const String linkImageRoot = "http://10.0.2.2/taxiapp/upload";
+  static const String server = "http://palwheel.mooo.com/taxiapp";
+  static const String linkImageRoot = "http://palwheel.mooo.com/taxiapp/upload";
 
   static const String test = "$server/test.php";
 
